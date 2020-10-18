@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="gantt-container">
         <svg ref="gantt" />
     </div>
 </template>
@@ -66,6 +66,8 @@ export default {
 };
 </script>
 
-<style lang="css">
-@import "~frappe-gantt/dist/frappe-gantt.css";
+<style>
+    #gantt-container {
+        border: 3px black solid;
+    }
 </style>
