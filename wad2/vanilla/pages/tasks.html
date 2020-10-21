@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="../js/frappe-gantt.css">
+    <style>
+        #ch-container {
+            width: 80%;
+        }
+
+        #ch-window {
+            border: 2px solid black;
+            background-image: url("../assets/wall.png");
+            background-size: 120px;
+            height: 120px;
+        }
+
+        #ch-img {
+            width: 70px;
+            margin-top: -15px;
+            margin-left: 10px;
+        }
+
+        #lvl-container {
+            width: 150px;
+            padding: 0px;
+        }
+
+        #lvl-window {
+            border: 2px solid black;
+            height: 120px;
+        }
+
+        #sidebar {
+            border: 2px solid black;
+        }
+
+        #gantt-chart {
+            border: 2px solid black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">WAD</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./tasks.html">Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./team.html">Team</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" id="tasks">
+        <br>
+
+        <div class="row justify-content-md-center">
+            <div class="col-2" id="lvl-window">
+                <h1>Level 20</h1>
+            </div>
+            <div class="col-10 p-0">
+                <div class="col" id="ch-window">
+                    <img id="ch-img" src="../assets/knight.png">
+                </div>
+            </div>
+        </div>
+        <br>
+
+        <div class="row justify-content-md-center">
+            <div class="col-2" id="sidebar">
+                <button class="btn btn-primary">Create Meeting</button>
+            </div>
+            <div class="col-10" id="gantt-chart">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <!-- <svg id="gantt"></svg> -->
+                            <div id="chart_div"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="../js/frappe-gantt.js"></script> -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+    <script>
+
+        google.charts.load('current', { 'packages': ['gantt'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function toMilliseconds(minutes) {
+            return minutes * 60 * 1000;
+        }
+
+        function drawChart() {
+
+            var otherData = new google.visualization.DataTable();
+            otherData.addColumn('string', 'Task ID');
+            otherData.addColumn('string', 'Task Name');
+            otherData.addColumn('string', 'Resource');
+            otherData.addColumn('date', 'Start');
+            otherData.addColumn('date', 'End');
+            otherData.addColumn('number', 'Duration');
+            otherData.addColumn('number', 'Percent Complete');
+            otherData.addColumn('string', 'Dependencies');
+
+            otherData.addRows([
+                ['toTrain', 'Walk to train stop', 'walk', null, null, toMilliseconds(5), 100, null],
+                ['music', 'Listen to music', 'music', null, null, toMilliseconds(70), 100, null],
+                ['wait', 'Wait for train', 'wait', null, null, toMilliseconds(10), 100, 'toTrain'],
+                ['train', 'Train ride', 'train', null, null, toMilliseconds(45), 75, 'wait'],
+                ['toWork', 'Walk to work', 'walk', null, null, toMilliseconds(10), 0, 'train'],
+                ['work', 'Sit down at desk', null, null, null, toMilliseconds(2), 0, 'toWork'],
+
+            ]);
+
+            var options = {
+                height: 275,
+                gantt: {
+                    defaultStartDateMillis: new Date(2015, 3, 28)
+                }
+            };
+
+            var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+
+            chart.draw(otherData, options);
+        }
+
+        // var tasks = [
+        //     {
+        //         id: 'Task 1',
+        //         name: 'Redesign website',
+        //         start: '2016-12-28',
+        //         end: '2016-12-31',
+        //         progress: 20,
+        //         dependencies: 'Task 2, Task 3'
+        //     },
+        // ]
+
+        // var gantt = new Gantt("#gantt", tasks, {
+        //     header_height: 50,
+        //     column_width: 30,
+        //     step: 24,
+        //     view_modes: ['Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
+        //     bar_height: 20,
+        //     bar_corner_radius: 3,
+        //     arrow_curve: 5,
+        //     padding: 18,
+        //     view_mode: 'Day',   
+        //     date_format: 'YYYY-MM-DD',
+        //     custom_popup_html: null
+        // });
+        // gantt.change_view_mode('Week');
+
+        // var gantt_chart = new Gantt("#gantt", tasks, {
+        //     on_click: function (task) {
+        //         console.log(task);
+        //     },
+        //     on_date_change: function (task, start, end) {
+        //         console.log(task, start, end);
+        //     },
+        //     on_progress_change: function (task, progress) {
+        //         console.log(task, progress);
+        //     },
+        //     on_view_change: function (mode) {
+        //         console.log(mode);
+        //     },
+        // });
+
+        // $(function () {
+        //     $(".btn-group").on("click", "button", function () {
+        //         console.log($(this).text())
+        //         gantt.change_view_mode($(this).text())
+        //     });
+        // });
+
+
+        var app = new Vue(
+            {
+                el: "#tasks",
+                methods: {
+
+                }
+            }
+        );
+
+
+
+    </script>
+</body>
+
+</html>

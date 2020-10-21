@@ -4,7 +4,7 @@
         <div class="col">
             <NavBar></NavBar>
             <h1>HOME</h1>
-
+            <line-chart></line-chart>
         </div>
         </div>
     </div>
@@ -12,12 +12,14 @@
 
 <script>
 import NavBar from "../components/NavBar.vue";
+import LineChart from "../components/LineChart.vue";
 
 export default {
   name: "Home",
   props: {},
   components: {
-    NavBar
+    NavBar,
+    LineChart
   }
 };
 
