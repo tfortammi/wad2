@@ -9,17 +9,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="../js/frappe-gantt.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
     <style>
+
+        body {
+            background-image: url("../assets/bg.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #tasks {
+            height: 100%;
+            margin-bottom: 80px;
+        }
+
+        #exp {
+            margin-top: -15px;
+        }
+
         #ch-container {
             width: 80%;
         }
 
         #ch-window {
-            border: 2px solid black;
-            background-image: url("../assets/wall.png");
-            background-size: 120px;
-            height: 120px;
+            border: 5px solid #a8c582;
+            background-image: url("../assets/ch-bg.png");
+            background-size: 130px;
+            height: 140px;
         }
 
         #ch-img {
@@ -34,21 +51,145 @@
         }
 
         #lvl-window {
-            border: 2px solid black;
-            height: 120px;
+            border: 5px solid #a8c582;
+            border-right: none;
         }
 
         #sidebar {
-            border: 2px solid black;
+            border: 5px solid  #a8c582;
+            border-right: none;
+        }
+
+        .sidebar-btn {
+            margin: 5px 0px;
+            width: 120px;
         }
 
         #gantt-chart {
-            border: 2px solid black;
+            border: 5px solid #a8c582;
+            height: 420px;
         }
+
+        #chart_div {
+            margin: 30px 0px;
+            background: transparent;
+            /* width: 700px; */
+        }
+
+
     </style>
 </head>
 
 <body>
+
+    <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="taskModal">Create New Task</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <!-- name, start, end, percentdone, dependencies -->
+                <form>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">Task Name</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">Assigned To</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Start Date</span>
+                        </div>
+                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">End Date</span>
+                        </div>
+                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <label class="input-group-text" for="inputGroupSelect01">Dependencies</label>
+                        </div>
+                        <select class="custom-select" multiple id="inputGroupSelect01">
+                          <option selected>None</option>
+                          <option value="1">One</option>
+                          <option value="2">Two</option>
+                          <option value="3">Three</option>
+                        </select>
+                      </div>
+                     
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="meetingModal" tabindex="-1" role="dialog" aria-labelledby="meetingModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="taskModal">Create New Meeting</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">Meeting Name</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Start Date</span>
+                        </div>
+                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Start Time</span>
+                        </div>
+                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <label class="input-group-text" for="inputGroupSelect01">Attendees</label>
+                        </div>
+                        <select class="custom-select" multiple id="inputGroupSelect01">
+                          <option selected>None</option>
+                          <option value="1">One</option>
+                          <option value="2">Two</option>
+                          <option value="3">Three</option>
+                        </select>
+                      </div>
+                     
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">WAD</a>
@@ -58,25 +199,30 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                <li class="nav-item ">
+                    <a class="nav-link" href="./home.html">Home </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./tasks.html">Tasks</a>
+                <li class="nav-item ">
+                    <a class="nav-link active" href="./tasks.html">Tasks </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./team.html">Team</a>
+                <li class="nav-item ">
+                    <a class="nav-link" href="./team.html">Team <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container" id="tasks">
+    <div class="container" id="tasks" style="height: 100%;">
         <br>
 
         <div class="row justify-content-md-center">
-            <div class="col-2" id="lvl-window">
-                <h1>Level 20</h1>
+            <div class="col-2 text-center py-3" id="lvl-window">
+                <h1 class="font-weight-bold">Lvl: 20</h1>
+                <h4 id="exp">EXP: 300</h4>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                </div>
             </div>
             <div class="col-10 p-0">
                 <div class="col" id="ch-window">
@@ -86,15 +232,15 @@
         </div>
         <br>
 
-        <div class="row justify-content-md-center">
-            <div class="col-2" id="sidebar">
-                <button class="btn btn-primary">Create Meeting</button>
+        <div class="row justify-content-md-center" >
+            <div class="col-2 py-3 text-center" id="sidebar">
+                <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal" data-toggle="modal">Add Task</button>
+                <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal" data-toggle="modal">Add Meeting</button>
             </div>
-            <div class="col-10" id="gantt-chart">
+            <div class="col-10" id="gantt-chart" >
                 <div class="container">
                     <div class="row">
-                        <div class="col">
-                            <!-- <svg id="gantt"></svg> -->
+                        <div class="col text-center mt-2" style="overflow: scroll;" >
                             <div id="chart_div"></div>
                         </div>
                     </div>
@@ -103,7 +249,6 @@
         </div>
     </div>
 
-    <!-- <script src="../js/frappe-gantt.js"></script> -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -112,13 +257,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <script>
 
         google.charts.load('current', { 'packages': ['gantt'] });
         google.charts.setOnLoadCallback(drawChart);
 
-        function toMilliseconds(minutes) {
-            return minutes * 60 * 1000;
+        function daysToMilliseconds(days) {
+        return days * 24 * 60 * 60 * 1000;
         }
 
         function drawChart() {
@@ -134,19 +280,38 @@
             otherData.addColumn('string', 'Dependencies');
 
             otherData.addRows([
-                ['toTrain', 'Walk to train stop', 'walk', null, null, toMilliseconds(5), 100, null],
-                ['music', 'Listen to music', 'music', null, null, toMilliseconds(70), 100, null],
-                ['wait', 'Wait for train', 'wait', null, null, toMilliseconds(10), 100, 'toTrain'],
-                ['train', 'Train ride', 'train', null, null, toMilliseconds(45), 75, 'wait'],
-                ['toWork', 'Walk to work', 'walk', null, null, toMilliseconds(10), 0, 'train'],
-                ['work', 'Sit down at desk', null, null, null, toMilliseconds(2), 0, 'toWork'],
+                ['toTrain', 'Task 1', 'walk', null, null, daysToMilliseconds(3), 100, null],
+                ['music', 'Task 2', 'music', null, null, daysToMilliseconds(1), 42, null],
+                ['wait', 'Task 3', 'wait', null, null, daysToMilliseconds(4), 100, 'toTrain'],
+                ['train', 'Task 4', 'train', null, null, daysToMilliseconds(2), 75, 'wait'],
+                ['toWork', 'Task 5', 'walk', null, null, daysToMilliseconds(0.5), 0, 'train'],
+                ['work', 'Task 6', null, null, null, daysToMilliseconds(1), 0, 'toWork'],
 
             ]);
 
             var options = {
-                height: 275,
+                height: otherData.getNumberOfRows() * 53,
                 gantt: {
-                    defaultStartDateMillis: new Date(2015, 3, 28)
+                    defaultStartDateMillis: new Date(2015, 3, 28),
+                    backgroundColor: "transparent",
+                    arrow: {
+                        angle: 100,
+                        width: 5,
+                        radius: 0
+                    },
+                    innerGridTrack: { fill: '#FDE5B3' },
+                    innerGridDarkTrack: { fill: " #f3dba7"},
+                    innerGridHorizLine: {
+                        strokeWidth: 0
+                    },
+                    labelStyle: {
+                        fontName: "VT323",
+                        fontSize: 17
+                    },
+                    shadowEnabled: false,
+                    shadowOffset: 4,
+                    sortTasks: true,
+
                 }
             };
 
@@ -155,54 +320,18 @@
             chart.draw(otherData, options);
         }
 
-        // var tasks = [
-        //     {
-        //         id: 'Task 1',
-        //         name: 'Redesign website',
-        //         start: '2016-12-28',
-        //         end: '2016-12-31',
-        //         progress: 20,
-        //         dependencies: 'Task 2, Task 3'
-        //     },
-        // ]
-
-        // var gantt = new Gantt("#gantt", tasks, {
-        //     header_height: 50,
-        //     column_width: 30,
-        //     step: 24,
-        //     view_modes: ['Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
-        //     bar_height: 20,
-        //     bar_corner_radius: 3,
-        //     arrow_curve: 5,
-        //     padding: 18,
-        //     view_mode: 'Day',   
-        //     date_format: 'YYYY-MM-DD',
-        //     custom_popup_html: null
-        // });
-        // gantt.change_view_mode('Week');
-
-        // var gantt_chart = new Gantt("#gantt", tasks, {
-        //     on_click: function (task) {
-        //         console.log(task);
-        //     },
-        //     on_date_change: function (task, start, end) {
-        //         console.log(task, start, end);
-        //     },
-        //     on_progress_change: function (task, progress) {
-        //         console.log(task, progress);
-        //     },
-        //     on_view_change: function (mode) {
-        //         console.log(mode);
-        //     },
-        // });
-
-        // $(function () {
-        //     $(".btn-group").on("click", "button", function () {
-        //         console.log($(this).text())
-        //         gantt.change_view_mode($(this).text())
-        //     });
-        // });
-
+        $(document).ready(function(){
+        var date_input=$('input[name="date"]'); //our date input has the name "date"
+        var container=$('.modal-body form').length>0 ? $('.modal-body form').parent() : "body";
+        var options={
+            format: 'mm/dd/yyyy',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+            orientation: "top"
+        };
+        date_input.datepicker(options);
+        })
 
         var app = new Vue(
             {
