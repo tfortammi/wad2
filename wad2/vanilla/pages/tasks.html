@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
     <style>
-
         body {
             background-image: url("../assets/bg.jpg");
             background-size: cover;
@@ -32,17 +32,62 @@
             width: 80%;
         }
 
-        #ch-window {
+        /* #ch-window {
             border: 5px solid #a8c582;
             background-image: url("../assets/ch-bg.png");
-            background-size: 130px;
+            background-size: 150px;
             height: 140px;
         }
+         */
+
+        /* .container {
+            width: 160px;
+            height: 91px;
+        } */
+
+        #ch-window {
+            width: 100%;
+            height: 100%;
+            border: 5px solid #a8c582;
+            background: url("../assets/ch-bg.png") repeat-x right center;
+            background-size: 150px;
+            -webkit-animation: displace 10s linear infinite;
+            animation: displace 10s linear infinite;
+        }
+
+        @-webkit-keyframes displace {
+
+            from {
+                background-position: 200% center;
+            }
+            to {
+                background-position: right center;
+            }
+
+            
+        }
+
+        @keyframes displace {
+            from {
+                background-position: 200% center;
+            }
+
+            to {
+                background-position: right center;
+            }
+        }
+
 
         #ch-img {
-            width: 70px;
-            margin-top: -15px;
+            width: 100px;
+            margin-top: 10px;
             margin-left: 10px;
+        }
+
+        #demon {
+            width: 110px;
+            margin-top: 10px;
+            margin-left: 100px;
         }
 
         #lvl-container {
@@ -56,7 +101,7 @@
         }
 
         #sidebar {
-            border: 5px solid  #a8c582;
+            border: 5px solid #a8c582;
             border-right: none;
         }
 
@@ -75,8 +120,6 @@
             background: transparent;
             /* width: 700px; */
         }
-
-
     </style>
 </head>
 
@@ -84,112 +127,120 @@
 
     <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="taskModal">Create New Task</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-            <!-- name, start, end, percentdone, dependencies -->
-                <form>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1">Task Name</span>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModal">Create New Task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- name, start, end, percentdone, dependencies -->
+                    <form>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Task Name</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Name" aria-label="Username"
+                                aria-describedby="basic-addon1">
                         </div>
-                        <input type="text" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1">Assigned To</span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Assigned To</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Name" aria-label="Username"
+                                aria-describedby="basic-addon1">
                         </div>
-                        <input type="text" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Start Date</span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Start Date</span>
+                            </div>
+                            <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY"
+                                aria-label="Username" aria-describedby="basic-addon1">
                         </div>
-                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">End Date</span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">End Date</span>
+                            </div>
+                            <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY"
+                                aria-label="Username" aria-describedby="basic-addon1">
                         </div>
-                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <label class="input-group-text" for="inputGroupSelect01">Dependencies</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Dependencies</label>
+                            </div>
+                            <select class="custom-select" multiple id="inputGroupSelect01">
+                                <option selected>None</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
                         </div>
-                        <select class="custom-select" multiple id="inputGroupSelect01">
-                          <option selected>None</option>
-                          <option value="1">One</option>
-                          <option value="2">Two</option>
-                          <option value="3">Three</option>
-                        </select>
-                      </div>
-                     
-                </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="modal fade" id="meetingModal" tabindex="-1" role="dialog" aria-labelledby="meetingModal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="taskModal">Create New Meeting</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <form>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1">Meeting Name</span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Start Date</span>
-                        </div>
-                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Start Time</span>
-                        </div>
-                        <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <label class="input-group-text" for="inputGroupSelect01">Attendees</label>
-                        </div>
-                        <select class="custom-select" multiple id="inputGroupSelect01">
-                          <option selected>None</option>
-                          <option value="1">One</option>
-                          <option value="2">Two</option>
-                          <option value="3">Three</option>
-                        </select>
-                      </div>
-                     
-                </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
+
+    <div class="modal fade" id="meetingModal" tabindex="-1" role="dialog" aria-labelledby="meetingModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="taskModal">Create New Meeting</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Meeting Name</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Name" aria-label="Username"
+                                aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Start Date</span>
+                            </div>
+                            <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Start Time</span>
+                            </div>
+                            <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Attendees</label>
+                            </div>
+                            <select class="custom-select" multiple id="inputGroupSelect01">
+                                <option selected>None</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">WAD</a>
@@ -226,21 +277,25 @@
             </div>
             <div class="col-10 p-0">
                 <div class="col" id="ch-window">
-                    <img id="ch-img" src="../assets/knight.png">
+                    <canvas id="ch-img" width="150" height="150"></canvas>
+                    <canvas id="demon" width="150" height="150"></canvas>
+                    <!-- <img id="ch-img" src="../assets/knight.png"> -->
                 </div>
             </div>
         </div>
         <br>
 
-        <div class="row justify-content-md-center" >
+        <div class="row justify-content-md-center">
             <div class="col-2 py-3 text-center" id="sidebar">
-                <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal" data-toggle="modal">Add Task</button>
-                <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal" data-toggle="modal">Add Meeting</button>
+                <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal" data-toggle="modal">Add
+                    Task</button>
+                <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
+                    data-toggle="modal">Add Meeting</button>
             </div>
-            <div class="col-10" id="gantt-chart" >
+            <div class="col-10" id="gantt-chart">
                 <div class="container">
                     <div class="row">
-                        <div class="col text-center mt-2" style="overflow: scroll;" >
+                        <div class="col text-center mt-2" style="overflow: scroll;">
                             <div id="chart_div"></div>
                         </div>
                     </div>
@@ -257,14 +312,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <script>
 
         google.charts.load('current', { 'packages': ['gantt'] });
         google.charts.setOnLoadCallback(drawChart);
 
         function daysToMilliseconds(days) {
-        return days * 24 * 60 * 60 * 1000;
+            return days * 24 * 60 * 60 * 1000;
         }
 
         function drawChart() {
@@ -300,7 +356,7 @@
                         radius: 0
                     },
                     innerGridTrack: { fill: '#FDE5B3' },
-                    innerGridDarkTrack: { fill: " #f3dba7"},
+                    innerGridDarkTrack: { fill: " #f3dba7" },
                     innerGridHorizLine: {
                         strokeWidth: 0
                     },
@@ -320,17 +376,17 @@
             chart.draw(otherData, options);
         }
 
-        $(document).ready(function(){
-        var date_input=$('input[name="date"]'); //our date input has the name "date"
-        var container=$('.modal-body form').length>0 ? $('.modal-body form').parent() : "body";
-        var options={
-            format: 'mm/dd/yyyy',
-            container: container,
-            todayHighlight: true,
-            autoclose: true,
-            orientation: "top"
-        };
-        date_input.datepicker(options);
+        $(document).ready(function () {
+            var date_input = $('input[name="date"]'); //our date input has the name "date"
+            var container = $('.modal-body form').length > 0 ? $('.modal-body form').parent() : "body";
+            var options = {
+                format: 'mm/dd/yyyy',
+                container: container,
+                todayHighlight: true,
+                autoclose: true,
+                orientation: "top"
+            };
+            date_input.datepicker(options);
         })
 
         var app = new Vue(
@@ -342,6 +398,52 @@
             }
         );
 
+
+        function initialiseImage(src, query, width, height, x, y) {
+            let img = new Image();
+            img.src = src;
+            img.onload = function () {
+                init();
+            };
+
+            let canvas = document.querySelector(query);
+            let ctx = canvas.getContext('2d');
+
+            const scale = 2.5;
+            const scaledWidth = scale * width;
+            const scaledHeight = scale * height;
+            function init() {
+                ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            function drawFrame(frameX, frameY, canvasX, canvasY) {
+                ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            const cycleLoop = [0, 1, 2, 3];
+            let currentLoopIndex = 0;
+            let frameCount = 0;
+
+            window.requestAnimationFrame(step);
+            function step() {
+                frameCount++;
+                if (frameCount < 15) {
+                    window.requestAnimationFrame(step);
+                    return;
+                }
+                frameCount = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+                currentLoopIndex++;
+                if (currentLoopIndex >= cycleLoop.length) {
+                    currentLoopIndex = 0;
+                }
+                window.requestAnimationFrame(step);
+            }
+        }
+
+        initialiseImage("../assets/knight_spritesheet.png", "#ch-img", 65, 260, 0, -70);
+        initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
 
     </script>
