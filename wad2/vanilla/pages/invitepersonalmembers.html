@@ -33,45 +33,6 @@
 
 <body>
 
-    <div class="modal fade" id='successModal' aria-labelledby="successModal" aria-hidden="true" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Success!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Your guild has been created successfully!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">View my guild!</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id='failModal' aria-labelledby="failModal" aria-hidden="true" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Oh no...</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>There has been some issues with creating your guild, please contact our administrator!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Contact admin</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">WAD</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -106,10 +67,31 @@
             <div class="row">
                 <div class="col">
 
-                    <div class='text-center m-3'>
-                        <button class="btn btn-primary" @click='createGuild()'>Invite guild members</button>
+                    <div class="form-group row mt-3">
+                        <label for="guildMember" class="col-sm-2 col-form-label">Invite guild members:</label>
+                        <div class="col-sm-10 input-group">
+                            <input type="text" class="form-control" id="guildMember" name="guildMember" value=""
+                                placeholder="Guild member's GitHub username">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" @click='addUser()'>Add</button>
+                            </div>
+                        </div>
                     </div>
 
+                    <div v-if='users.length > 0' class="col-sm-10 ml-auto m-3 custom-control custom-checkbox">
+                        <ul>
+                            <li v-for='(user, index) in users'>{{ user }}
+                                <span @click='removeUser(index)' class='float-right pr-5 text-danger'>remove</span>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    <div class='text-center m-3'>
+                        <button class="btn btn-primary" @click='addOrgMembers()'>Invite guild members to personal
+                            repo</button>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -131,49 +113,18 @@
             {
                 el: "#createGuildOrg",
                 data: {
-                    emails: [],
+                    users: [],
                 },
                 methods: {
-                    addEmail: function () {
-                        newEmail = document.getElementById('guildMember').value.trim()
-                        if (newEmail != '') {
-                            this.emails.push(newEmail)
+                    addUser: function () {
+                        newUser = document.getElementById('guildMember').value.trim()
+                        if (newUser != '') {
+                            this.users.push(newUser)
                         }
                         document.getElementById('guildMember').value = ''
                     },
-                    removeEmail: function (index) {
-                        this.emails.splice(index, 1);
-                    },
-                    createRepo: function (token, guildName) {
-                        var repoName = document.getElementById("repoName").value;
-                        var repoDesc = document.getElementById("repoDesc").value;
-
-                        var url = `https://api.github.com/orgs/${guildName}/repos`;
-                        var request = new XMLHttpRequest();
-
-                        request.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 201) {
-                                $("#successModal").modal();
-                            }
-                            else if (this.readyState == 4 && this.status != 201) {
-                                $("#failModal").modal();
-                            }
-                        }
-                        var private = false;
-                        if (document.getElementById("private").checked) {
-                            private = true;
-                        }
-                        console.log(private);
-
-                        var body = {
-                            'name': repoName,
-                            'description': repoDesc,
-                            'private': private
-                        }
-
-                        request.open("POST", url, true);
-                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
-                        request.send(JSON.stringify(body));
+                    removeUser: function (index) {
+                        this.users.splice(index, 1);
                     },
                     addMember: function (token, guildName, email) {
                         var url = `https://api.github.com/orgs/${guildName}/invitations`;
@@ -191,21 +142,10 @@
                         var body = {
                             'email': email
                         }
-                        
+
                         request.open("POST", url, true);
                         request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
                         request.send(JSON.stringify(body));
-                    },
-                    createGuild: function () {
-                        var token = document.getElementById("token").placeholder;
-                        var guildName = document.getElementById("guildName").value;
-
-                        this.createRepo(token, guildName);
-                        if (this.emails.length > 0){
-                            for (email of this.emails){
-                                this.addMember(token, guildName, email);
-                            }
-                        }
                     }
                 }
             }
