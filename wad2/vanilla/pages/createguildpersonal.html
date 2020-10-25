@@ -153,7 +153,7 @@
                     <div v-if='users.length > 0' class="col-sm-10 ml-auto m-3 custom-control custom-checkbox">
                         <ul>
                             <li v-for='(user, index) in users'>{{ user }}
-                                <span @click='removeUser(index)' class='float-right pr-5 text-danger'>remove</span>
+                                <span @click='removeUser(index)' class='float-right pr-5 text-danger' style="cursor:pointer;">remove</span>
                             </li>
 
                         </ul>
