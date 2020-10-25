@@ -24,6 +24,10 @@
         .container {
             border: 5px solid #a8c582;
         }
+
+        .col-form-label {
+            color: #A41E29;
+        }
     </style>
 </head>
 
@@ -37,7 +41,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
@@ -48,34 +52,36 @@
                 </li>
             </ul>
             <ul class='navbar-nav ml-auto'>
-                <li class="nav-item">
-                    <a class="btn btn-secondary" href="./createguild.html">Create Guild</a>
+                <li class="nav-item m-1 active">
+                    <a class="btn btn-secondary" href="./createguildpersonal.html">Create Guild (Personal)</a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="btn btn-secondary" href="./createguildorg.html">Create Guild (Org)</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container-fluid" id="home">
+    <div class="container-fluid" id="createGuildPersonal">
         <div class='container mt-3'>
-            <div class="row ">
+            <div class="row">
                 <div class="col">
                     <h3 class='text-center p-3'>
-                        Create Guild
+                        Create Guild (Personal)
                     </h3>
                     <div class="form-group row">
                         <label for="guildName" class="col-sm-2 col-form-label">Guild Name:</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="guildName"
-                                placeholder="Input a guild name (org name)">
+                                placeholder="Input a guild name">
                         </div>
                     </div>
 
-
-                    <div class="form-group row">
+                    <div class="form-group row d-none">
                         <label for="token" class="col-sm-2 col-form-label">Token key:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="token" placeholder=""
-                                value="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62">
+                            <input type="text" class="form-control" id="token" placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62"
+                                value="">
                         </div>
                     </div>
 
@@ -95,16 +101,46 @@
                     </div>
 
                     <div class="form-group row">
-                        <label for="repoDesc" class="col-sm-2 col-form-label">Invite your guild members:</label>
+                        <label for="guildMember" class="col-sm-2 col-form-label">Invite guild members:</label>
                         <div class="col-sm-10 input-group">
-                            <input type="text" class="form-control" id="guildMember" name="guildMember" value=""
-                                placeholder="Guild member's email // this is supposed to append emails below that are preselected">
+                            <input type="email" class="form-control" id="guildMember" name="guildMember" value=""
+                                placeholder="Guild member's email">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">Add</button>
+                                <button class="btn btn-outline-secondary" type="button" @click='addEmail()'>Add</button>
                             </div>
                         </div>
-
                     </div>
+
+                    <div v-if='emails.length > 0' class="col-sm-10 ml-auto m-3 custom-control custom-checkbox">
+                        <ul>
+                            <li v-for='(email, index) in emails'>{{ email }}
+                                <span @click='removeEmail(index)' class='float-right pr-5 text-danger'>remove</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="repoType" class="col-sm-2 col-form-label">Private or Public Repo?</label>
+                        <div class="col-sm-10 input-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="privateOr" id="private"
+                                    value="true" checked>
+                                <label class="form-check-label" for="private">Private</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="privateOr" id="public"
+                                    value="false">
+                                <label class="form-check-label" for="public">Public</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class='text-right mb-3'>
+                        <button class="btn btn-primary" id='btnPrivateRepo'>Create Guild</button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -118,11 +154,27 @@
             integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
             crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+
         <script>
 
             var app = new Vue(
                 {
-                    el: "#home"
+                    el: "#createGuildPersonal",
+                    data: {
+                        emails: [],
+                    },
+                    methods: {
+                        addEmail: function () {
+                            newEmail = document.getElementById('guildMember').value.trim()
+                            if (newEmail != '') {
+                                this.emails.push(newEmail)
+                            }
+                            document.getElementById('guildMember').innerText = ''
+                        },
+                        removeEmail: function (index) {
+                            this.emails.splice(index, 1);
+                        }
+                    }
                 }
             );
 
