@@ -33,8 +33,7 @@
 
 <body>
 
-    <div class="modal fade" id='successModal' aria-labelledby="successModal" aria-hidden="true" tabindex="-1"
-        role="dialog">
+    <div class="modal fade" id='successModal' aria-labelledby="successModal" aria-hidden="true" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -92,90 +91,23 @@
                 </li>
             </ul>
             <ul class='navbar-nav ml-auto'>
-                <li class="nav-item m-1 active">
+                <li class="nav-item m-1">
                     <a class="btn btn-secondary" href="./createguildpersonal.html">Create Guild (Personal)</a>
                 </li>
-                <li class="nav-item m-1">
+                <li class="nav-item m-1 active">
                     <a class="btn btn-secondary" href="./createguildorg.html">Create Guild (Org)</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container-fluid" id="createGuildPersonal">
+    <div class="container-fluid" id="createGuildOrg">
         <div class='container mt-3'>
             <div class="row">
                 <div class="col">
-                    <h3 class='text-center p-3'>
-                        Create Guild (Personal)
-                    </h3>
-                    <div class="form-group row d-none">
-                        <label for="username" class="col-sm-2 col-form-label">Username:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="username" value='nicwongg' placeholder="">
-                        </div>
-                    </div>
 
-                    <div class="form-group row d-none">
-                        <label for="token" class="col-sm-2 col-form-label">Token key:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="token"
-                                placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62" value="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="repoName" class="col-sm-2 col-form-label">Repository Name:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="repoName" placeholder="Input repo name">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="repoDesc" class="col-sm-2 col-form-label">Repo Description:</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" id="repoDesc"
-                                placeholder="Input repo description"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="guildMember" class="col-sm-2 col-form-label">Invite guild members:</label>
-                        <div class="col-sm-10 input-group">
-                            <input type="text" class="form-control" id="guildMember" name="guildMember" value=""
-                                placeholder="Guild member's GitHub username">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" @click='addUser()'>Add</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-if='users.length > 0' class="col-sm-10 ml-auto m-3 custom-control custom-checkbox">
-                        <ul>
-                            <li v-for='(user, index) in users'>{{ user }}
-                                <span @click='removeUser(index)' class='float-right pr-5 text-danger'>remove</span>
-                            </li>
-
-                        </ul>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="repoType" class="col-sm-2 col-form-label">Private or Public Repo?</label>
-                        <div class="col-sm-10 input-group">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="privateOr" id="private" value="true"
-                                    checked>
-                                <label class="form-check-label" for="private">Private</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="privateOr" id="public" value="false">
-                                <label class="form-check-label" for="public">Public</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class='text-right mb-3'>
-                        <button class="btn btn-primary" @click='createGuild()'>Create Guild</button>
+                    <div class='text-center m-3'>
+                        <button class="btn btn-primary" @click='createGuild()'>Invite guild members</button>
                     </div>
 
                 </div>
@@ -197,23 +129,83 @@
 
         var app = new Vue(
             {
-                el: "#createGuildPersonal",
+                el: "#createGuildOrg",
                 data: {
-                    users: [],
+                    emails: [],
                 },
                 methods: {
-                    addUser: function () {
-                        newUser = document.getElementById('guildMember').value.trim()
-                        if (newUser != '') {
-                            this.users.push(newUser)
+                    addEmail: function () {
+                        newEmail = document.getElementById('guildMember').value.trim()
+                        if (newEmail != '') {
+                            this.emails.push(newEmail)
                         }
                         document.getElementById('guildMember').value = ''
                     },
-                    removeUser: function (index) {
-                        this.users.splice(index, 1);
+                    removeEmail: function (index) {
+                        this.emails.splice(index, 1);
+                    },
+                    createRepo: function (token, guildName) {
+                        var repoName = document.getElementById("repoName").value;
+                        var repoDesc = document.getElementById("repoDesc").value;
+
+                        var url = `https://api.github.com/orgs/${guildName}/repos`;
+                        var request = new XMLHttpRequest();
+
+                        request.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 201) {
+                                $("#successModal").modal();
+                            }
+                            else if (this.readyState == 4 && this.status != 201) {
+                                $("#failModal").modal();
+                            }
+                        }
+                        var private = false;
+                        if (document.getElementById("private").checked) {
+                            private = true;
+                        }
+                        console.log(private);
+
+                        var body = {
+                            'name': repoName,
+                            'description': repoDesc,
+                            'private': private
+                        }
+
+                        request.open("POST", url, true);
+                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
+                        request.send(JSON.stringify(body));
+                    },
+                    addMember: function (token, guildName, email) {
+                        var url = `https://api.github.com/orgs/${guildName}/invitations`;
+                        var request = new XMLHttpRequest();
+
+                        request.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 201) {
+                                $("#successModal").modal();
+                            }
+                            else if (this.readyState == 4 && this.status != 201) {
+                                $("#failModal").modal();
+                            }
+                        }
+
+                        var body = {
+                            'email': email
+                        }
+                        
+                        request.open("POST", url, true);
+                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
+                        request.send(JSON.stringify(body));
                     },
                     createGuild: function () {
-                        
+                        var token = document.getElementById("token").placeholder;
+                        var guildName = document.getElementById("guildName").value;
+
+                        this.createRepo(token, guildName);
+                        if (this.emails.length > 0){
+                            for (email of this.emails){
+                                this.addMember(token, guildName, email);
+                            }
+                        }
                     }
                 }
             }
