@@ -177,7 +177,7 @@
 
 
                     <div class='text-right mb-3'>
-                        <button class="btn btn-primary" id='btnPrivateRepo'>Create Guild</button>
+                        <button class="btn btn-primary" id='btnPrivateRepo' @click="createGuild()"> Create Guild</button>
                     </div>
 
                 </div>
@@ -213,6 +213,70 @@
                     },
                     removeUser: function (index) {
                         this.users.splice(index, 1);
+                    },
+                    createRepo: function (token, repoName) {
+                        var repoDesc = document.getElementById("repoDesc").value;
+
+                        var url = `https://api.github.com/user/repos`;
+                        var request = new XMLHttpRequest();
+
+                        request.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 201) {
+                                $("#successModal").modal();
+                            }
+                            else if (this.readyState == 4 && this.status != 201) {
+                                $("#failModal").modal();
+                            }
+                        }
+                        var private = false;
+                        if (document.getElementById("private").checked) {
+                            private = true;
+                        }
+                        console.log(private);
+
+                        var body = {
+                            'name': repoName,
+                            'description': repoDesc,
+                            'private': private
+                        }
+
+                        request.open("POST", url, true);
+                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
+                        request.send(JSON.stringify(body));
+                    },
+                    addMember: function (token, owner, repoName, username) {
+                        var url = `https://api.github.com//repos/${owner}/${repoName}/collaborators/${username}`;
+                        
+                        var request = new XMLHttpRequest();
+
+                        request.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 201) {
+                                $("#successModal").modal();
+                            }
+                            else if (this.readyState == 4 && this.status != 201) {
+                                $("#failModal").modal();
+                            }
+                        }
+
+                        var body = {
+                            'permission': "push"
+                        }
+                        
+                        request.open("PUT", url, true);
+                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
+                        request.send(JSON.stringify(body));
+                    },
+                    createGuild: function () {
+                        var token = document.getElementById("token").placeholder;
+                        var owner = document.getElementById("username").value;
+                        var repoName = document.getElementById("repoName").value;
+
+                        this.createRepo(token, repoName);
+                        if (this.users.length > 0){
+                            for (user of this.users){
+                                this.addMember(token, owner, repoName, user);
+                            }
+                        }
                     }
                 }
             }
