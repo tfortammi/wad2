@@ -72,16 +72,15 @@
                     <div class="form-group row">
                         <label for="guildName" class="col-sm-2 col-form-label">Guild Name:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="guildName"
-                                placeholder="Input a guild name">
+                            <input type="text" class="form-control" id="guildName" placeholder="Input a guild name">
                         </div>
                     </div>
 
                     <div class="form-group row d-none">
                         <label for="token" class="col-sm-2 col-form-label">Token key:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="token" placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62"
-                                value="">
+                            <input type="text" class="form-control" id="token"
+                                placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62" value="">
                         </div>
                     </div>
 
@@ -123,13 +122,12 @@
                         <label for="repoType" class="col-sm-2 col-form-label">Private or Public Repo?</label>
                         <div class="col-sm-10 input-group">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="privateOr" id="private"
-                                    value="true" checked>
+                                <input class="form-check-input" type="radio" name="privateOr" id="private" value="true"
+                                    checked>
                                 <label class="form-check-label" for="private">Private</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="privateOr" id="public"
-                                    value="false">
+                                <input class="form-check-input" type="radio" name="privateOr" id="public" value="false">
                                 <label class="form-check-label" for="public">Public</label>
                             </div>
                         </div>
@@ -144,42 +142,43 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-            crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
 
-        <script>
+    <script>
 
-            var app = new Vue(
-                {
-                    el: "#createGuildPersonal",
-                    data: {
-                        emails: [],
-                    },
-                    methods: {
-                        addEmail: function () {
-                            newEmail = document.getElementById('guildMember').value.trim()
-                            if (newEmail != '') {
-                                this.emails.push(newEmail)
-                            }
-                            document.getElementById('guildMember').innerText = ''
-                        },
-                        removeEmail: function (index) {
-                            this.emails.splice(index, 1);
+        var app = new Vue(
+            {
+                el: "#createGuildPersonal",
+                data: {
+                    emails: [],
+                },
+                methods: {
+                    addEmail: function () {
+                        newEmail = document.getElementById('guildMember').value.trim()
+                        if (newEmail != '') {
+                            this.emails.push(newEmail)
                         }
+                        document.getElementById('guildMember').innerText = ''
+                    },
+                    removeEmail: function (index) {
+                        this.emails.splice(index, 1);
                     }
                 }
-            );
+            }
+        );
 
 
-        </script>
+    </script>
 </body>
 
 </html>

@@ -33,6 +33,45 @@
 
 <body>
 
+    <div class="modal fade" id='successModal' aria-labelledby="successModal" aria-hidden="true" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Success!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Your guild has been created successfully!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">View my guild!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id='failModal' aria-labelledby="failModal" aria-hidden="true" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Oh no...</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>There has been some issues with creating your guild, please contact our administrator!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Contact admin</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">WAD</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
