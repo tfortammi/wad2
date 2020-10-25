@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        body {
+            background-image: url("../assets/bg.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100%;
+            overflow-x: hidden;
+            background-color: #02a385;
+        }
+
+        .container {
+            border: 5px solid #a8c582;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">WAD</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./tasks.html">Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./team.html">Team</a>
+                </li>
+            </ul>
+            <ul class='navbar-nav ml-auto'>
+                <li class="nav-item">
+                    <a class="btn btn-secondary" href="./createguild.html">Create Guild</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid" id="home">
+        <div class='container mt-3'>
+            <div class="row ">
+                <div class="col">
+                    <h3 class='text-center p-3'>
+                        Create Guild
+                    </h3>
+                    <div class="form-group row">
+                        <label for="guildName" class="col-sm-2 col-form-label">Guild Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="guildName"
+                                placeholder="Input a guild name (org name)">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label for="token" class="col-sm-2 col-form-label">Token key:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="token" placeholder=""
+                                value="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="repoName" class="col-sm-2 col-form-label">Repository Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="repoName" placeholder="Input repo name">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="repoDesc" class="col-sm-2 col-form-label">Repo Description:</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="repoDesc"
+                                placeholder="Input repo description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="repoDesc" class="col-sm-2 col-form-label">Invite your guild members:</label>
+                        <div class="col-sm-10 input-group">
+                            <input type="text" class="form-control" id="guildMember" name="guildMember" value=""
+                                placeholder="Guild member's email // this is supposed to append emails below that are preselected">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">Add</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+        <script>
+
+            var app = new Vue(
+                {
+                    el: "#home"
+                }
+            );
+
+
+        </script>
+</body>
+
+</html>
