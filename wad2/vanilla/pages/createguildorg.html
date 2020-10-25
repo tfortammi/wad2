@@ -221,20 +221,10 @@
 
                         request.onreadystatechange = function () {
                             if (this.readyState == 4 && this.status == 201) {
-                                console.log("success");
-                                console.log(this.status);
-                                console.log(this.readyState);
-                                // var data = JSON.parse(this.responseText);
-                                // console.log(data);
-                                // document.getElementById("addMemberModalLongTitle").innerText = `Success!`;
-                                // document.getElementById("addMemberModalContent").innerText = `Successfully created repo`;
+                                $("#successModal").modal();
                             }
-                            else if (this.readyState == 4 && this.status == 404) {
-                                console.log("oops");
-                                console.log(this.status);
-                                console.log(this.readyState);
-                                // document.getElementById("addMemberModalLongTitle").innerHTML = `<span class="text-danger">Error!</span>`;
-                                // document.getElementById("addMemberModalContent").innerText = `Please check the name of repo again`;
+                            else if (this.readyState == 4 && this.status != 201) {
+                                $("#failModal").modal();
                             }
                         }
                         var private = false;
@@ -259,20 +249,10 @@
 
                         request.onreadystatechange = function () {
                             if (this.readyState == 4 && this.status == 201) {
-                                console.log("success");
-                                console.log(this.status);
-                                console.log(this.readyState);
-                                // var data = JSON.parse(this.responseText);
-                                // console.log(data);
-                                // document.getElementById("addMemberModalLongTitle").innerText = `Success!`;
-                                // document.getElementById("addMemberModalContent").innerText = `Successfully created repo`;
+                                $("#successModal").modal();
                             }
-                            else if (this.readyState == 4 && this.status == 404) {
-                                console.log("oops");
-                                console.log(this.status);
-                                console.log(this.readyState);
-                                // document.getElementById("addMemberModalLongTitle").innerHTML = `<span class="text-danger">Error!</span>`;
-                                // document.getElementById("addMemberModalContent").innerText = `Please check the name of repo again`;
+                            else if (this.readyState == 4 && this.status != 201) {
+                                $("#failModal").modal();
                             }
                         }
 
@@ -291,7 +271,6 @@
                         this.createRepo(token, guildName);
                         if (this.emails.length > 0){
                             for (email of this.emails){
-                                // console.log(email);
                                 this.addMember(token, guildName, email);
                             }
                         }
