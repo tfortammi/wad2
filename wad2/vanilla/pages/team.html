@@ -236,6 +236,7 @@
                     displayTable: function () {
                         var token = document.getElementById("token").placeholder;
                         this.getMembers(token);
+                        this.getTeamStats(token);
                     },
                     getMembers: function (token) {
                         var url = `https://api.github.com/orgs/${this.teamname}/members?role=all`;
@@ -249,8 +250,8 @@
                                 for (member of json) {
                                     let new_obj = {};
                                     new_obj["username"] = member.login;
-                                    new_obj["role"] = member.type;
                                     app.getCommits(token, member.login);
+                                    new_obj["role"] = member.type;
                                     members.push(new_obj);
                                 }
                             }
@@ -276,6 +277,24 @@
                                         console.log("here");
                                     }
                                 }
+                            }
+                        }
+
+                        request.open("GET", url, true);
+                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
+                        request.send();
+                    },
+                    getTeamStats: function (token) {
+                        var orgname = this.teamname;
+                        var repo = this.reponame;
+                        var url = `https://api.github.com/repos/${orgname}/${repo}/stats/participation`;
+                        var request = new XMLHttpRequest();
+
+                        request.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                var json = JSON.parse(this.responseText);
+                                console.log(json);
+                                myChart.data.datasets[0].data = [json.all[51],json.all[50],json.all[49],json.all[48],json.all[47]];
                             }
                         }
 
@@ -309,7 +328,7 @@
                 labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                 datasets: [{
                     label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
+                    data: [3, 19, 3, 5, 2, 3],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
