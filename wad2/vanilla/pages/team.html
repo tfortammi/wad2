@@ -90,6 +90,18 @@
         table.table-bordered th {
             border: 5px solid #a8c582 !important;
         }
+
+        .page-link {
+            border: 1px solid #9CB4BE;
+            background-color: #C8F8F4;
+            color: #A41E29;
+        }
+
+        .page-link:hover {
+            color: black;
+            background-color: #a8c582;
+            border-color: #dee2e6;
+        }
     </style>
 </head>
 
@@ -148,7 +160,8 @@
 
         <div class='row' v-if='members.length > 0'>
             <div class='col p-0'>
-                <bootstrap-table :columns="columns" :data="members" :options="tableOptions" data-pagination="true"></bootstrap-table>
+                <bootstrap-table :columns="columns" :data="members" :options="tableOptions" data-pagination="true">
+                </bootstrap-table>
             </div>
         </div>
         <br v-if='members.length > 0'>
@@ -178,8 +191,8 @@
             {
                 el: "#team",
                 components: {
-                        'BootstrapTable': BootstrapTable
-                    },
+                    'BootstrapTable': BootstrapTable
+                },
                 data: {
                     teamname: 'JH-and-WX',
                     // members: [
@@ -207,17 +220,17 @@
                         }
                     ],
                     members: [
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23, level: 34},
-                        {username: 'Weixiang', role: 'User', level: 34},
-                        {username: 'Weixiang', role: 'User', commits: 23},
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
+                        { username: 'Weixiang', role: 'User', level: 34 },
+                        { username: 'Weixiang', role: 'User', commits: 23 },
                     ],
                     tableOptions: {
                         search: true,
