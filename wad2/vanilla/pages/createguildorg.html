@@ -266,11 +266,6 @@
                         var guildName = document.getElementById("guildName").value;
 
                         this.createRepo(token, guildName);
-                        if (this.emails.length > 0){
-                            for (email of this.emails){
-                                this.addMember(token, guildName, email);
-                            }
-                        }
                     }
                 }
             }
