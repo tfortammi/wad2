@@ -120,6 +120,13 @@
 
     <div class="container" id="team">
         <br>
+        <div class="form-group row d-none">
+            <label for="token" class="col-sm-2 col-form-label">Token key:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="token"
+                    placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62" value="">
+            </div>
+        </div>
 
         <div class="row justify-content-md-center">
             <div class="col-2 text-center py-3" id="lvl-window">
@@ -178,20 +185,76 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
     <script>
-
         var app = new Vue(
             {
                 el: "#team",
                 data: {
-                    teamname: 'WAD2',
+                    teamname: 'JH-and-WX',
                     members: [
-                        ['username1', 'role1', 'email1', 'level1'],
-                        ['username2', 'role2', 'email2', 'level2'],
-                        ['username3', 'role3', 'email3', 'level3']
-                    ]
+                        // ['username1', 'role1', 'email1', 'level1'],
+                        // ['username2', 'role2', 'email2', 'level2'],
+                        // ['username3', 'role3', 'email3', 'level3']
+                    ],
+                    reponame: "private_test"
+                },
+                methods: {
+                    displayTable: function () {
+                        var token = document.getElementById("token").placeholder;
+                        this.getMembers(token);
+
+                        // for (member of this.members){
+                        //     member.push(this.getCommits(token, member[0]));
+                        // }
+                        console.log(this.members);
+                        },
+                    getMembers: function (token) {
+                        var url = `https://api.github.com/orgs/${this.teamname}/members?role=all`;
+                        var request = new XMLHttpRequest();
+                        var members = this.members;
+
+                        request.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                var json = JSON.parse(this.responseText);
+                                // console.log(json);
+                                for (member of json) {
+                                    members.push([member.login, member.type]);
+                                }
+                            }
+                        }
+
+                        request.open("GET", url, true);
+                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
+                        request.send();
+                    },
+                    getCommits: function (token, author) {
+                        var orgname = this.teamname;
+                        var repo = this.reponame;
+                        var members = this.members;
+                        var url = `https://api.github.com/repos/${orgname}/${repo}/commits?author=${author}`;
+                        var request = new XMLHttpRequest();
+
+                        request.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                var data = JSON.parse(this.responseText);
+                                for (member of members){
+                                    if (member[0] == author){
+                                        member.push(data.length);
+                                        console.log("here");
+                                    }
+                                }
+                            }
+                        }
+
+
+                        request.open("GET", url, true);
+                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
+                        request.send();
+                    }
                 }
             }
         );
+
+        app.displayTable();
 
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
