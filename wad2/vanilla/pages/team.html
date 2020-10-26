@@ -127,8 +127,7 @@
         <div class="row justify-content-md-center">
             <div class="col-2 text-center py-3" id="lvl-window">
                 <h1 class="font-weight-bold"> {{ teamname }}</h1>
-                <a v-if='orgrepo' class="btn btn-primary" href="./inviteorgmembers.html">Invite Members</a>
-                <a v-else class="btn btn-primary" href="./invitepersonalmembers.html">Invite Members</a>
+                <a class="btn btn-primary" href="./inviteorgmembers.html">Invite Members</a>
             </div>
             <div class="col-10 p-0">
                 <div class="col" id="ch-window">
@@ -188,7 +187,6 @@
                 el: "#team",
                 data: {
                     teamname: 'WAD2',
-                    orgrepo: true,
                     members: [
                         ['username1', 'role1', 'email1', 'level1'],
                         ['username2', 'role2', 'email2', 'level2'],
