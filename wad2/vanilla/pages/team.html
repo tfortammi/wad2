@@ -199,34 +199,20 @@
                     columns: [
                         {
                             title: 'Username',
-                            // field: 'username'
                         },
                         {
                             title: 'Role',
-                            // field: 'role'
                         },
                         {
                             title: 'Commits',
-                            // field: 'commits'
                         }
-                        // ,
-                        // {
-                        //     title: 'Level',
-                        //     field: 'level'
-                        // }
+                        ,
+                        {
+                            title: 'Level',
+                            field: 'level'
+                        }
                     ],
                     members: [
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
-                        // { username: 'Weixiang', role: 'User', level: 34 },
-                        // { username: 'Weixiang', role: 'User', commits: 23 },
                     ],
                     tableOptions: {
                         search: true,
@@ -280,6 +266,7 @@
                                         console.log("here");
                                         member.push(data.length);
                                     }
+                                    app.sortedMembersAsc()
                                 }
                             }
                         }
@@ -298,17 +285,16 @@
                             if (this.readyState == 4 && this.status == 200) {
                                 var json = JSON.parse(this.responseText);
                                 console.log(json);
-                                myChart.data.datasets[0].data = [json.all[51],json.all[50],json.all[49],json.all[48],json.all[47]];
+                                myChart.data.datasets[0].data = [json.all[51], json.all[50], json.all[49], json.all[48], json.all[47]];
                             }
                         }
 
                         request.open("GET", url, true);
                         request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
                         request.send();
-                    }
-                },
-                computed: {
+                    },
                     sortedMembersAsc: function () {
+                        console.log("hi")
                         function compare(a, b) {
                             if (a[2] > b[2])
                                 return -1;
@@ -316,7 +302,6 @@
                                 return 1;
                             return 0;
                         }
-
                         return this.members.sort(compare);
                     }
                 }
