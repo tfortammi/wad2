@@ -199,20 +199,21 @@
                     columns: [
                         {
                             title: 'Username',
-                            field: 'username'
+                            // field: 'username'
                         },
                         {
                             title: 'Role',
-                            field: 'role'
+                            // field: 'role'
                         },
                         {
                             title: 'Commits',
-                            field: 'commits'
-                        },
-                        {
-                            title: 'Level',
-                            field: 'level'
+                            // field: 'commits'
                         }
+                        // ,
+                        // {
+                        //     title: 'Level',
+                        //     field: 'level'
+                        // }
                     ],
                     members: [
                         // { username: 'Weixiang', role: 'User', commits: 23, level: 34 },
@@ -248,11 +249,13 @@
                                 var json = JSON.parse(this.responseText);
                                 // console.log(json);
                                 for (member of json) {
-                                    let new_obj = {};
-                                    new_obj["username"] = member.login;
+                                    // let new_obj = {};
+                                    // new_obj["username"] = member.login;
+                                    // new_obj["role"] = member.type;
+                                    // members.push(new_obj);
+                                    members.push([member.login, member.type]);
                                     app.getCommits(token, member.login);
-                                    new_obj["role"] = member.type;
-                                    members.push(new_obj);
+
                                 }
                             }
                         }
@@ -272,9 +275,10 @@
                             if (this.readyState == 4 && this.status == 200) {
                                 var data = JSON.parse(this.responseText);
                                 for (member of members) {
-                                    if (member["username"] == author) {
-                                        member["commits"] = data.length
+                                    if (member[0] == author) {
+                                        // member["commits"] = data.length
                                         console.log("here");
+                                        member.push(data.length);
                                     }
                                 }
                             }
@@ -306,9 +310,9 @@
                 computed: {
                     sortedMembersAsc: function () {
                         function compare(a, b) {
-                            if (a["commits"] > b["commits"])
+                            if (a[2] > b[2])
                                 return -1;
-                            if (a["commits"] < b["commits"])
+                            if (a[2] < b[2])
                                 return 1;
                             return 0;
                         }
