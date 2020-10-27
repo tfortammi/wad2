@@ -22,3 +22,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# private key file 
+wad-project-293012-d84d8e3a5ca6.json
