@@ -112,8 +112,8 @@ def add_task():
     try:
         request.json["id"] = str(uuid.uuid4())
         request.json["status"] = False
-        request.json["start"] = datetime.strptime(request.json["start"], "%Y-%m-%dT%H:%M")
-        request.json["end"] = datetime.strptime(request.json["end"], "%Y-%m-%dT%H:%M")
+        request.json["start"] = datetime.strptime(request.json["start"], "%m/%d/%Y")
+        request.json["end"] = datetime.strptime(request.json["end"], "%m/%d/%Y")
 
         task_ref = db.collection(u"Task")
         docs = task_ref.stream()
