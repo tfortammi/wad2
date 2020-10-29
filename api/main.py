@@ -39,9 +39,9 @@ CORS(app)
 # =========================== # 
 
 EXP_CONST = {
-    "high" : 30,
-    "medium" : 20,
-    "low" : 30,
+    "high" : 15,
+    "medium" : 10,
+    "low" : 5,
 } 
 
 # =========================== # 
@@ -238,7 +238,7 @@ def modify_task():
         
         Expected JSON object (NOTE: If the value is empty, function will take as there are no changes required/Can pass in only key-value pairs that require modification, meaning you don't have to pass in the exact JSON object below BUT id is a mandatory field and it CANNOT be modified):
         {
-            "id" : <string: task's id>
+            "id" : <string: task's id> --> *MANDATORY*
             "dependency" : <string: task's dependency>,
             "assignedTo" : <array: array of user emails>,
             "start" : <datetime: task's start datetime>,
@@ -246,12 +246,13 @@ def modify_task():
             "name" : <string: task's name>,
             "priority" : <string: task's priority>,
             "category" : <string: task's category>, 
-            "guild" : <string: guild that task belong to>
+            "guild" : <string: guild that task belong to>,
+            "status" : <boolean: completion status of the task>
         }
 
     """
     try:
-        processed_json = { k: v for k, v in request.json.items() if v and v.strip() }
+        processed_json = { k: v for k, v in request.json.items() if v }
         if bool(processed_json):
             task_ref = db.collection(u"Task")
             doc_id = list(task_ref.where("id", "==", request.json["id"]).stream())[0].id
@@ -638,14 +639,14 @@ def modify_user():
             "role" : <string: user's role>,
             "guild" : <string: user's guild>,
             "git_token" : <string: user's git access token>,
-            "multiplier" : <string: user's multiplier>
+            "multiplier" : <int: user's multiplier>
         }
 
         Should you require to change the email, specify it as the value for the new_email key and include the old email as the value for the email key
     """
     try:
 
-        processed_json = { k: v for k, v in request.json.items() if v and v.strip() }
+        processed_json = { k: v for k, v in request.json.items() if v }
         if bool(processed_json):
             user_ref = db.collection(u"User")
             doc_id = list(user_ref.where("email", "==", request.json["email"]).stream())[0].id
@@ -666,7 +667,7 @@ def modify_user():
             "error": "Cannot modify user"
         }, 500
 
-# Update user exp + level (inc/dec)
+# Update user exp + level (inc/dec) - CHECKED
 @app.route('/update_user_stats/<string:action>', methods=['POST'])
 def update_user_stats(action):
     """
@@ -682,30 +683,65 @@ def update_user_stats(action):
         Example use of URL: POST JSON object { "name" : "magicians" } to http://0.0.0.0:5001/update_user_stats/del to decrease their exp by 10 (if after decreasing 10 exp, his overall exp is below 0 then decrease level by 1) 
     """
     try:
+        # Get the user object
         user_ref = db.collection(u"User")
         doc = list(user_ref.where("email", "==", request.json["email"]).stream())[0]
-        exp = 0
 
+        # Check if the user is trying to add or delete exp from the user object
         if action == "inc":
-            if doc.to_dict()["exp"] + request.json["exp"] > 100:
-                user_ref.document(doc.id).update({u'exp': doc.to_dict()["exp"] + request.json["exp"] - 100, u'level': doc.to_dict()["level"] + 1})
-                exp = doc.to_dict()["exp"] + request.json["exp"] - 100
+
+            # Multiply the current exp by the user's multiplier 
+            exp_to_add = request.json["exp"] * doc.to_dict()["multiplier"]
+
+            print(doc.to_dict()["exp"] + exp_to_add)
+            
+            # Check if the amount of exp is above the bare minimum to increase one level
+            if (doc.to_dict()["exp"] + exp_to_add) > 100:
+
+                # Check if there is more than one level increase 
+                level_inc = (doc.to_dict()["exp"] + exp_to_add) // 100
+
+                # Obtain the new exp 
+                new_exp = doc.to_dict()["exp"] + exp_to_add - (100 * level_inc)
+
+                # Update the new exp and level
+                user_ref.document(doc.id).update({u'exp': new_exp, u'level': doc.to_dict()["level"] + level_inc})
+
             else:
-                user_ref.document(doc.id).update({u'exp': doc.to_dict()["exp"] + request.json["exp"]})
-                exp = doc.to_dict()["exp"] + request.json["exp"]
+                # If there is no increase across levels, just add the exp to user's original exp 
+                user_ref.document(doc.id).update({u'exp': doc.to_dict()["exp"] + exp_to_add})
+
         else:
+            # Check if the user has to be de-leveled when the exp is minus off
             if doc.to_dict()["exp"] - request.json["exp"] < 0:
-                user_ref.document(doc.id).update({u'exp': 100 + doc.to_dict()["exp"] - request.json["exp"], u'level': doc.to_dict()["level"] - 1})
-                exp = 100 + doc.to_dict()["exp"] - request.json["exp"]
+                # Check if the user is level one (minimum level)
+                if doc.to_dict()["level"] == 1:
+                    # Ensure that the user does not go below level 1 and 0 exp 
+                    new_level = 1
+                    new_exp = 0
+                else:
+                    # If user is above level 1, then proceed to deduct one level and the necessary exp
+                    new_level = doc.to_dict()["level"] - 1
+                    new_exp = 100 + doc.to_dict()["exp"] - request.json["exp"]
+                
+                # Update the new values 
+                user_ref.document(doc.id).update({u'exp': new_exp, u'level': new_level})
+            
+            # If there is no decrease across levels, just deduct the exp from the user's original exp 
             else:
                 user_ref.document(doc.id).update({u'exp': doc.to_dict()["exp"] - request.json["exp"]})
-                exp = doc.to_dict()["exp"] - request.json["exp"]
+        
+        # Get updated copy of the document to return the new values 
+        updated_doc = user_ref.document(doc.id).get().to_dict()
 
-        return jsonify({"new_exp": exp}), 200
+        return jsonify({
+            "new_level" : updated_doc["level"], 
+            "new_exp" : updated_doc["exp"]
+        }), 200
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot update guild streak"}, 500
+        return {"error": "Cannot update user statistics."}, 500
 
 # Login function 
 @app.route('/login', methods=['POST'])
@@ -747,24 +783,35 @@ def login():
 # =========================== # 
 # Functions that require the accessing of various collections and mostly rely on other functions.
 
-# Calculate multiplier 
-@app.route("/calculate_multiplier", methods=["POST"])
-def calculate_multiplier():
+# Update multiplier for specified user 
+@app.route("/update_multiplier", methods=["POST"])
+def update_multiplier():
     """
-        Recalculate the user's multiplier based on his current level and guild streak.
+        Function used to update the user's multiplier. 
         
         Expected JSON object:
         {
-            "email" : <string: user's email>,
-            "password" : <int: user's password>,
+            "email" : <string: user's email>
         }
+
+        Multiplier function: [(streak/10) * level] 
+        - But if streak is found to be 0, then multiplier will automatically be 1
     """
     try: 
+        # Get the user object
         res_user = requests.get("http://0.0.0.0:5001/get_user?email=" + request.json["email"])
-        
-        res_guild = requests.get("http://0.0.0.0:5001/get_user?name=" + res_user.json()["guild"])
 
-        requests.post("http://0.0.0.0:5001/modify_user", json = {"email" : request.json["email"], "multiplier" : int(res_guild.json()["streak"] / res_user.json()["level"])})
+        # Get the guild object 
+        res_guild = requests.get("http://0.0.0.0:5001/get_guild?name=" + res_user.json()["guild"])
+
+        # Recalculate multiplier - Check if streak is 0 and return a 1 for new multiplier 
+        if res_guild.json()["streak"] == 0:
+            multiplier = 1
+        else:
+            multiplier = math.ceil(res_guild.json()["streak"] / 10 * res_user.json()["level"])
+        
+        # Update multiplier 
+        requests.post("http://0.0.0.0:5001/modify_user", json = {"email" : request.json["email"], "multiplier" : multiplier})
 
         return jsonify({
             "success": True
@@ -772,74 +819,70 @@ def calculate_multiplier():
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot calculate multiplier."}, 500
+        return {"error": "Cannot update multiplier."}, 500
 
-# Complete tasks 
-@app.route('/complete_task', methods=['POST'])
+# Complete tasks function 
+@app.route("/complete_task", methods=["POST"])
 def complete_task():
     """
-        Complete a task. 
-        
-        Code flow:
-            1. Check if the task completed after end date
-                a. Minus user's exp 
-                b. Remove guild's streak 
-                c. Update new multiplier
-            2. If task completed before end date 
-                a. Plus user's exp (accounts multiplier)
-                b. Add guild's streak 
-                c. Update new multiplier
-            3. Mark task as completed
-            4. Return exp of task
+        Function used to mark task as complete and update the associated users exp and guild streak accordingly. 
         
         Expected JSON object:
         {
             "id" : <string: task's name>,
+            "email" : <string: email address of the user who hit complete>
         }
     """
     try:
+        # Get the task object using /get_task function 
         response = requests.get("http://0.0.0.0:5001/get_task?id=" + request.json["id"])
+
+        # Initialize the necessary variables 
         end = response.json()["end"]
+        users = response.json()["assignedTo"]
+        guild = response.json()["guild"]
+
+        # Get the corresponding exp based on task priority
         exp = EXP_CONST[response.json()["priority"]]
 
-        if datetime.now() > datetime.strptime(response.json()["end"], "%a, %d %b %Y %H:%M:%S GMT"):
-            guild_list = []
-            for user in response.json()["assignedTo"]:
+        # Check if the current datetime is more than the end datetime == means that the task is overdue
+        if datetime.now() > datetime.strptime(end, "%a, %d %b %Y %H:%M:%S GMT"):
+
+            # Delete those exp from the user 
+            for user in users:
                 res_update = requests.post("http://0.0.0.0:5001/update_user_stats/del", json = {"email" : user, "exp" : exp})
-                if requests.get("http://0.0.0.0:5001/get_user?email=" + user).json()["guild"] not in guild_list:
-                    guild_list.append(requests.get("http://0.0.0.0:5001/get_user?email=" + user).json()["guild"])
+                # Check if the user being updated is the one who "completes" the project
+                if user == request.json["email"]:
+                    user_stats = res_update.json()
             
-            for guild in guild_list:
-                requests.post("http://0.0.0.0:5001/update_guild_streak/del", json = {"name" : guild})
-        else:
-            guild_list = []
-            for user in response.json()["assignedTo"]:
-                res_user = requests.get("http://0.0.0.0:5001/get_user?email=" + user)
-                exp = exp * res_user.json()["multiplier"]
-
-                res_update = requests.post("http://0.0.0.0:5001/update_user_stats/inc", json = {"email" : user, "exp" : exp})
-                if requests.get("http://0.0.0.0:5001/get_user?email=" + user).json()["guild"] not in guild_list:
-                    guild_list.append(requests.get("http://0.0.0.0:5001/get_user?email=" + user).json()["guild"])
-            
-            for guild in guild_list:
-                requests.post("http://0.0.0.0:5001/update_guild_streak/inc", json = {"name" : guild, "toAdd": exp // 10})
+            # Remove the guild's streak
+            requests.post("http://0.0.0.0:5001/update_guild_streak/del", json = {"name" : guild})
         
-        task_ref = db.collection(u"Task")
-        doc = list(task_ref.where("id", "==", request.json["id"]).stream())[0]
-        task_ref.document(doc.id).update({u'status': "completed"})
+        # When task is not overdue...
+        else:
 
-        return jsonify({"exp": res_update.json()["new_exp"]}), 200
+            # Increase exp for the user 
+            for user in users:
+                res_update = requests.post("http://0.0.0.0:5001/update_user_stats/inc", json = {"email" : user, "exp" : exp})
+                # Check if the user being updated is the one who "completes" the project
+                if user == request.json["email"]:
+                    user_stats = res_update.json()
+            
+            # Add onto the guild's streak 
+            requests.post("http://0.0.0.0:5001/update_guild_streak/inc", json = {"name" : guild, "toAdd": exp // 5})
+        
+        # Update the multiplier for every assigned user 
+        for user in users:
+            requests.post("http://0.0.0.0:5001/update_multiplier", json = {"email" : user})
+
+        # Mark task as complete 
+        requests.post("http://0.0.0.0:5001/modify_task", json={"id" : request.json["id"], "status" : True})
+        
+        return user_stats, 200
+
     except Exception as e:
         print(e)
-        return {"error": "Cannot mark task as complete"}, 500
-
-@app.route("/test")
-def test():
-    res = requests.get("http://0.0.0.0:5001/get_user?email=" + "kakashi@wad2.co")
-    print(res.json()["multiplier"])
-    return {
-        "success" : "yes"
-    }, 200
+        return {"error": "Cannot mark task as complete."}, 500
     
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5001, debug=True)
