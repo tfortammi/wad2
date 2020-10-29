@@ -68,31 +68,27 @@ def get_all_tasks():
     """
         Get all tasks specific to a guild within database.
         
-        Expected JSON object: 
-        {
-            "guild" : <string: guild that task belong to>,
-        }
+        Expected GET params:
+            - "guild" = <string: guild's name>
     """
     task_ref = db.collection(u"Task")
-    docs = list(task_ref.where("guild", "==", request.args.get('guild')).stream())
+    docs = list(task_ref.where("guild", "==", request.args.get("guild")).stream())
     
     task_list = []
     for doc in docs:
         task_list.append(doc.to_dict())
     
     try:
-        return {
-            "tasks": task_list
-        }, 200
+        return {"tasks": task_list}, 200
     except Exception as e:
         print(e)
-        return {"error": "Cannot retrieve tasks"}, 500
+        return {"error": "Cannot retrieve tasks."}, 500
 
 # Add a tasks into the database - CHECKED
 @app.route("/add_task", methods=["POST"])
 def add_task():
     """
-        Add a new task into database with a random id.
+        Add a new task into database with a random uuid as id.
 
         Note: Datetime expected to be in YYYY-MM-DDTHH:MM format (24 hour format). E.g. 2020-12-01T08:30 
         
@@ -122,7 +118,7 @@ def add_task():
         return jsonify({"success": True}), 200
     except Exception as e:
         print(e)
-        return {"error": "Cannot add task"}, 500
+        return {"error": "Cannot add task."}, 500
 
 # Remove task based on id from database - CHECKED 
 @app.route("/remove_task", methods=["POST"])
@@ -151,28 +147,26 @@ def remove_task():
         return jsonify({"success": True}), 200
     except Exception as e:
         print(e)
-        return {"error": "Cannot remove task"}, 500
+        return {"error": "Cannot remove task."}, 500
 
 # Get task information based on id from the database - CHECKED
-@app.route('/get_task')
+@app.route("/get_task")
 def get_task():
     """
         Get task information based on id.
         
-        Expected JSON object:
-        {
-            "id" : <string: task's id>,
-        }
+        Expected GET params:
+            - "guild" = <string: guild's name>
     """
     try:
         task_ref = db.collection(u"Task")
-        doc_dict = list(task_ref.where("id", "==", request.args.get('id')).stream())[0].to_dict()
+        doc_dict = list(task_ref.where("id", "==", request.args.get("id")).stream())[0].to_dict()
 
         return jsonify(doc_dict), 200
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot get specified task"}, 500
+        return {"error": "Cannot get specified task."}, 500
 
 # Convert tasks id into their respective name - CHECKED
 @app.route("/convert_ids_to_names", methods=["POST"])
@@ -193,13 +187,11 @@ def convert_ids_to_names():
             doc_dict = list(task_ref.where("id", "==", id).stream())[0].to_dict()
             name_list.append(doc_dict["name"])
 
-        return {
-            "names": name_list
-        }, 200
+        return {"names": name_list}, 200
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot convert tasks ids to names"}, 500
+        return {"error": "Cannot convert tasks ids to names."}, 500
 
 # Get completed/incomplete tasks - CHECKED
 @app.route("/get_tasks/<string:status>", methods=["POST"])
@@ -222,9 +214,7 @@ def get_tasks(status):
         task_ref = db.collection(u"Task")
         doc_dict = [doc.to_dict() for doc in list(task_ref.where("guild", "==", request.json["guild"]).where("status", "==", status).stream())]
 
-        return {
-            "tasks" : doc_dict
-        }, 200
+        return {"tasks" : doc_dict}, 200
 
     except Exception as e:
         print(e)
@@ -260,15 +250,11 @@ def modify_task():
             processed_json.pop("id", None)
             task_ref.document(doc_id).update(processed_json)
 
-        return jsonify({
-            "success": True
-        }), 200
+        return jsonify({"success": True}), 200
 
     except Exception as e:
         print(e)
-        return {
-            "error": "Cannot modify task."
-        }, 500
+        return {"error": "Cannot modify task."}, 500
 
 # =========================== # 
 #           GUILD             #
@@ -297,15 +283,13 @@ def get_all_guilds():
         guild_list.append(doc.to_dict())
     
     try:
-        return {
-            'guilds': guild_list
-        }, 200
+        return {"guilds": guild_list}, 200
     except Exception as e:
         print(e)
-        return {"error": "Cannot retrieve tasks"}, 500
+        return {"error": "Cannot retrieve guilds."}, 500
 
 # Add a new guild into the database - CHECKED
-@app.route('/add_guild', methods=['POST'])
+@app.route("/add_guild", methods=["POST"])
 def add_guild():
     """
         Add a new guild based on json inputs.
@@ -325,15 +309,11 @@ def add_guild():
 
     try:
         guild_ref.document().set(request.json)
-        return jsonify({
-            "success": request.json["name"]
-        }), 200
+        return jsonify({"success": request.json["name"]}), 200
 
     except Exception as e:
         print(e)
-        return {
-            "error": "Cannot add task"
-        }, 500
+        return {"error": "Cannot add guild."}, 500
 
 # Remove a guild based on name from database - CHECKED
 @app.route("/remove_guild", methods=["POST"])
@@ -361,10 +341,10 @@ def remove_guild():
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot remove guild"}, 500    
+        return {"error": "Cannot remove guild."}, 500    
 
 # Get guild information based on guild name from the database - CHECKED
-@app.route('/get_guild')
+@app.route("/get_guild")
 def get_guild():
     """
         Get guild information based on guild name.
@@ -374,16 +354,16 @@ def get_guild():
     """
     try:
         guild_ref = db.collection(u"Guild")
-        doc_dict = list(guild_ref.where("name", "==", request.args.get('name')).stream())[0].to_dict()
+        doc_dict = list(guild_ref.where("name", "==", request.args.get("name")).stream())[0].to_dict()
 
         return jsonify(doc_dict), 200
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot get specified guild"}, 500
+        return {"error": "Cannot get specified guild."}, 500
 
 # Update guild streak using action flag (inc/del)
-@app.route('/update_guild_streak/<string:action>', methods=['POST'])
+@app.route("/update_guild_streak/<string:action>", methods=["POST"])
 def update_guild_streak(action):
     """
         Update the guild streak according to the action flag set. 
@@ -402,9 +382,9 @@ def update_guild_streak(action):
         doc = list(guild_ref.where("name", "==", request.json["name"]).stream())[0]
 
         if action == "inc":
-            guild_ref.document(doc.id).update({u'streak': doc.to_dict()["streak"] + request.json["toAdd"]})
+            guild_ref.document(doc.id).update({u"streak": doc.to_dict()["streak"] + request.json["toAdd"]})
         else:
-            guild_ref.document(doc.id).update({u'streak': 0})
+            guild_ref.document(doc.id).update({u"streak": 0})
 
         return jsonify({"success": True}), 200
 
@@ -444,15 +424,13 @@ def get_all_users():
         for doc in docs:
             user_list.append(doc.to_dict())
 
-        return {
-            'users': user_list
-        }, 200
+        return {"users": user_list}, 200
     except Exception as e:
         print(e)
-        return {"error": "Cannot retrieve tasks"}, 500
+        return {"error": "Cannot retrieve users."}, 500
 
 # Add a user into the database / Register a user into the database - CHECKED
-@app.route('/add_user', methods=['POST'])
+@app.route("/add_user", methods=["POST"])
 def add_user():
     """
         Adds a new user to the database.
@@ -475,9 +453,7 @@ def add_user():
         email_verification = list(user_ref.where("email", "==", request.json["email"]).stream())
 
         if len(email_verification) > 0:
-            return jsonify({
-                "error": "Email already exists."
-            }), 200
+            return jsonify({"error": "Email already exists."}), 200
 
         request.json["damage"] = 10
         request.json["multiplier"] = 1
@@ -486,18 +462,14 @@ def add_user():
         request.json["hp"] = 100
 
         user_ref.document().set(request.json)
-        return jsonify({
-            "success": True
-        }), 200
+        return jsonify({"success": True}), 200
 
     except Exception as e:
         print(e)
-        return {
-            "error": "Cannot add user"
-        }, 500
+        return {"error": "Cannot add user."}, 500
 
 # Get user information based on email from the database - CHECKED
-@app.route('/get_user')
+@app.route("/get_user")
 def get_user():
     """
         Get user information based on user's email.
@@ -523,16 +495,16 @@ def get_user():
     try:
         user_ref = db.collection(u"User")
         print(request.json)
-        doc_dict = list(user_ref.where("email", "==", request.args.get('email')).stream())[0].to_dict()
+        doc_dict = list(user_ref.where("email", "==", request.args.get("email")).stream())[0].to_dict()
 
         return jsonify(doc_dict), 200
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot get specified user"}, 500
+        return {"error": "Cannot get specified user."}, 500
 
 # Get users from the specified guild - CHECKED
-@app.route('/get_users_in_guild')
+@app.route("/get_users_in_guild")
 def get_users_in_guild():
     """
         Get all user who belong in specified guild name and their respective information.
@@ -575,22 +547,20 @@ def get_users_in_guild():
     """
     try:
         user_ref = db.collection(u"User")
-        docs = user_ref.where("guild", "==", request.args.get('name')).stream()
+        docs = user_ref.where("guild", "==", request.args.get("name")).stream()
 
         user_list = []
         for doc in docs:
             user_list.append(doc.to_dict())
     
-        return {
-            'users': user_list
-        }, 200
+        return {"users": user_list}, 200
 
     except Exception as e:
         print(e)
-        return {"error": "Cannot retrieve users"}, 500
+        return {"error": "Cannot retrieve users."}, 500
 
 # Get users from the specified guild in arrays of arrays - CHECKED
-@app.route('/get_users_aoa_in_guild')
+@app.route("/get_users_aoa_in_guild")
 def get_users_aoa_in_guild():
     """
         Get all user who belong in specified guild name and their respective information in specific arrays of arrays format.
@@ -609,15 +579,13 @@ def get_users_aoa_in_guild():
     """
     try:
         user_ref = db.collection(u"User")
-        docs = user_ref.where("guild", "==", request.args.get('name')).stream()
+        docs = user_ref.where("guild", "==", request.args.get("name")).stream()
 
         user_aoa = []
         for doc in docs:
             user_aoa.append([doc.to_dict()["name"], doc.to_dict()["class"], doc.to_dict()["guild"], doc.to_dict()["level"], doc.to_dict()["multiplier"]])
     
-        return {
-            'user_aoa': user_aoa
-        }, 200
+        return {"user_aoa": user_aoa}, 200
 
     except Exception as e:
         print(e)
@@ -653,22 +621,18 @@ def modify_user():
 
             if "new_email" in processed_json:
                 processed_json["email"] = processed_json["new_email"]
-                processed_json.pop('new_email', None)
+                processed_json.pop("new_email", None)
 
             user_ref.document(doc_id).update(processed_json)
 
-        return jsonify({
-            "success": True
-        }), 200
+        return jsonify({"success": True}), 200
 
     except Exception as e:
         print(e)
-        return {
-            "error": "Cannot modify user"
-        }, 500
+        return {"error": "Cannot modify user."}, 500
 
 # Update user exp + level (inc/dec) - CHECKED
-@app.route('/update_user_stats/<string:action>', methods=['POST'])
+@app.route("/update_user_stats/<string:action>", methods=["POST"])
 def update_user_stats(action):
     """
         Update the user's exp and level statistics.
@@ -705,11 +669,11 @@ def update_user_stats(action):
                 new_exp = doc.to_dict()["exp"] + exp_to_add - (100 * level_inc)
 
                 # Update the new exp and level
-                user_ref.document(doc.id).update({u'exp': new_exp, u'level': doc.to_dict()["level"] + level_inc})
+                user_ref.document(doc.id).update({u"exp": new_exp, u"level": doc.to_dict()["level"] + level_inc})
 
             else:
                 # If there is no increase across levels, just add the exp to user's original exp 
-                user_ref.document(doc.id).update({u'exp': doc.to_dict()["exp"] + exp_to_add})
+                user_ref.document(doc.id).update({u"exp": doc.to_dict()["exp"] + exp_to_add})
 
         else:
             # Check if the user has to be de-leveled when the exp is minus off
@@ -725,11 +689,11 @@ def update_user_stats(action):
                     new_exp = 100 + doc.to_dict()["exp"] - request.json["exp"]
                 
                 # Update the new values 
-                user_ref.document(doc.id).update({u'exp': new_exp, u'level': new_level})
+                user_ref.document(doc.id).update({u"exp": new_exp, u"level": new_level})
             
             # If there is no decrease across levels, just deduct the exp from the user's original exp 
             else:
-                user_ref.document(doc.id).update({u'exp': doc.to_dict()["exp"] - request.json["exp"]})
+                user_ref.document(doc.id).update({u"exp": doc.to_dict()["exp"] - request.json["exp"]})
         
         # Get updated copy of the document to return the new values 
         updated_doc = user_ref.document(doc.id).get().to_dict()
@@ -743,8 +707,8 @@ def update_user_stats(action):
         print(e)
         return {"error": "Cannot update user statistics."}, 500
 
-# Login function 
-@app.route('/login', methods=['POST'])
+# Login function - CHECKED
+@app.route("/login", methods=["POST"])
 def login():
     """
         Authenticate the user and return their email address to be used as session token.
@@ -762,17 +726,11 @@ def login():
 
         if len(email_verification) > 0:
             if email_verification[0].to_dict()["password"] == request.json["password"]:
-                return {
-                    "email" : request.json["password"]
-                }, 200
+                return {"email" : request.json["email"]}, 200
             else:
-                return {
-                    "error" : "Password incorrect."
-                }, 401
+                return {"error" : "Password incorrect."}, 401
         else:
-            return {
-                "error" : "Email does not exist."
-            }, 401
+            return {"error" : "Email does not exist."}, 401
 
     except Exception as e:
         print(e)
@@ -813,9 +771,7 @@ def update_multiplier():
         # Update multiplier 
         requests.post("http://0.0.0.0:5001/modify_user", json = {"email" : request.json["email"], "multiplier" : multiplier})
 
-        return jsonify({
-            "success": True
-        }), 200
+        return jsonify({"success": True}), 200
 
     except Exception as e:
         print(e)
@@ -884,5 +840,5 @@ def complete_task():
         print(e)
         return {"error": "Cannot mark task as complete."}, 500
     
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
