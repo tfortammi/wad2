@@ -120,15 +120,24 @@
             height: 420px;
         }
 
-        #meeting_list {
+        #meeting-list {
             border: 5px solid #a8c582;
             height: 420px;
+            padding: 20px;
         }
 
         #chart_div {
             margin: 30px 0px;
             background: transparent;
             /* width: 700px; */
+        }
+
+        .meeting-header-th {
+            border-bottom: 2px solid #007bff !important;
+        }
+
+        .meeting-row {
+            border-top: 1px solid #007bff !important;
         }
     </style>
 </head>
@@ -138,7 +147,8 @@
     <div id="tasks">
 
         <!-- MODIFY TASK MODAL-->
-        <div class="modal fade" id="modTaskModal" tabindex="-1" role="dialog" aria-labelledby="modTaskModal" aria-hidden="true">
+        <div class="modal fade" id="modTaskModal" tabindex="-1" role="dialog" aria-labelledby="modTaskModal"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -191,8 +201,10 @@
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="inputGroupSelect01">Assigned To</label>
                                 </div>
-                                <select v-model="chosenTask.assignedTo" class="custom-select" multiple id="inputGroupSelect01">
-                                    <option v-for="user in guild.users" v-bind:id="user[1]" v-bind:value="user[1]">{{user[0]}}</option>
+                                <select v-model="chosenTask.assignedTo" class="custom-select" multiple
+                                    id="inputGroupSelect01">
+                                    <option v-for="user in guild.users" v-bind:id="user[1]" v-bind:value="user[1]">
+                                        {{user[0]}}</option>
                                 </select>
                             </div>
                             <div class="input-group mb-3">
@@ -200,7 +212,9 @@
                                     <span class="input-group-text" id="basic-addon1">Dependency</span>
                                 </div>
                                 <select v-model="chosenTask.dependency" class="custom-select" id="inputGroupSelect01">
-                                    <option v-for="task in tasks.tasks" v-bind:id="task['id']" v-bind:value="task['id']">{{task["name"]}} [{{new Date(task["end"]).toLocaleDateString()}}]</option>
+                                    <option v-for="task in tasks.tasks" v-bind:id="task['id']"
+                                        v-bind:value="task['id']">{{task["name"]}}
+                                        [{{new Date(task["end"]).toLocaleDateString()}}]</option>
                                 </select>
                             </div>
 
@@ -208,15 +222,18 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save Changes</button>
-                        <button type="button" class="btn btn-primary" v-on:click="completeTask" data-dismiss="modal">Complete Task</button>
+                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save
+                            Changes</button>
+                        <button type="button" class="btn btn-primary" v-on:click="completeTask"
+                            data-dismiss="modal">Complete Task</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ADD TASK MODAL -->
-        <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModal" aria-hidden="true">
+        <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModal"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -269,7 +286,8 @@
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="inputGroupSelect01">Assigned To</label>
                                 </div>
-                                <select v-model="tasks.assignedTo" class="custom-select" multiple id="inputGroupSelect01">
+                                <select v-model="tasks.assignedTo" class="custom-select" multiple
+                                    id="inputGroupSelect01">
                                     <option v-for="user in guild.users" v-bind:id="user[1]">{{user[0]}}</option>
                                 </select>
                             </div>
@@ -278,7 +296,8 @@
                                     <span class="input-group-text" id="basic-addon1">Dependency</span>
                                 </div>
                                 <select v-model="tasks.dependency" class="custom-select" id="inputGroupSelect01">
-                                    <option v-for="task in tasks.tasks" v-bind:id="task['id']">{{task["name"]}} [{{new Date(task["end"]).toLocaleDateString()}}]</option>
+                                    <option v-for="task in tasks.tasks" v-bind:id="task['id']">{{task["name"]}}
+                                        [{{new Date(task["end"]).toLocaleDateString()}}]</option>
                                 </select>
                             </div>
 
@@ -310,22 +329,24 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">Meeting Name</span>
                                 </div>
-                                <input v-model="meeting.name" type="text" class="form-control" placeholder="Meeting Name" aria-label="Username"
-                                    aria-describedby="basic-addon1">
+                                <input v-model="meeting.name" type="text" class="form-control"
+                                    placeholder="Meeting Name" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">Start Datetime</span>
                                 </div>
-                                <input v-model="meeting.start" type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYYY HH:SS"
-                                    aria-label="Username" aria-describedby="basic-addon1">
+                                <input v-model="meeting.start" type="text" class="form-control" id="date" name="date"
+                                    placeholder="MM/DD/YYYY HH:SS" aria-label="Username"
+                                    aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">End Datetime</span>
                                 </div>
-                                <input v-model="meeting.end" type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYYY HH:SS"
-                                    aria-label="Username" aria-describedby="basic-addon1">
+                                <input v-model="meeting.end" type="text" class="form-control" id="date" name="date"
+                                    placeholder="MM/DD/YYYY HH:SS" aria-label="Username"
+                                    aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -383,7 +404,7 @@
             <div class="row justify-content-md-center">
                 <!-- CHARACTER INFO CONTAINER -->
                 <div class="col-2 text-center py-3" id="lvl-window">
-                    <h5 >Streak: {{guild.streak}} days</h5>
+                    <h5>Streak: {{guild.streak}} days</h5>
                     <h1 id="lvl" class="font-weight-bold">Lvl: {{user.userLevel}}</h1>
                     <h4 id="exp">EXP: {{user.userExp}}</h4>
                     <div class="progress">
@@ -404,14 +425,16 @@
             <div class="row justify-content-md-center">
                 <!-- BUTTON SIDEBAR -->
                 <div class="col-2 py-3 text-center" id="sidebar">
-                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal" data-toggle="modal">Add
+                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal"
+                        data-toggle="modal">Add
                         Task</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
                         data-toggle="modal">Add Meeting</button>
-                    <button class="btn btn-warning sidebar-btn shadow-sm">View Meetings</button>
+                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleView('meetings')">View
+                        Meetings</button>
                 </div>
                 <!-- GANTT CHART -->
-                <div class="col-10" id="gantt-chart" style="overflow: scroll; ">
+                <div class="col-10" id="gantt-chart" style="overflow: scroll;">
                     <div class="container">
                         <div class="row">
                             <div class="col text-center mt-2">
@@ -420,7 +443,129 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-10" id="meeting-list" style="overflow: scroll; display: none;">
+                    <div class="container">
+                        <div class="row">
+                            <ul class="w-100 nav nav-fill nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-upcoming-tab" data-toggle="pill"
+                                        href="#pills-upcoming" role="tab" aria-controls="pills-upcoming"
+                                        aria-selected="true">Upcoming meetings</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-past-tab" data-toggle="pill" href="#pills-past"
+                                        role="tab" aria-controls="pills-past" aria-selected="false">Past meetings</a>
+                                </li>
+                            </ul>
 
+                            <div class="tab-content w-100" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-upcoming" role="tabpanel"
+                                    aria-labelledby="pills-upcoming-tab">
+                                    <div v-if="upcoming_meetings.show" class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <tr v-for="(meeting, index) in upcoming_meetings.meetings">
+                                                    <th class="meeting-row" scope="row">{{index + 1}}</th>
+                                                    <td class="meeting-row">{{meeting["start"]}}</td>
+                                                    <td class="meeting-row">{{meeting["name"]}}</td>
+                                                    <td class="meeting-row">{{meeting["organizer"]}}</td>
+                                                    <td class="meeting-row">
+                                                        <a v-bind:href="meeting.room_link" target="_blank"
+                                                            class="btn btn-success">Join</a>
+                                                        <a class="btn btn-info">Generate Invite</a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="5" class="text-center meeting-row">You do not have any
+                                                        upcoming meetings.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-past" role="tabpanel"
+                                    aria-labelledby="pills-past-tab">
+
+                                    <div v-if="past_meetings.show" class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">End datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <tr v-for="(meeting, index) in past_meetings.meetings">
+                                                    <th class="meeting-row" scope="row">{{index + 1}}</th>
+                                                    <td class="meeting-row">{{meeting["start"]}}</td>
+                                                    <td class="meeting-row">{{meeting["end"]}}</td>
+                                                    <td class="meeting-row">{{meeting["name"]}}</td>
+                                                    <td class="meeting-row">{{meeting["organizer"]}}</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">End datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="5" class="text-center meeting-row">You do not have any past meetings.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -430,15 +575,14 @@
     <script type="text/javascript" src="http://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
+    </script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <script>
-
         var app = new Vue({
             el: '#tasks',
             data: {
@@ -477,11 +621,19 @@
                     attendees: [],
                     start: "",
                     end: "",
+                },
+                meeting_flag: false,
+                upcoming_meetings: {
+                    show: true,
+                    meetings: []
+                },
+                past_meetings: {
+                    show: true,
+                    meetings: []
                 }
-                
             },
             methods: {
-                completeTask: function() {
+                completeTask: function () {
                     fetch("http://localhost:5001/complete_task", {
                         method: "POST",
                         headers: {
@@ -538,62 +690,81 @@
                 addMeeting: function () {
 
                     fetch("http://localhost:5001/add_meeting", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            attendees : this.meeting.attendees,
-                            start : this.meeting.start,
-                            end : this.meeting.end,
-                            name : this.meeting.name,
-                            organizer : this.meeting.organizer,
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        var request = new XMLHttpRequest();
-
-                        var meeting_id = data.id.split("-")[-1]
-
-                        var params = {
-                            "properties": {
-                                "enable_screenshare": true,
-                                "enable_chat": true,
-                                "start_video_off": true,
-                                "start_audio_off": true
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
                             },
-                            "name": meeting_id
-                        };
+                            body: JSON.stringify({
+                                attendees: this.meeting.attendees,
+                                start: this.meeting.start,
+                                end: this.meeting.end,
+                                name: this.meeting.name,
+                                organizer: this.user.loggedInUser,
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            var request = new XMLHttpRequest();
 
-                        request.onreadystatechange = function() {
-                            if(this.readyState == 4 && this.status == 200) {
-                                var responseText = JSON.parse(this.responseText);
-                                fetch("http://localhost:5001/modify_meeting", {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({
-                                        id: data.id,
-                                        room_link: responseText.url
-                                    })
-                                }).then(res => {
-                                    location.reload()
-                                }).catch(e => {
-                                    console.log(e);
-                                });
+                            var meeting_id = data.id.split("-")[-1]
+
+                            var params = {
+                                "properties": {
+                                    "enable_screenshare": true,
+                                    "enable_chat": true,
+                                    "start_video_off": true,
+                                    "start_audio_off": true
+                                },
+                                "name": meeting_id
+                            };
+
+                            request.onreadystatechange = function () {
+                                if (this.readyState == 4 && this.status == 200) {
+                                    var responseText = JSON.parse(this.responseText);
+                                    fetch("http://localhost:5001/modify_meeting", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            id: data.id,
+                                            room_link: responseText.url
+                                        })
+                                    }).then(res => {
+                                        location.reload()
+                                    }).catch(e => {
+                                        console.log(e);
+                                    });
+                                }
                             }
-                        }
 
-                        var url = "https://api.daily.co/v1/rooms";
-                        request.open("POST", url, true);
-                        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                        request.setRequestHeader('Authorization','Bearer 014432e07e678d453d4faeb244e96c4f10932d71f82f8cf0376c0ddddbc5fab4');
-                        request.send(JSON.stringify(params));
-                    }).catch(e => {
-                        console.log(e);
-                    });
+                            var url = "https://api.daily.co/v1/rooms";
+                            request.open("POST", url, true);
+                            request.setRequestHeader("Content-type",
+                                "application/x-www-form-urlencoded");
+                            request.setRequestHeader('Authorization',
+                                'Bearer 014432e07e678d453d4faeb244e96c4f10932d71f82f8cf0376c0ddddbc5fab4'
+                            );
+                            request.send(JSON.stringify(params));
+                        }).catch(e => {
+                            console.log(e);
+                        });
+
+                },
+                toggleView: function (view) {
+
+                    if (view == "meetings") {
+                        var meeting_flag = !this.meeting_flag;
+                        this.meeting_flag = !this.meeting_flag;
+
+                        if (meeting_flag) {
+                            document.getElementById("gantt-chart").style.display = "none";
+                            document.getElementById("meeting-list").style.display = "block";
+                        } else {
+                            document.getElementById("gantt-chart").style.display = "block";
+                            document.getElementById("meeting-list").style.display = "none";
+                        }
+                    }
 
                 },
                 // Draws Gantt Chart
@@ -614,7 +785,9 @@
                     var gantt_tasks = []
                     if (tasks !== undefined) {
                         tasks.forEach(task => {
-                            var task_arr = [task["id"], task["name"], task["priority"], new Date(task["start"]), new Date(task["end"]), null, 100, task["dependency"]]
+                            var task_arr = [task["id"], task["name"], task["priority"], new Date(
+                                task["start"]), new Date(task["end"]), null, 100, task[
+                                "dependency"]]
                             gantt_tasks.push(task_arr)
                         });
 
@@ -631,8 +804,12 @@
                                     width: 5,
                                     radius: 0
                                 },
-                                innerGridTrack: { fill: '#FDE5B3' },
-                                innerGridDarkTrack: { fill: " #f3dba7" },
+                                innerGridTrack: {
+                                    fill: '#FDE5B3'
+                                },
+                                innerGridDarkTrack: {
+                                    fill: " #f3dba7"
+                                },
                                 innerGridHorizLine: {
                                     strokeWidth: 0
                                 },
@@ -648,7 +825,7 @@
                         // Create gantt chart
                         var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
                         var container = document.getElementById("chart_div")
-                        
+
                         // When user selects task, open modify task popup
                         google.visualization.events.addListener(chart, "select", () => {
                             var select = chart.getSelection();
@@ -658,11 +835,13 @@
                                 var data = res.json().then(data => {
                                     console.log(data)
                                     console.log(task_id)
-                                    
+
                                     this.chosenTask.taskName = data["name"]
                                     this.chosenTask.category = data["category"]
-                                    this.chosenTask.start = new Date(data["start"]).toLocaleDateString()
-                                    this.chosenTask.end = new Date(data["end"]).toLocaleDateString()
+                                    this.chosenTask.start = new Date(data["start"])
+                                        .toLocaleDateString()
+                                    this.chosenTask.end = new Date(data["end"])
+                                        .toLocaleDateString()
                                     this.chosenTask.priority = data["priority"]
                                     this.chosenTask.dependency = data["dependency"]
                                     this.chosenTask.assignedTo = data["assignedTo"]
@@ -674,21 +853,40 @@
                             })
 
                         })
-                        
+
                         // Make tooltips invisible
                         google.visualization.events.addOneTimeListener(chart, 'ready', function () {
                             var observer = new MutationObserver(function (nodes) {
                                 Array.prototype.forEach.call(nodes, function (node) {
                                     if (node.addedNodes.length > 0) {
-                                        Array.prototype.forEach.call(node.addedNodes, function (addedNode) {
-                                            if ((addedNode.tagName === 'rect') && (addedNode.getAttribute('fill') === 'white')) {
-                                                addedNode.setAttribute('fill', 'transparent');
-                                                addedNode.setAttribute('stroke', 'transparent');
-                                                Array.prototype.forEach.call(addedNode.parentNode.getElementsByTagName('text'), function (label) {
-                                                    label.setAttribute('fill', 'transparent');
-                                                });
-                                            }
-                                        });
+                                        Array.prototype.forEach.call(node
+                                            .addedNodes,
+                                            function (addedNode) {
+                                                if ((addedNode.tagName ===
+                                                        'rect') && (addedNode
+                                                        .getAttribute(
+                                                            'fill') === 'white'
+                                                    )) {
+                                                    addedNode.setAttribute(
+                                                        'fill',
+                                                        'transparent');
+                                                    addedNode.setAttribute(
+                                                        'stroke',
+                                                        'transparent');
+                                                    Array.prototype.forEach
+                                                        .call(addedNode
+                                                            .parentNode
+                                                            .getElementsByTagName(
+                                                                'text'),
+                                                            function (label) {
+                                                                label
+                                                                    .setAttribute(
+                                                                        'fill',
+                                                                        'transparent'
+                                                                    );
+                                                            });
+                                                }
+                                            });
                                     }
                                 });
                             });
@@ -722,36 +920,79 @@
                 await fetch("http://localhost:5001/get_all_tasks?guild=wad2_guild").then(res => {
                     var data = res.json().then(data => {
                         this.tasks.tasks = data["tasks"]
-                    }
-                    )
+                    })
                 })
 
                 // Gets the information of the logged in user
                 await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
                     var data = res.json().then(data => {
-                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png", "#ch-img", 65, 260, 0, -70);
+                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png",
+                            "#ch-img", 65, 260, 0, -70);
                         this.user.userLevel = data["level"]
                         this.user.userExp = data["exp"]
-                    }
-                    )
+                    })
                 })
 
                 // Gets guild info
                 await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
                         this.guild.streak = data["streak"]
-                        }
-                    )
+                    })
                 })
 
 
                 // Loads gantt chart
-                google.charts.load('current', { 'packages': ['gantt'] });
+                google.charts.load('current', {
+                    'packages': ['gantt']
+                });
                 google.charts.setOnLoadCallback(this.drawChart);
 
                 // Initialises image of bad guys
                 initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
+                // Load their upcoming meetings
+                await fetch("http://localhost:5001/get_upcoming_meetings?email=" + this.user.loggedInUser)
+                    .then(res => {
+                        var data = res.json().then(data => {
+                            if (data["meetings"].length == 0) {
+                                this.upcoming_meetings.show = false;
+                            } else {
+                                this.upcoming_meetings.show = true;
+                                for (i = 0; i < data["meetings"].length; i++) {
+                                    var new_start = data["meetings"][i]["start"].split(" ")
+                                        .slice(0, -1).join(" ");
+                                    var new_end = data["meetings"][i]["end"].split(" ").slice(0,
+                                        -1).join(" ");
+
+                                    data["meetings"][i]["start"] = new_start;
+                                    data["meetings"][i]["end"] = new_end;
+                                }
+                                this.upcoming_meetings.meetings = data["meetings"];
+                            }
+                        })
+                    });
+
+                // Load their past meetings
+                await fetch("http://localhost:5001/get_past_meetings?email=" + this.user.loggedInUser)
+                    .then(res => {
+                        var data = res.json().then(data => {
+                            if (data["meetings"].length == 0) {
+                                this.past_meetings.show = false;
+                            } else {
+                                this.past_meetings.show = true;
+                                for (i = 0; i < data["meetings"].length; i++) {
+                                    var new_start = data["meetings"][i]["start"].split(" ")
+                                        .slice(0, -1).join(" ");
+                                    var new_end = data["meetings"][i]["end"].split(" ").slice(0,
+                                        -1).join(" ");
+
+                                    data["meetings"][i]["start"] = new_start;
+                                    data["meetings"][i]["end"] = new_end;
+                                }
+                                this.past_meetings.meetings = data["meetings"];
+                            }
+                        })
+                    })
 
             }
 
@@ -823,9 +1064,6 @@
                 window.requestAnimationFrame(step);
             }
         }
-
-
-
     </script>
 </body>
 

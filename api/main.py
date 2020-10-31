@@ -803,41 +803,11 @@ def remove_meeting():
         print(e)
         return {"error": "Cannot remove meeting."}, 500
 
-# list meetings that has the specified email address as its owner + remove any meetings that are "over"
-@app.route("/list_meetings_org")
-def list_meetings_org():
+# Get past meetings that has the specified email address as its organizer or attendee 
+@app.route("/get_past_meetings")
+def get_past_meetings():
     """
-        List meetings that has the specified email address as its owner + remove any meetings that are "over".
-        
-        Expected GET params:
-            - "email" = <string: organizer's email>
-    """
-    try:
-        meeting_ref = db.collection(u"Meeting")
-        docs = meeting_ref.where("organizer", "==", request.args.get("email")).stream()
-
-        meeting_list = []
-        meetings_to_delete = []
-        for doc in docs:
-            if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
-                meetings_to_delete.append(doc.id)
-            else:
-                meeting_list.append(doc.to_dict())
-        
-        for meeting_id in meetings_to_delete:
-            meeting_ref.document(meeting_id).delete()
-    
-        return {"meetings": meeting_list}, 200
-
-    except Exception as e:
-        print(e)
-        return {"error": "Cannot retrieve meetings."}, 500
-
-# list meetings that has the specified email address as its attendee + remove any meetings that are "over"
-@app.route("/list_meetings")
-def list_meetings():
-    """
-        List meetings that has the specified email address as its attendee + remove any meetings that are "over".
+        List upcoming meetings that has the specified email address as organizer or attendee 
         
         Expected GET params:
             - "email" = <string: attendee's email>
@@ -846,19 +816,48 @@ def list_meetings():
         meeting_ref = db.collection(u"Meeting")
         docs = meeting_ref.stream()
 
-        meeting_list = []
-        meetings_to_delete = []
+        meetings = []
+        meeting_timings = []
+
         for doc in docs:
-            if request.args.get("email") in doc.to_dict()["attendees"]:
+            if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
                 if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
-                    meetings_to_delete.append(doc.id)
-                else:
-                    meeting_list.append(doc.to_dict())
+                    meetings.append(doc.to_dict())
+                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
         
-        for meeting_id in meetings_to_delete:
-            meeting_ref.document(meeting_id).delete()
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings), reverse = True)]
     
-        return {"meetings": meeting_list}, 200
+        return {"meetings": sorted_meetings}, 200
+
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot retrieve meetings."}, 500
+
+# Get upcoming meetings that has the specified email address as its organizer or attendee 
+@app.route("/get_upcoming_meetings")
+def get_upcoming_meetings():
+    """
+        List upcoming meetings that has the specified email address as organizer or attendee 
+        
+        Expected GET params:
+            - "email" = <string: attendee's email>
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
+
+        meetings = []
+        meeting_timings = []
+
+        for doc in docs:
+            if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
+                if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                    meetings.append(doc.to_dict())
+                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+        
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+    
+        return {"meetings": sorted_meetings}, 200
 
     except Exception as e:
         print(e)
