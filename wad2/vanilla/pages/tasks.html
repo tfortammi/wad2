@@ -120,6 +120,11 @@
             height: 420px;
         }
 
+        #meeting_list {
+            border: 5px solid #a8c582;
+            height: 420px;
+        }
+
         #chart_div {
             margin: 30px 0px;
             background: transparent;
@@ -241,14 +246,14 @@
                                     <span class="input-group-text" id="basic-addon1">Start Date</span>
                                 </div>
                                 <input v-model="tasks.start" type="text" class="form-control" id="date" name="date"
-                                    placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
+                                    placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">End Date</span>
                                 </div>
                                 <input v-model="tasks.end" type="text" class="form-control" id="date" name="date"
-                                    placeholder="MM/DD/YYY" aria-label="Username" aria-describedby="basic-addon1">
+                                    placeholder="MM/DD/YYYY" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -305,21 +310,21 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">Meeting Name</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Name" aria-label="Username"
+                                <input v-model="meeting.name" type="text" class="form-control" placeholder="Meeting Name" aria-label="Username"
                                     aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">Start Date</span>
+                                    <span class="input-group-text" id="basic-addon1">Start Datetime</span>
                                 </div>
-                                <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY"
+                                <input v-model="meeting.start" type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYYY HH:SS"
                                     aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">Start Time</span>
+                                    <span class="input-group-text" id="basic-addon1">End Datetime</span>
                                 </div>
-                                <input type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYY"
+                                <input v-model="meeting.end" type="text" class="form-control" id="date" name="date" placeholder="MM/DD/YYYY HH:SS"
                                     aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
@@ -338,7 +343,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" v-on:click="addMeeting" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
@@ -403,9 +408,10 @@
                         Task</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
                         data-toggle="modal">Add Meeting</button>
+                    <button class="btn btn-warning sidebar-btn shadow-sm">View Meetings</button>
                 </div>
                 <!-- GANTT CHART -->
-                <div class="col-10" id="gantt-chart" style="overflow: scroll;">
+                <div class="col-10" id="gantt-chart" style="overflow: scroll; ">
                     <div class="container">
                         <div class="row">
                             <div class="col text-center mt-2">
@@ -414,6 +420,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -464,6 +471,12 @@
                     dependency: "",
                     priority: "",
                     category: ""
+                },
+                meeting: {
+                    name: "",
+                    attendees: [],
+                    start: "",
+                    end: "",
                 }
                 
             },
@@ -521,6 +534,67 @@
                     }).then(res => {
                         location.reload()
                     })
+                },
+                addMeeting: function () {
+
+                    fetch("http://localhost:5001/add_meeting", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            attendees : this.meeting.attendees,
+                            start : this.meeting.start,
+                            end : this.meeting.end,
+                            name : this.meeting.name,
+                            organizer : this.meeting.organizer,
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        var request = new XMLHttpRequest();
+
+                        var meeting_id = data.id.split("-")[-1]
+
+                        var params = {
+                            "properties": {
+                                "enable_screenshare": true,
+                                "enable_chat": true,
+                                "start_video_off": true,
+                                "start_audio_off": true
+                            },
+                            "name": meeting_id
+                        };
+
+                        request.onreadystatechange = function() {
+                            if(this.readyState == 4 && this.status == 200) {
+                                var responseText = JSON.parse(this.responseText);
+                                fetch("http://localhost:5001/modify_meeting", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        id: data.id,
+                                        room_link: responseText.url
+                                    })
+                                }).then(res => {
+                                    location.reload()
+                                }).catch(e => {
+                                    console.log(e);
+                                });
+                            }
+                        }
+
+                        var url = "https://api.daily.co/v1/rooms";
+                        request.open("POST", url, true);
+                        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        request.setRequestHeader('Authorization','Bearer 014432e07e678d453d4faeb244e96c4f10932d71f82f8cf0376c0ddddbc5fab4');
+                        request.send(JSON.stringify(params));
+                    }).catch(e => {
+                        console.log(e);
+                    });
+
                 },
                 // Draws Gantt Chart
                 drawChart: function () {
@@ -682,10 +756,6 @@
             }
 
         });
-
-
-
-
 
 
         // Datepicker add on 
