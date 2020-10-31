@@ -737,6 +737,115 @@ def login():
         return {"error": "Cannot authenticate specified user."}, 500
 
 # =========================== # 
+#         MEETINGS            #
+# =========================== # 
+
+# Database fields: 
+#    - organizer: "kakashi@wad2.co" (string)
+#    - start: "10/27/20, 8:30 PM" (datetime)
+#    - id: "" (string)
+#    - name: "Scrum review" (string)
+#    - end: "10/29/20, 8:30 PM" (datetime)
+#    - attendees: ["yamato@wad2.co", ...] (string array)
+
+# Add a meeting into the database - CHECKED
+@app.route("/add_meeting", methods=["POST"])
+def add_meeting():
+    """
+        Add a new meeting into database with a random uuid as id.
+
+        Note: Datetime expected to be in YYYY-MM-DDTHH:MM format (24 hour format). E.g. 2020-12-01T08:30 
+        
+        Expected JSON object:
+        {
+            "attendees" : <array: meeting's attendess>,
+            "start" : <datetime: meeting's start datetime>,
+            "end" : <datetime: meeting's end datetime>,
+            "name" : <string: meeting's name>,
+            "organizer" : <string: meeting's organizer>
+        }
+    """
+
+    try:
+        request.json["id"] = str(uuid.uuid4())
+        request.json["start"] = datetime.strptime(request.json["start"], "%Y-%m-%dT%H:%M")
+        request.json["end"] = datetime.strptime(request.json["end"], "%Y-%m-%dT%H:%M")
+
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
+
+        meeting_ref.document().set(request.json)
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot add meeting."}, 500
+
+# Remove meeting based on id from database - CHECKED 
+@app.route("/remove_meeting", methods=["POST"])
+def remove_meeting():
+    """
+        Remove meeting based on id.
+        
+        Expected JSON object:
+        {
+            "id" : <string: meeting's id>,
+        }
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
+        id_to_remove = ""
+
+        for doc in docs:
+            if doc.to_dict()["id"] == request.json["id"]:
+                id_to_remove = doc.id
+        
+        meeting_ref.document(id_to_remove).delete()
+        
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot remove meeting."}, 500
+
+# list meetings that has the specified email address as its owner + remove any meetings that are "over"
+@app.route("/list_meetings_org")
+def list_meetings_org():
+    """
+        List meetings that has the specified email address as its owner + remove any meetings that are "over".
+        
+        Expected GET params:
+            - "email" = <string: organizer's email>
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.where("organizer", "==", request.args.get("email")).stream()
+
+        meeting_list = []
+        meetings_to_delete = []
+        for doc in docs:
+            if datetime.now() > datetime.strptime(doc.to_dict()["end"], "%m/%d/%Y"):
+                meetings_to_delete.append(doc.to_dict()["id"])
+            else:
+                meeting_list.append(doc.to_dict())
+        
+        for meeting_id in meetings_to_delete:
+            requests.post("http://0.0.0.0:5001/remove_meeting", json = {"id" : meeting_id})
+    
+        return {"users": meeting_list}, 200
+
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot retrieve meetings."}, 500
+
+# list meetings that has the specified email address as its attendee + remove any meetings that are "over"
+
+
+
+# edit meetings 
+
+
+
+# =========================== # 
 #      HYBRID FUNCTIONS       #
 # =========================== # 
 # Functions that require the accessing of various collections and mostly rely on other functions.
@@ -790,50 +899,142 @@ def complete_task():
         }
     """
     try:
+        task_ref = db.collection(u"Task")
+        user_ref = db.collection(u"User")
+        guild_ref = db.collection(u"Guild")
+
         # Get the task object using /get_task function 
-        response = requests.get("http://0.0.0.0:5001/get_task?id=" + request.json["id"])
+        # response = requests.get("http://0.0.0.0:5001/get_task?id=" + request.json["id"])
+        task_id = list(task_ref.where("id", "==", request.json["id"]).stream())[0].id
+        task_obj = list(task_ref.where("id", "==", request.json["id"]).stream())[0].to_dict()
 
         # Initialize the necessary variables 
-        end = response.json()["end"]
-        users = response.json()["assignedTo"]
-        guild = response.json()["guild"]
+        end = task_obj["end"]
+        users = task_obj["assignedTo"]
+        guild = task_obj["guild"]
+
+        # Get guild object 
+        guild_obj = list(guild_ref.where("name", "==", guild).stream())[0]
 
         # Get the corresponding exp based on task priority
-        exp = EXP_CONST[response.json()["priority"]]
+        exp = EXP_CONST[task_obj["priority"]]
 
         # Check if the current datetime is more than the end datetime == means that the task is overdue
-        if datetime.now() > datetime.strptime(end, "%a, %d %b %Y %H:%M:%S GMT"):
+        if datetime.now() > datetime.strptime(end, "%m/%d/%Y"):
 
             # Delete those exp from the user 
             for user in users:
-                res_update = requests.post("http://0.0.0.0:5001/update_user_stats/del", json = {"email" : user, "exp" : exp})
+                # res_update = requests.post("http://0.0.0.0:5001/update_user_stats/del", json = {"email" : user, "exp" : exp})
+
+                # Get each user obj 
+                user_obj = list(user_ref.where("email", "==", user).stream())[0]
+
+                # Check if the user has to be de-leveled when the exp is minus off
+                if user_obj.to_dict()["exp"] - exp < 0:
+                    # Check if the user is level one (minimum level)
+                    if user_obj.to_dict()["level"] == 1:
+                        # Ensure that the user does not go below level 1 and 0 exp 
+                        new_level = 1
+                        new_exp = 0
+                    else:
+                        # If user is above level 1, then proceed to deduct one level and the necessary exp
+                        new_level = user_obj.to_dict()["level"] - 1
+                        new_exp = 100 + user_obj.to_dict()["exp"] - exp
+                    
+                    # Update the new values 
+                    user_ref.document(user_obj.id).update({u"exp": new_exp, u"level": new_level})
+                
+                # If there is no decrease across levels, just deduct the exp from the user's original exp 
+                else:
+                    user_ref.document(user_obj.id).update({u"exp": user_obj.to_dict()["exp"] - exp})
+
                 # Check if the user being updated is the one who "completes" the project
                 if user == request.json["email"]:
-                    user_stats = res_update.json()
+                    # user_stats = res_update.json()
+                    updated_user_obj = user_stats = user_ref.document(user_obj.id).get().to_dict()
+                    user_stats = {
+                        "new_level" : updated_user_obj["level"],
+                        "new_exp" : updated_user_obj["exp"]
+                    }
+
+                    print(user_stats)
             
             # Remove the guild's streak
-            requests.post("http://0.0.0.0:5001/update_guild_streak/del", json = {"name" : guild})
+            # requests.post("http://0.0.0.0:5001/update_guild_streak/del", json = {"name" : guild})
+            guild_ref.document(guild_obj.id).update({u"streak": 0})
         
         # When task is not overdue...
         else:
 
             # Increase exp for the user 
             for user in users:
-                res_update = requests.post("http://0.0.0.0:5001/update_user_stats/inc", json = {"email" : user, "exp" : exp})
+                # res_update = requests.post("http://0.0.0.0:5001/update_user_stats/inc", json = {"email" : user, "exp" : exp})
+
+                # Get each user obj 
+                user_obj = list(user_ref.where("email", "==", user).stream())[0]
+                
+                # Multiply the current exp by the user's multiplier 
+                exp_to_add = exp * user_obj.to_dict()["multiplier"]
+                
+                # Check if the amount of exp is above the bare minimum to increase one level
+                if (user_obj.to_dict()["exp"] + exp_to_add) > 100:
+
+                    # Check if there is more than one level increase 
+                    level_inc = (user_obj.to_dict()["exp"] + exp_to_add) // 100
+
+                    # Obtain the new exp 
+                    new_exp = user_obj.to_dict()["exp"] + exp_to_add - (100 * level_inc)
+
+                    # Update the new exp and level
+                    user_ref.document(user_obj.id).update({u"exp": new_exp, u"level": user_obj.to_dict()["level"] + level_inc})
+
+                else:
+                    # If there is no increase across levels, just add the exp to user's original exp 
+                    user_ref.document(user_obj.id).update({u"exp": user_obj.to_dict()["exp"] + exp_to_add})
+
                 # Check if the user being updated is the one who "completes" the project
                 if user == request.json["email"]:
-                    user_stats = res_update.json()
+                    # user_stats = res_update.json()
+                    updated_user_obj = user_stats = user_ref.document(user_obj.id).get().to_dict()
+                    user_stats = {
+                        "new_level" : updated_user_obj["level"],
+                        "new_exp" : updated_user_obj["exp"]
+                    }
             
             # Add onto the guild's streak 
-            requests.post("http://0.0.0.0:5001/update_guild_streak/inc", json = {"name" : guild, "toAdd": exp // 5})
+            # requests.post("http://0.0.0.0:5001/update_guild_streak/inc", json = {"name" : guild, "toAdd": exp // 5})
+            guild_ref.document(guild_obj.id).update({u"streak": guild_obj.to_dict()["streak"] + (exp // 5)})
         
         # Update the multiplier for every assigned user 
         for user in users:
-            requests.post("http://0.0.0.0:5001/update_multiplier", json = {"email" : user})
+            # requests.post("http://0.0.0.0:5001/update_multiplier", json = {"email" : user})
+            # Get the user object
+            # res_user = requests.get("http://0.0.0.0:5001/get_user?email=" + request.json["email"])
+            res_user = list(user_ref.where("email", "==", user).stream())[0].to_dict()
+
+            # Get the guild object 
+            # res_guild = requests.get("http://0.0.0.0:5001/get_guild?name=" + res_user.json()["guild"])
+            # res_guild = list(guild_ref.where("name", "==", res_user["guild"]).stream())[0].to_dict()
+
+            # Recalculate multiplier - Check if streak is 0 and return a 1 for new multiplier 
+            if guild_obj.to_dict()["streak"] == 0:
+                multiplier = 1
+            else:
+                multiplier = math.ceil(guild_obj.to_dict()["streak"] / 10 * res_user["level"])
+            
+            # Update multiplier 
+            # requests.post("http://0.0.0.0:5001/modify_user", json = {"email" : request.json["email"], "multiplier" : multiplier})
+            processed_json = {
+                "email" : user, 
+                "multiplier" : multiplier
+            }
+            doc_id = list(user_ref.where("email", "==", user).stream())[0].id
+            user_ref.document(doc_id).update(processed_json)
 
         # Mark task as complete 
-        requests.post("http://0.0.0.0:5001/modify_task", json={"id" : request.json["id"], "status" : True})
-        
+        # requests.post("http://0.0.0.0:5001/modify_task", json={"id" : request.json["id"], "status" : True})
+        task_ref.document(task_id).update({"status" : True})
+
         return user_stats, 200
 
     except Exception as e:
