@@ -89,8 +89,6 @@ def get_all_tasks():
 def add_task():
     """
         Add a new task into database with a random uuid as id.
-
-        Note: Datetime expected to be in YYYY-MM-DDTHH:MM format (24 hour format). E.g. 2020-12-01T08:30 
         
         Expected JSON object:
         {
@@ -745,7 +743,7 @@ def login():
 #    - start: "10/27/20, 8:30 PM" (datetime)
 #    - id: "" (string)
 #    - name: "Scrum review" (string)
-#    - end: "10/29/20, 8:30 PM" (datetime)
+#    - end: "10/27/20, 9:30 PM" (datetime)
 #    - attendees: ["yamato@wad2.co", ...] (string array)
 
 # Add a meeting into the database - CHECKED
@@ -753,8 +751,6 @@ def login():
 def add_meeting():
     """
         Add a new meeting into database with a random uuid as id.
-
-        Note: Datetime expected to be in YYYY-MM-DDTHH:MM format (24 hour format). E.g. 2020-12-01T08:30 
         
         Expected JSON object:
         {
@@ -768,19 +764,19 @@ def add_meeting():
 
     try:
         request.json["id"] = str(uuid.uuid4())
-        request.json["start"] = datetime.strptime(request.json["start"], "%Y-%m-%dT%H:%M")
-        request.json["end"] = datetime.strptime(request.json["end"], "%Y-%m-%dT%H:%M")
+        request.json["start"] = datetime.strptime(request.json["start"], "%m/%d/%Y %H:%M")
+        request.json["end"] = datetime.strptime(request.json["end"], "%m/%d/%Y %H:%M")
 
         meeting_ref = db.collection(u"Meeting")
         docs = meeting_ref.stream()
 
         meeting_ref.document().set(request.json)
-        return jsonify({"success": True}), 200
+        return jsonify({"id": request.json["id"]}), 200
     except Exception as e:
         print(e)
         return {"error": "Cannot add meeting."}, 500
 
-# Remove meeting based on id from database - CHECKED 
+# Remove meeting based on id from database 
 @app.route("/remove_meeting", methods=["POST"])
 def remove_meeting():
     """
@@ -807,43 +803,102 @@ def remove_meeting():
         print(e)
         return {"error": "Cannot remove meeting."}, 500
 
-# list meetings that has the specified email address as its owner + remove any meetings that are "over"
-@app.route("/list_meetings_org")
-def list_meetings_org():
+# Get past meetings that has the specified email address as its organizer or attendee 
+@app.route("/get_past_meetings")
+def get_past_meetings():
     """
-        List meetings that has the specified email address as its owner + remove any meetings that are "over".
+        List upcoming meetings that has the specified email address as organizer or attendee 
         
         Expected GET params:
-            - "email" = <string: organizer's email>
+            - "email" = <string: attendee's email>
     """
     try:
         meeting_ref = db.collection(u"Meeting")
-        docs = meeting_ref.where("organizer", "==", request.args.get("email")).stream()
+        docs = meeting_ref.stream()
 
-        meeting_list = []
-        meetings_to_delete = []
+        meetings = []
+        meeting_timings = []
+
         for doc in docs:
-            if datetime.now() > datetime.strptime(doc.to_dict()["end"], "%m/%d/%Y"):
-                meetings_to_delete.append(doc.to_dict()["id"])
-            else:
-                meeting_list.append(doc.to_dict())
+            if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
+                if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                    meetings.append(doc.to_dict())
+                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
         
-        for meeting_id in meetings_to_delete:
-            requests.post("http://0.0.0.0:5001/remove_meeting", json = {"id" : meeting_id})
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings), reverse = True)]
     
-        return {"users": meeting_list}, 200
+        return {"meetings": sorted_meetings}, 200
 
     except Exception as e:
         print(e)
         return {"error": "Cannot retrieve meetings."}, 500
 
-# list meetings that has the specified email address as its attendee + remove any meetings that are "over"
+# Get upcoming meetings that has the specified email address as its organizer or attendee 
+@app.route("/get_upcoming_meetings")
+def get_upcoming_meetings():
+    """
+        List upcoming meetings that has the specified email address as organizer or attendee 
+        
+        Expected GET params:
+            - "email" = <string: attendee's email>
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
 
+        meetings = []
+        meeting_timings = []
 
+        for doc in docs:
+            if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
+                if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                    meetings.append(doc.to_dict())
+                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+        
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+    
+        return {"meetings": sorted_meetings}, 200
 
-# edit meetings 
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot retrieve meetings."}, 500
 
+# Modify meeting settings 
+@app.route("/modify_meeting", methods=["POST"])
+def modify_meeting():
+    """
+        Modify meeting settings in the database.
+        
+        Expected JSON object (NOTE: If the value is empty, function will take as there are no changes required/Can pass in only key-value pairs that require modification, meaning you don't have to pass in the exact JSON object below BUT id is a mandatory field that cannot be changed):
+        {
+            "id" : <string: meeting's unique uuid>
+            "attendees" : <array: meeting's attendess>,
+            "start" : <datetime: meeting's start datetime>,
+            "end" : <datetime: meeting's end datetime>,
+            "name" : <string: meeting's name>,
+            "organizer" : <string: meeting's organizer>,
+            "room_link" : <string: meeting's room link>
+        }
 
+        * room_link cannot be modified by user input *
+
+    """
+    try:
+
+        processed_json = { k: v for k, v in request.json.items() if v }
+        if bool(processed_json):
+            meeting_ref = db.collection(u"Meeting")
+            doc_id = list(meeting_ref.where("id", "==", request.json["id"]).stream())[0].id
+
+            processed_json.pop("id", None)
+
+            meeting_ref.document(doc_id).update(processed_json)
+
+        return jsonify({"success": True}), 200
+
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot modify meeting."}, 500
 
 # =========================== # 
 #      HYBRID FUNCTIONS       #
@@ -920,7 +975,7 @@ def complete_task():
         exp = EXP_CONST[task_obj["priority"]]
 
         # Check if the current datetime is more than the end datetime == means that the task is overdue
-        if datetime.now() > datetime.strptime(end, "%m/%d/%Y"):
+        if datetime.now() > datetime.strptime(str(end).split("+")[0], "%Y-%m-%d %H:%M:%S"):
 
             # Delete those exp from the user 
             for user in users:
