@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css">
+    
     <style>
         body {
             background-image: url("../assets/bg.jpg");
@@ -48,6 +50,12 @@
             width: 160px;
             height: 91px;
         } */
+
+
+        .fc-daygrid-day {
+            padding: 40px;
+            background-color: #fff2d6;
+        }
 
         #ch-window {
             width: 100%;
@@ -120,10 +128,22 @@
             height: 420px;
         }
 
-        #chart_div {
-            margin: 30px 0px;
-            background: transparent;
+        #gantt_div {
+            margin: 30px 0px !important;
+            background: transparent !important;
             /* width: 700px; */
+        }
+
+        #calendar_div {
+            margin: 30px 0px !important;
+            background: transparent !important;
+            /* width: 700px; */
+        }
+
+        .hide {
+            display: none;
+            margin: 30px 0px !important;
+            background: transparent !important;
         }
     </style>
 </head>
@@ -399,6 +419,7 @@
             <div class="row justify-content-md-center">
                 <!-- BUTTON SIDEBAR -->
                 <div class="col-2 py-3 text-center" id="sidebar">
+                    <button class="btn btn-primary sidebar-btn shadow-sm" v-on:click="toggleView">Change View</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal" data-toggle="modal">Add
                         Task</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
@@ -407,9 +428,10 @@
                 <!-- GANTT CHART -->
                 <div class="col-10" id="gantt-chart" style="overflow: scroll;">
                     <div class="container">
-                        <div class="row">
-                            <div class="col text-center mt-2">
-                                <div id="chart_div"></div>
+                        <div class="row" >
+                            <div class="col text-center mt-2" :key="viewKey">
+                                <div id="calendar_div" v-bind:class="{ hide: ganttView == false }" ></div>
+                                <div id="gantt_div" v-bind:class="{ hide: ganttView }"></div>
                             </div>
                         </div>
                     </div>
@@ -430,11 +452,18 @@
         crossorigin="anonymous"></script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/combine/npm/fullcalendar@5.3.2,npm/fullcalendar@5.3.2/locales-all.min.js,npm/fullcalendar@5.3.2/main.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
     <script>
 
         var app = new Vue({
             el: '#tasks',
             data: {
+                ganttView: true,
+                calendarView: false,
+                viewKey: 0,
                 user: {
                     loggedInUser: "naruto@wad2.co",
                     userLevel: "",
@@ -468,6 +497,40 @@
                 
             },
             methods: {
+                toggleView: function() {
+
+                    if (this.ganttView == true) {
+                        this.ganttView = false
+                    } else {
+                        this.ganttView = true
+                    }
+
+                },
+                loadGantt: function() {
+                    google.charts.load('current', { 'packages': ['gantt'] });
+                    google.charts.setOnLoadCallback(this.drawChart);
+                },
+                loadCalendar: function() {
+                    event_list = []
+                    
+                    for (const task of this.tasks.tasks) {
+                        var e = {}
+                        e["id"] = task["id"]
+                        e["title"] = task["name"]
+                        e["start"] = new Date(task["start"]).toISOString().substr(0, 19)
+
+                        event_list.push(e)
+                    }
+                    
+                    var calendarEl = document.getElementById('calendar_div');
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        events: event_list
+                    });
+
+                    calendar.render();
+
+                },
                 completeTask: function() {
                     fetch("http://localhost:5001/complete_task", {
                         method: "POST",
@@ -475,10 +538,12 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            id: this.chosenTask.id
+                            id: this.chosenTask.id,
+                            email: this.user.loggedInUser
                         })
                     }).then(res => {
-                        location.reload()
+                        console.log(res)
+                        // location.reload()
                     })
                 },
                 modifyTask: function () {
@@ -572,8 +637,8 @@
                         };
 
                         // Create gantt chart
-                        var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
-                        var container = document.getElementById("chart_div")
+                        var chart = new google.visualization.Gantt(document.getElementById('gantt_div'));
+                        var container = document.getElementById("gantt_div")
                         
                         // When user selects task, open modify task popup
                         google.visualization.events.addListener(chart, "select", () => {
@@ -632,6 +697,8 @@
             },
             // When Vue view is created, runs the following functions
             async created() {
+                
+
                 // Gets all users in the guild
                 var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
                     var data = res.json().then(data => {
@@ -645,7 +712,15 @@
                 })
 
                 // Gets all tasks in the guild to display in gantt chart
-                await fetch("http://localhost:5001/get_all_tasks?guild=wad2_guild").then(res => {
+                await fetch("http://localhost:5001/get_tasks/false", {
+                    method: "POST",
+                    headers: {
+                            "Content-Type": "application/json"
+                        },
+                    body: JSON.stringify({
+                        "guild": this.guild.name
+                    })
+                }).then(res => {
                     var data = res.json().then(data => {
                         this.tasks.tasks = data["tasks"]
                     }
@@ -671,15 +746,18 @@
                 })
 
 
-                // Loads gantt chart
-                google.charts.load('current', { 'packages': ['gantt'] });
-                google.charts.setOnLoadCallback(this.drawChart);
-
+                
                 // Initialises image of bad guys
                 initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
+                this.loadGantt()
+                this.loadCalendar()
 
+               
             }
+                
+
+                
 
         });
 
