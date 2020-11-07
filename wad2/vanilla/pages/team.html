@@ -117,6 +117,13 @@
 
         }
 
+        .test {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
     </style>
 </head>
 
@@ -182,10 +189,19 @@
         <br v-if='members.length > 0'>
 
         <div class="row">
-            <div class="col">
-                <h1>TEAM</h1>
-                    <div id="myheatMap"></div>
-                    <canvas id="myChart" width="400" height="400"></canvas>
+            <div class="col-sm-4 text-center">
+                <table class='table table-borderless' style='height:100%;'>
+                    <thead>
+                        <tr><th><span class='display-4'>TEAM</span></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Streak:</td></tr>
+                        <tr><td>Exp Multiplier:</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class='col-sm-8'>
+                <canvas id="myChart"></canvas>
             </div>
         </div>
     </div>
@@ -206,9 +222,9 @@
     <script>
 
         var myData = [new Date(2020, 5, 5)]
-        $('#myheatMap').github_graph( {
+        $('#myheatMap').github_graph({
             data: myData,
-            texts: ['completed task','completed tasks']
+            texts: ['completed task', 'completed tasks']
         });
         var app = new Vue(
             {
@@ -217,6 +233,7 @@
                     'BootstrapTable': BootstrapTable
                 },
                 data: {
+                    guildname: 'wad2_guild',
                     teamname: 'JH-and-WX',
                     reponame: "private_test",
                     columns: [
@@ -286,7 +303,6 @@
                                 for (member of members) {
                                     if (member[0] == author) {
                                         // member["commits"] = data.length
-                                        console.log("here");
                                         member.push(data.length);
                                     }
                                     app.sortedMembersAsc()
@@ -307,8 +323,13 @@
                         request.onreadystatechange = function () {
                             if (this.readyState == 4 && this.status == 200) {
                                 var json = JSON.parse(this.responseText);
-                                console.log(json);
-                                myChart.data.datasets[0].data = [json.all[51], json.all[50], json.all[49], json.all[48], json.all[47]];
+                                console.log(json)
+                                // myChart.data.datasets[0].data = [json.all[51], json.all[50], json.all[49], json.all[48], json.all[47], json.all[46]]
+                                myChart.data.datasets[0].data = json.all.slice(46, 52)
+                                let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+                                let currentMonth = new Date().getMonth()
+                                myChart.data.labels = months.slice(currentMonth - 5, currentMonth + 1)
+                                myChart.update()
                             }
                         }
 
@@ -317,7 +338,6 @@
                         request.send();
                     },
                     sortedMembersAsc: function () {
-                        console.log("hi")
                         function compare(a, b) {
                             if (a[2] > b[2])
                                 return -1;
@@ -327,6 +347,9 @@
                         }
                         return this.members.sort(compare);
                     }
+                },
+                computed: {
+
                 }
             }
         );
@@ -335,29 +358,19 @@
 
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                labels: ["January", "February", "March", "April", "May", "June"],
                 datasets: [{
-                    label: '# of Votes',
-                    data: [3, 19, 3, 5, 2, 3],
+                    label: '# of Commits',
+                    data: [],
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
+                        'rgba(200, 248, 244, 0.25)',
                     ],
                     borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
+                        'rgba(151, 186, 105, 1)',
                     ],
-                    borderWidth: 1
+                    borderWidth: 3
                 }]
             },
             options: {
