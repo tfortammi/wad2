@@ -110,7 +110,7 @@
                 margin-left: 20px;
             }
 
-            
+
             #ch-window {
                 animation: displace 3s linear infinite;
             }
@@ -192,11 +192,17 @@
             <div class="col-sm-4 text-center">
                 <table class='table table-borderless' style='height:100%;'>
                     <thead>
-                        <tr><th><span class='display-4'>TEAM</span></th></tr>
+                        <tr>
+                            <th><span class='display-4'>TEAM</span></th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Streak:</td></tr>
-                        <tr><td>Exp Multiplier:</td></tr>
+                        <tr>
+                            <td>Streak: <span style="font-size: 28px;">{{guild.streak}} days</span></td>
+                        </tr>
+                        <tr>
+                            <td>Exp Multiplier:</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -234,8 +240,19 @@
                 },
                 data: {
                     guildname: 'wad2_guild',
+                    guild: {
+                        name: "wad2_guild",
+                        streak: "",
+                        users: []
+                    },
                     teamname: 'JH-and-WX',
                     reponame: "private_test",
+                    user: {
+                        loggedInUser: "naruto@wad2.co",
+                        userLevel: "",
+                        userExp: "",
+                        token: ""
+                    },
                     columns: [
                         {
                             title: 'Username',
@@ -348,8 +365,46 @@
                         return this.members.sort(compare);
                     }
                 },
-                computed: {
+                async created() {
 
+                    if (sessionStorage.getItem("user") !== null) {
+                        // Retrieve
+                        this.user.loggedInUser = sessionStorage.getItem("user");
+                        console.log(sessionStorage.getItem("user"));
+                    }
+                    else {
+                        window.location.replace("./login.html");
+                    }
+
+                    // Gets all users in the guild
+                    var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
+                        var data = res.json().then(data => {
+                            var user_arr = [];
+                            for (u of data["users"]) {
+                                user_arr.push([u["name"], u["email"]]);
+                            }
+                            this.guild.users = user_arr;
+                            console.log(this.guild.users);
+                        })
+
+                    })
+
+                    // Gets the information of the logged in user
+                    await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
+                        var data = res.json().then(data => {
+                            this.user.userLevel = data["level"];
+                            this.user.userExp = data["exp"];
+                            this.user.token = data["git_token"];
+                            console.log(this.user.token);
+                        })
+                    })
+
+                    // Gets guild info
+                    await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
+                        var data = res.json().then(data => {
+                            this.guild.streak = data["streak"];
+                        })
+                    })
                 }
             }
         );
