@@ -123,8 +123,8 @@
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                id: this.loginInfo.email,
-                                email: this.loginInfo.password
+                                email: this.loginInfo.email,
+                                password: this.loginInfo.password
                             })
                         }).then(res => {
                             console.log(res)
