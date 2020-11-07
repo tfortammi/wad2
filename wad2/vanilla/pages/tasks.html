@@ -13,7 +13,7 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css">
-    
+    <link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
     <style>
         body {
             background-image: url("../assets/bg.jpg");
@@ -37,20 +37,6 @@
         #ch-container {
             width: 80%;
         }
-
-        /* #ch-window {
-            border: 5px solid #a8c582;
-            background-image: url("../assets/ch-bg.png");
-            background-size: 150px;
-            height: 140px;
-        }
-         */
-
-        /* .container {
-            width: 160px;
-            height: 91px;
-        } */
-
 
         .fc-daygrid-day {
             padding: 40px;
@@ -115,7 +101,6 @@
 
         #sidebar {
             border: 5px solid #a8c582;
-            border-right: none;
         }
 
         .sidebar-btn {
@@ -123,27 +108,9 @@
             width: 120px;
         }
 
-        #gantt-chart {
+        #gantt-chart, #calendar-col {
             border: 5px solid #a8c582;
             height: 420px;
-        }
-
-        #gantt_div {
-            margin: 30px 0px !important;
-            background: transparent !important;
-            /* width: 700px; */
-        }
-
-        #calendar_div {
-            margin: 30px 0px !important;
-            background: transparent !important;
-            /* width: 700px; */
-        }
-
-        .hide {
-            display: none;
-            margin: 30px 0px !important;
-            background: transparent !important;
         }
         
         #meeting-list {
@@ -165,6 +132,45 @@
         .meeting-row {
             border-top: 1px solid #007bff !important;
         }
+
+        @media (max-width: 767.98px) {
+
+            #demon {
+                margin-left: 20px;
+            }
+
+            .fc-toolbar-title {
+                width: 210%;
+                position: relative;
+                top: -15px;
+            }
+
+            .fc-today-button {
+                top: 60px;
+                margin-bottom: 15px;
+                position: relative;
+                left: -100%;
+            }
+
+            .fc-toolbar-chunk .btn-group {
+                position: relative;
+                top: -50%;
+            }
+
+            #ch-window {
+                width: 100%;
+                height: 100%;
+                border: 5px solid #a8c582;
+                background: url("../assets/ch-bg.png") repeat-x right center;
+                background-size: 150px;
+                -webkit-animation: displace 10s linear infinite;
+                animation: displace 3s linear infinite;
+            }
+
+         }
+
+         
+
     </style>
 </head>
 
@@ -238,6 +244,7 @@
                                     <span class="input-group-text" id="basic-addon1">Dependency</span>
                                 </div>
                                 <select v-model="chosenTask.dependency" class="custom-select" id="inputGroupSelect01">
+                                    <option value="none">None</option>
                                     <option v-for="task in tasks.tasks" v-bind:id="task['id']"
                                         v-bind:value="task['id']">{{task["name"]}}
                                         [{{new Date(task["end"]).toLocaleDateString()}}]</option>
@@ -429,7 +436,7 @@
 
             <div class="row justify-content-md-center">
                 <!-- CHARACTER INFO CONTAINER -->
-                <div class="col-2 text-center py-3" id="lvl-window">
+                <div class="col-lg-2 text-center py-3" id="lvl-window">
                     <h5>Streak: {{guild.streak}} days</h5>
                     <h1 id="lvl" class="font-weight-bold">Lvl: {{user.userLevel}}</h1>
                     <h4 id="exp">EXP: {{user.userExp}}</h4>
@@ -439,7 +446,7 @@
                     </div>
                 </div>
                 <!-- CHARACTER RUNNING CONTAINER -->
-                <div class="col-10 p-0">
+                <div class="col-lg-10 p-0">
                     <div class="col" id="ch-window">
                         <canvas id="ch-img" width="150" height="150"></canvas>
                         <canvas id="demon" width="150" height="150"></canvas>
@@ -450,28 +457,35 @@
 
             <div class="row justify-content-md-center">
                 <!-- BUTTON SIDEBAR -->
-                <div class="col-2 py-3 text-center" id="sidebar">
-                    <button class="btn btn-primary sidebar-btn shadow-sm" v-on:click="toggleView">Change View</button>
-                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal"
-                        data-toggle="modal">Add
-                        Task</button>
-                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
-                        data-toggle="modal">Add Meeting</button>
-                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleView('meetings')">View
-                        Meetings</button>
+                <div class="col-lg-2 py-3 text-center" id="sidebar">
+                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleView('meetings')">View {{nextView}}</button>
+                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleTaskView">View: {{taskView}}</button>
+                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal" data-toggle="modal">Add Task</button>
+                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal" data-toggle="modal">Add Meeting</button>
                 </div>
+                
                 <!-- GANTT CHART -->
-                <div class="col-10" id="gantt-chart" style="overflow: scroll;">
+                <div class="col-lg-10" id="gantt-chart" style="overflow: scroll;">
                     <div class="container">
                         <div class="row" >
                             <div class="col text-center mt-2" :key="viewKey">
-                                <div id="calendar_div" v-bind:class="{ hide: ganttView == false }" ></div>
-                                <div id="gantt_div" v-bind:class="{ hide: ganttView }"></div>
+                                <div id="gantt_div"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-10" id="meeting-list" style="overflow: scroll; display: none;">
+
+                <div class="col-lg-10" id="calendar-col" style="overflow: scroll; display: none;">
+                    <div class="container">
+                        <div class="row" >
+                            <div class="col text-center mt-2" :key="viewKey">
+                                <div id="calendar_div" ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-10" id="meeting-list" style="overflow: scroll; display: none;">
                     <div class="container">
                         <div class="row">
                             <ul class="w-100 nav nav-fill nav-pills mb-3" id="pills-tab" role="tablist">
@@ -610,16 +624,16 @@
     </script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/combine/npm/fullcalendar@5.3.2,npm/fullcalendar@5.3.2/locales-all.min.js,npm/fullcalendar@5.3.2/main.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
+    <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
+    <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
     <script>
         var app = new Vue({
             el: '#tasks',
             data: {
-                ganttView: true,
-                calendarView: false,
+                taskView: "Gantt",
+                nextView: "Meeting",
                 viewKey: 0,
                 user: {
                     loggedInUser: "naruto@wad2.co",
@@ -665,18 +679,9 @@
                 past_meetings: {
                     show: true,
                     meetings: []
-                }
+                },
             },
             methods: {
-                toggleView: function() {
-
-                    if (this.ganttView == true) {
-                        this.ganttView = false
-                    } else {
-                        this.ganttView = true
-                    }
-
-                },
                 loadGantt: function() {
                     google.charts.load('current', { 'packages': ['gantt'] });
                     google.charts.setOnLoadCallback(this.drawChart);
@@ -695,8 +700,19 @@
                     
                     var calendarEl = document.getElementById('calendar_div');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
-                        initialView: 'dayGridMonth',
-                        events: event_list
+                        initialView: $(window).width() < 514 ? 'listWeek' : 'dayGridMonth',
+                        events: event_list,
+                        eventTextColor: "black",
+                        themeSystem: "bootstrap",
+                        windowResize: function(arg) {
+                            if ($(window).width() < 514){
+                                console.log(arg.view.type)
+                                calendar.changeView('listWeek' );
+                            } else {
+                                calendar.changeView('dayGridMonth' );
+                            }
+                        }
+                        
                     });
 
                     calendar.render();
@@ -713,7 +729,9 @@
                             email: this.user.loggedInUser
                         })
                     }).then(res => {
-                        console.log(res)
+                        data = res.json()
+                        this.user.userExp = data["new_exp"]
+                        this.user.userLevel = data["new_level"]
                         // location.reload()
                     })
                 },
@@ -755,7 +773,8 @@
                             guild: this.tasks.guild
                         })
                     }).then(res => {
-                        location.reload()
+                        console.log(res.json())
+                        // location.reload()
                     })
                 },
                 addMeeting: function () {
@@ -830,11 +849,38 @@
 
                         if (meeting_flag) {
                             document.getElementById("gantt-chart").style.display = "none";
+                            document.getElementById("calendar-col").style.display = "none";
                             document.getElementById("meeting-list").style.display = "block";
+
+                            this.nextView = "Tasks"
                         } else {
                             document.getElementById("gantt-chart").style.display = "block";
                             document.getElementById("meeting-list").style.display = "none";
+                            document.getElementById("calendar-col").style.display = "none";
+
+                            this.nextView = "Meetings"
+
                         }
+                    }
+
+                },
+                toggleTaskView: function() {
+
+                    if (this.taskView == "Gantt") {
+                        document.getElementById("meeting-list").style.display = "none";
+                        document.getElementById("calendar-col").style.display = "block";
+                        document.getElementById("gantt-chart").style.display = "none";
+
+                        this.loadCalendar()
+
+                        this.taskView = "Calendar"
+
+                    } else if (this.taskView == "Calendar") {
+                        document.getElementById("meeting-list").style.display = "none";
+                        document.getElementById("calendar-col").style.display = "none";
+                        document.getElementById("gantt-chart").style.display = "block";
+
+                        this.taskView = "Gantt"
                     }
 
                 },
@@ -855,19 +901,36 @@
                     var tasks = this.tasks.tasks
                     var gantt_tasks = []
                     if (tasks !== undefined) {
+
+                        var smallest = 100000000000000
+                        var biggest = 0
                         tasks.forEach(task => {
-                            var task_arr = [task["id"], task["name"], task["priority"], new Date(
+                            var task_arr = [task["id"], task["name"], (task["status"]).toString(), new Date(
                                 task["start"]), new Date(task["end"]), null, 100, task[
                                 "dependency"]]
                             gantt_tasks.push(task_arr)
+
+                            var task_start = new Date(task["start"]).getTime() / 1000
+                            if (task_start < smallest) {
+                                smallest = task_start
+                            }
+
+                            var task_end = new Date(task["end"]).getTime() / 1000
+
+                            if (task_end > biggest) {
+                                biggest = task_end
+                            }
                         });
 
                         // add data to data table
                         dataTable.addRows(gantt_tasks)
 
+                        console.log((biggest - smallest) / 10000)
+
                         // options for gantt chart
                         var options = {
                             height: dataTable.getNumberOfRows() * 50,
+                            width: (biggest - smallest) / 5000,
                             gantt: {
                                 backgroundColor: "transparent",
                                 arrow: {
@@ -967,6 +1030,10 @@
                             });
                         });
 
+                        google.visualization.events.addListener(chart, "error", function(googleError) {
+                            google.visualization.errors.removeError(googleError.id)
+                        })
+
                         chart.draw(dataTable, options);
                     }
 
@@ -990,16 +1057,9 @@
                 })
 
                 // Gets all tasks in the guild to display in gantt chart
-                await fetch("http://localhost:5001/get_tasks/false", {
-                    method: "POST",
-                    headers: {
-                            "Content-Type": "application/json"
-                        },
-                    body: JSON.stringify({
-                        "guild": this.guild.name
-                    })
-                }).then(res => {
+                await fetch("http://localhost:5001/get_all_tasks?guild=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
+                        console.log(data)
                         this.tasks.tasks = data["tasks"]
                     })
                 })
@@ -1027,7 +1087,6 @@
                 initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
                 this.loadGantt()
-                this.loadCalendar()
 
                 // Load their upcoming meetings
                 await fetch("http://localhost:5001/get_upcoming_meetings?email=" + this.user.loggedInUser)

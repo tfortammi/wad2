@@ -12,66 +12,100 @@
     <link rel="stylesheet" href="../style.css">
 
     <style>
-        body {
+    
+
+        #hero {
+            width: 100%;
+            background-color: #57D2F4;
+            height: 90vh;
+        }
+
+        #hero h1 {
+            font-size: 3em;
+        }
+
+        #hero .lead {
+            font-size: 1.5em;
+        }
+
+        #hero .jumbotron {
             background-image: url("../assets/bg.jpg");
             background-size: cover;
-            background-repeat: no-repeat;
-            height: 100%;
-            overflow-x: hidden;
-            background-color: #02a385;
-        }
-
-        .row {
-            background-color: transparent;
-        }
-
-        #home-title {
-            font-size: 80px;
-            margin-top: 50px;
-        }
-
-        #software-title {
-            font-size: 60px;
-            margin-top: 200px;
-            margin-left: 25%;
+            background-position: top 300px;
+            height: 90vh;
             width: 100%;
+            background-repeat: no-repeat;
         }
 
-        mark {
-            background-color: rgb(255, 255, 196);
-            opacity: 0.7;
+        #scene {
+           position: absolute;
+           top: 70%;
+           right: 20%;
         }
 
-        #elf, #dragon, #knight, #wizard {
-            margin: 20% 0 0 0;
+        .section {
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            margin: 5% 0%;
         }
 
-        #chars {
-            margin-left: 32%;
+        .b1 h1 {
+            margin-left: 10%;
         }
 
-        #bg {
-            background-image: url("../assets/ch-bg.png");
-            background-size: 120px;
-            width: 570px;
-            height: 120px;
-            margin-left: 300px;
-            margin-top: 7%;
-            z-index: -100;
+        .b2 img {
+            margin-left: 10%;
         }
 
-
-        .card-bg {
-            border-radius: 15px;
-            margin-top: 300px;
-            width: 900px;
-            margin-left: 170px;
-            -webkit-box-shadow: 10px 10px 16px -4px rgba(0,0,0,0.38);
-            -moz-box-shadow: 10px 10px 16px -4px rgba(0,0,0,0.38);
-            box-shadow: 10px 10px 16px -4px rgba(0,0,0,0.38);
-            margin-bottom: 70px;
+        .b1 {
+            background-color: white;
         }
 
+        .b2 {
+            background-color: rgb(236, 236, 236);
+        }
+
+        @media (max-width: 767.98px) {
+
+            #hero .lead {
+                font-size: 1em;
+            }
+
+            #scene {
+                position: relative;
+                left: 10%;
+                top: -30%;
+            }
+
+            .section {
+                height: 30vh;
+                margin-top: 10%;
+                display: flex;
+                align-items: center;
+                text-align: center;
+
+            }
+
+            .section h1 {
+                margin-left: 0%;
+                font-size: 2em;
+                margin: auto;
+            }
+
+            .b1 img {
+                margin: auto;
+                position: relative;
+                top: -30%;
+            }
+
+            .b2 img {
+                margin: auto;
+                position: relative;
+            }
+
+
+        }
 
     </style>
 </head>
@@ -104,37 +138,61 @@
         </div>
     </nav>
 
-    <div class="container-fluid" id="home">
+    <div class="container-fluid" style="overflow: hidden;">
         <div class="row">
-            <div class="col">
-                <div id="scene" class="text-center">
-                    <div data-depth="0.3">
-                        <h1 id="home-title">Build Your Guild</h1>
-                    </div>
-                    <div data-depth="0.6" id="chars">
-                        <canvas id="elf" width="100" height="100"></canvas>
-                        <canvas id="dragon" width="100" height="100"></canvas>
-                        <canvas id="knight" width="100" height="100"></canvas>
-                        <canvas id="wizard" width="100" height="100"></canvas>
-                    </div>
-                    <!-- <div data-depth="0.5" id="bg">
-                    </div> -->
-                    <div div="mx-auto" data-depth="0.3">
-                        <h2 id="software-title"><mark>And manage your software projects!</mark></h2>
-                    </div>
-
-                    <div class="bg-white w-3 card-bg" data-depth="0.6">
-                        <h2 class="p-3">Make work fun and easy</h2>
-                        <h2 class="p-3">Manage tasks through Gantt Charts</h2>
-                        <h2 class="p-3">Set Meetings easily</h2>
-                        <h2 class="p-3">Track progress and reward good work</h2>
-                    </div>
-
+            <div class="col p-0" id="hero">
+                <br>
+                <div class="jumbotron jumbotron-fluid p-5" data-depth="0.1">
+                    <h1 class="display-4">ProjectQuest</h1>
+                    <p class="lead">Build your guild and manage software projects easily and effectively using ProjectQuest!</p>
+                    <br>
+                    <p class="lead">
+                      <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                    </p>
                 </div>
-
-                <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
+                <div id="scene">
+                    <div data-depth="0.6" id="chars">
+                        <canvas id="elf" width="60" height="100"></canvas>
+                        <canvas id="dragon" width="60" height="100"></canvas>
+                        <canvas id="knight" width="60" height="100"></canvas>
+                        <canvas id="wizard" width="60" height="100"></canvas>
+                    </div>
+                </div>
+                
             </div>
         </div>
+
+        <div class="row text-center b1">
+            <div class="col-sm section">
+                <br><br><br><br>
+                <h1>Make Team Management Fun & Easy</h1>
+            </div>
+            <div class="col-sm section">
+                <img width="80%" src="../assets/people.png">
+            </div>
+        </div>
+
+        <div class="row text-center b2">
+            <div class="col-sm section">
+                <img width="80%" src="../assets/graph.png">
+            </div>
+            <div class="col-sm section">
+                <br><br><br><br>
+                <h1>Track & Reward Progress</h1>
+            </div>
+        </div>
+
+        <div class="row text-center b1">
+            <div class="col-sm section">
+                <br><br><br><br>
+                <h1>Manage Remote<br>Teams</h1>
+            </div>
+            <div class="col-sm section">
+                <img width="60%" src="../assets/computer.png">
+            </div>
+        </div>
+
+    </div>
         
     </div>
 
@@ -156,7 +214,14 @@
         );
 
         var scene = document.getElementById('scene');
-        var parallaxInstance = new Parallax(scene);
+        var parallaxInstance;
+        if ($(window).width() > 514){
+            parallaxInstance = new Parallax(scene);
+        } 
+
+        window.onresize = function() {
+            location.reload()
+        }
 
         function initialiseImage(src, query) {
             let img = new Image();
@@ -168,17 +233,28 @@
             let canvas = document.querySelector(query);
             let ctx = canvas.getContext('2d');
 
-            const scale = 1.5;
-            const width = 65;
-            const height = 170;
-            const scaledWidth = scale * width;
-            const scaledHeight = scale * height;
+            var scale = 1.2;
+            var width = 65;
+            var height = 170;
+            var scaledWidth = scale * width;
+            var scaledHeight = scale * height;
+            var y = -20
+
+            if ($(window).width() < 514) {
+                scale = 1;
+                width = 65;
+                height = 100;
+                scaledWidth = scale * width;
+                scaledHeight = scale * height;
+                y = -20
+            }
+            
             function init() {
-                ctx.drawImage(img, 0, 0, width, height, 0, -50, scaledWidth, scaledHeight);
+                ctx.drawImage(img, 0, 0, width, height, -3, y, scaledWidth, scaledHeight);
             }
 
             function drawFrame(frameX, frameY, canvasX, canvasY) {
-                ctx.drawImage(img, frameX * width, 0, width, height, 0, -30, scaledWidth, scaledHeight);
+                ctx.drawImage(img, frameX * width, 0, width, height, -3, y, scaledWidth, scaledHeight);
             }
 
             const cycleLoop = [0, 1, 2, 3];
@@ -203,48 +279,10 @@
             }
         }
 
-        initialiseImage("../assets/elf_spritesheet.png", "#elf")
-        initialiseImage("../assets/knight_spritesheet.png", "#knight")
-        initialiseImage("../assets/wizard_spritesheet.png", "#wizard")
-        initialiseImage("../assets/dragon_spritesheet.png", "#dragon")
-
-        // var ctx = document.getElementById('myChart').getContext('2d');
-        // var myChart = new Chart(ctx, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        //         datasets: [{
-        //             label: '# of Votes',
-        //             data: [12, 19, 3, 5, 2, 3],
-        //             backgroundColor: [
-        //                 'rgba(255, 99, 132, 0.2)',
-        //                 'rgba(54, 162, 235, 0.2)',
-        //                 'rgba(255, 206, 86, 0.2)',
-        //                 'rgba(75, 192, 192, 0.2)',
-        //                 'rgba(153, 102, 255, 0.2)',
-        //                 'rgba(255, 159, 64, 0.2)'
-        //             ],
-        //             borderColor: [
-        //                 'rgba(255, 99, 132, 1)',
-        //                 'rgba(54, 162, 235, 1)',
-        //                 'rgba(255, 206, 86, 1)',
-        //                 'rgba(75, 192, 192, 1)',
-        //                 'rgba(153, 102, 255, 1)',
-        //                 'rgba(255, 159, 64, 1)'
-        //             ],
-        //             borderWidth: 1
-        //         }]
-        //     },
-        //     options: {
-        //         scales: {
-        //             yAxes: [{
-        //                 ticks: {
-        //                     beginAtZero: true
-        //                 }
-        //             }]
-        //         }
-        //     }
-        // });
+        initialiseImage("../assets/elf_spritesheet.png", "#elf");
+        initialiseImage("../assets/knight_spritesheet.png", "#knight");
+        initialiseImage("../assets/wizard_spritesheet.png", "#wizard");
+        initialiseImage("../assets/dragon_spritesheet.png", "#dragon");
 
     </script>
 </body>

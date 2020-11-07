@@ -103,6 +103,20 @@
             background-color: #a8c582;
             border-color: #dee2e6;
         }
+
+        @media (max-width: 767.98px) {
+
+            #demon {
+                margin-left: 20px;
+            }
+
+            
+            #ch-window {
+                animation: displace 3s linear infinite;
+            }
+
+        }
+
     </style>
 </head>
 
@@ -145,11 +159,11 @@
         </div>
 
         <div class="row justify-content-md-center">
-            <div class="col-2 text-center py-3" id="lvl-window">
+            <div class="col-sm-2 text-center py-3" id="lvl-window">
                 <h1 class="font-weight-bold"> {{ teamname }}</h1>
                 <a class="btn btn-primary" href="./inviteorgmembers.html">Invite Members</a>
             </div>
-            <div class="col-10 p-0">
+            <div class="col-sm-10 p-0">
                 <div class="col" id="ch-window">
                     <canvas id="ch-img" width="150" height="150"></canvas>
                     <canvas id="demon" width="150" height="150"></canvas>

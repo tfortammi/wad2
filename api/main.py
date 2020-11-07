@@ -241,6 +241,13 @@ def modify_task():
     """
     try:
         processed_json = { k: v for k, v in request.json.items() if v }
+
+        processed_json["start"] = datetime.strptime(processed_json["start"], "%m/%d/%Y")
+        processed_json["end"] = datetime.strptime(processed_json["end"], "%m/%d/%Y")
+
+        if (processed_json["dependency"] == "none"):
+            processed_json["dependency"] = ""
+
         if bool(processed_json):
             task_ref = db.collection(u"Task")
             doc_id = list(task_ref.where("id", "==", request.json["id"]).stream())[0].id
@@ -964,7 +971,7 @@ def complete_task():
         task_obj = list(task_ref.where("id", "==", request.json["id"]).stream())[0].to_dict()
 
         # Initialize the necessary variables 
-        end = task_obj["end"]
+        end = str(task_obj["end"]).split(".")[0]
         users = task_obj["assignedTo"]
         guild = task_obj["guild"]
 
