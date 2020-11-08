@@ -156,21 +156,15 @@
     </nav>
 
     <div class="container" id="team">
-        <br>
-        <div class="form-group row d-none">
-            <label for="token" class="col-sm-2 col-form-label">Token key:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="token"
-                    placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62" value="">
-            </div>
-        </div>
+        <br />
 
         <div class="row justify-content-md-center">
-            <div class="col-sm-2 text-center py-3" id="lvl-window">
+            <div class="col-lg-2 text-center py-3" id="lvl-window">
                 <h1 class="font-weight-bold"> {{ teamname }}</h1>
                 <a class="btn btn-primary" href="./inviteorgmembers.html">Invite Members</a>
             </div>
-            <div class="col-sm-10 p-0">
+            <!-- CHARACTER RUNNING CONTAINER -->
+            <div class="col-lg-10 p-0">
                 <div class="col" id="ch-window">
                     <canvas id="ch-img" width="150" height="150"></canvas>
                     <canvas id="demon" width="150" height="150"></canvas>
@@ -239,7 +233,6 @@
                     'BootstrapTable': BootstrapTable
                 },
                 data: {
-                    guildname: 'wad2_guild',
                     guild: {
                         name: "wad2_guild",
                         streak: "",
@@ -248,25 +241,29 @@
                     teamname: 'JH-and-WX',
                     reponame: "private_test",
                     user: {
-                        loggedInUser: "naruto@wad2.co",
+                        loggedInUser: "",
                         userLevel: "",
                         userExp: "",
-                        token: ""
+                        token: "",
+                        git_username: ""
                     },
                     columns: [
                         {
                             title: 'Username',
+                            field: "username",
                         },
                         {
                             title: 'Role',
+                            field: "role",
                         },
                         {
                             title: 'Commits',
+                            field: "commits",
                         }
                         ,
                         {
                             title: 'Level',
-                            field: 'level'
+                            field: "level",
                         }
                     ],
                     members: [
@@ -278,7 +275,7 @@
                 },
                 methods: {
                     displayTable: function () {
-                        var token = document.getElementById("token").placeholder;
+                        var token = this.user.token;
                         this.getMembers(token);
                         this.getTeamStats(token);
                     },
@@ -292,13 +289,8 @@
                                 var json = JSON.parse(this.responseText);
                                 // console.log(json);
                                 for (member of json) {
-                                    // let new_obj = {};
-                                    // new_obj["username"] = member.login;
-                                    // new_obj["role"] = member.type;
-                                    // members.push(new_obj);
-                                    members.push([member.login, member.type]);
+                                    members.push({username: member.login, role: member.type});
                                     app.getCommits(token, member.login);
-
                                 }
                             }
                         }
@@ -318,9 +310,9 @@
                             if (this.readyState == 4 && this.status == 200) {
                                 var data = JSON.parse(this.responseText);
                                 for (member of members) {
-                                    if (member[0] == author) {
-                                        // member["commits"] = data.length
-                                        member.push(data.length);
+                                    if (member["username"] == author) {
+                                        member["commits"] = data.length;
+                                        // member.push(data.length);
                                     }
                                     app.sortedMembersAsc()
                                 }
@@ -340,8 +332,7 @@
                         request.onreadystatechange = function () {
                             if (this.readyState == 4 && this.status == 200) {
                                 var json = JSON.parse(this.responseText);
-                                console.log(json)
-                                // myChart.data.datasets[0].data = [json.all[51], json.all[50], json.all[49], json.all[48], json.all[47], json.all[46]]
+                                // console.log(json)
                                 myChart.data.datasets[0].data = json.all.slice(46, 52)
                                 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
                                 let currentMonth = new Date().getMonth()
@@ -356,21 +347,42 @@
                     },
                     sortedMembersAsc: function () {
                         function compare(a, b) {
-                            if (a[2] > b[2])
+                            if (a["commits"] > b["commits"])
                                 return -1;
-                            if (a[2] < b[2])
+                            if (a["commits"] < b["commits"])
                                 return 1;
                             return 0;
                         }
                         return this.members.sort(compare);
                     }
+                    // ,
+                    // addUser: function () {
+                    //     fetch("http://localhost:5001/add_user", {
+                    //         method: "POST",
+                    //         headers: {
+                    //             "Content-Type": "application/json"
+                    //         },
+                    //         body: JSON.stringify({
+                    //             class: "knight",
+                    //             email: "nic@wad.co",
+                    //             password: "password",
+                    //             name: "Nic Wong",
+                    //             role: "Big boss",
+                    //             guild: "JH-and-WX",
+                    //             git_token: "ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62",
+                    //             git_username: "nicwongg",
+                    //         })
+                    //     }).then(res => {
+                    //         console.log(this.user.git_username);
+                    //     })
+                    // }
                 },
                 async created() {
 
                     if (sessionStorage.getItem("user") !== null) {
                         // Retrieve
                         this.user.loggedInUser = sessionStorage.getItem("user");
-                        console.log(sessionStorage.getItem("user"));
+                        // console.log(sessionStorage.getItem("user"));
                     }
                     else {
                         window.location.replace("./login.html");
@@ -381,10 +393,10 @@
                         var data = res.json().then(data => {
                             var user_arr = [];
                             for (u of data["users"]) {
-                                user_arr.push([u["name"], u["email"]]);
+                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"]]);
                             }
                             this.guild.users = user_arr;
-                            console.log(this.guild.users);
+                            // console.log(this.guild.users);
                         })
 
                     })
@@ -395,7 +407,11 @@
                             this.user.userLevel = data["level"];
                             this.user.userExp = data["exp"];
                             this.user.token = data["git_token"];
-                            console.log(this.user.token);
+                            // added dummy value
+                            // this.user.token = "ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62";
+                            // console.log(this.user.token);
+                            this.displayTable();
+
                         })
                     })
 
@@ -405,11 +421,40 @@
                             this.guild.streak = data["streak"];
                         })
                     })
+
+                    const headers = {
+                        "Authorization": `Token ${this.user.token}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+
+                    await fetch("https://api.github.com/user", {
+                        'method': "GET",
+                        'headers': headers
+                    }).then(res => {
+                        var data = res.json().then(data => {
+                            this.user.git_username = data.login;
+                            // console.log(this.user.git_username);
+                        })
+                    })
+
+                    if (this.members.length > 0 && this.guild.users.length > 0) {
+                        // console.log(this.guild.users);
+                        for (member of this.members) {
+                            // console.log(member[0]);
+                            for (user of this.guild.users) {
+                                if (user[2] == member["username"]) {
+                                    member["level"] = user[3];
+                                    // console.log(member["level"]);
+                                }
+                            }
+                        }
+                        this.sortedMembersAsc();
+                    }
                 }
             }
         );
 
-        app.displayTable();
+        // app.addUser();
 
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
