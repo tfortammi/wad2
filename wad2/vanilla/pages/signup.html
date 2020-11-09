@@ -28,13 +28,13 @@
         .col-form-label {
             color: #A41E29;
         }
-
     </style>
 </head>
 
 <body>
 
-    <div class="modal fade" id='successModal' aria-labelledby="successModal" aria-hidden="true" tabindex="-1" role="dialog">
+    <div class="modal fade" id='successModal' aria-labelledby="successModal" aria-hidden="true" tabindex="-1"
+        role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -44,7 +44,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Your account and guild has been created successfully!</p>
+                    <p>You have successfully created an account and joined the guild!</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">View my guild!</button>
@@ -63,7 +63,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>There has been some issues with creating your guild, please contact our administrator!</p>
+                    <p>There has been some issues with creating your account, please contact the administrator!</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">Contact admin</button>
@@ -99,19 +99,38 @@
         </div>
     </nav>
 
-    <div class="container-fluid" id="signUpNewTeam">
+    <div class="container-fluid" id="signUpJoinTeam">
         <div class='container mt-3'>
             <div class="row">
                 <div class="col">
                     <h3 class='text-center p-3'>
-                        Welcome to {}, create your account and guild here!
+                        Create Account
                     </h3>
 
+                    <div class='row mb-3'>
+                        <div class='col text-right'>
+                            <input type="radio" id="new" value="new" v-model="picked">
+                            <label for="new">Create New Guild</label>
+                            <br>
+                        </div>
+
+                        <div class='col text-center'>
+                            <input type="radio" id="existing" value="existing" v-model="picked">
+                            <label for="existing" title='Link your existing repo to ProjectQuest'>Link Existing
+                                Guild</label>
+                            <br>
+                        </div>
+                        <div class='col text-left'>
+                            <input type="radio" id="join" value="join" v-model="picked">
+                            <label for="join">Join a Guild</label>
+                            <br>
+                        </div>
+                    </div>
+
                     <div class="form-group row">
-                        <label for="username" class="col-sm-2 col-form-label">Username:</label>
+                        <label for="name" class="col-sm-2 col-form-label">Name:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="username"
-                                placeholder="Choose your username">
+                            <input type="text" class="form-control" id="name" placeholder="Enter your name">
                         </div>
                     </div>
 
@@ -119,7 +138,15 @@
                         <label for="email" class="col-sm-2 col-form-label">Email:</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="email"
-                                placeholder="Enter your email">
+                                placeholder="Enter your email (this will be your username to log in)">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="username" class="col-sm-2 col-form-label">GitHub Username:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="username"
+                                placeholder="Choose your GitHub username">
                         </div>
                     </div>
 
@@ -132,30 +159,30 @@
                     </div>
 
                     <div class="form-group row">
-                        <label for="jobType" class="col-sm-2 col-form-label">Choose your job type:</label>
+                        <label for="class" class="col-sm-2 col-form-label">Choose your job type:</label>
                         <div class="col-sm-10 input-group">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jobType" id="knight" value="knight"
+                                <input class="form-check-input" type="radio" name="class" id="knight" value="knight"
                                     checked>
                                 <label class="form-check-label" for="knight">Knight</label>
-                                <img id="knightpic" src="../assets/knightselect.png" alt="knight image"/>
+                                <img id="knightpic" src="../assets/knightselect.png" alt="knight image" />
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jobType" id="wizard" value="wizard">
+                                <input class="form-check-input" type="radio" name="class" id="wizard" value="wizard">
                                 <label class="form-check-label" for="wizard">Wizard
-                                    <img id="wizardpic" src="../assets/knightselect.png" alt="wizard image"/>
+                                    <img id="wizardpic" src="../assets/knightselect.png" alt="wizard image" />
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jobType" id="elf" value="elf">
+                                <input class="form-check-input" type="radio" name="class" id="elf" value="elf">
                                 <label class="form-check-label" for="elf">Elf
-                                    <img id="elfpic" src="../assets/knightselect.png" alt="elf image"/>
+                                    <img id="elfpic" src="../assets/knightselect.png" alt="elf image" />
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jobType" id="dragon" value="dragon">
+                                <input class="form-check-input" type="radio" name="class" id="dragon" value="dragon">
                                 <label class="form-check-label" for="dragon">Dragon
-                                    <img id="dragonpic" src="../assets/knightselect.png" alt="dragon image"/>
+                                    <img id="dragonpic" src="../assets/knightselect.png" alt="dragon image" />
                                 </label>
                             </div>
                         </div>
@@ -165,31 +192,7 @@
                         <label for="guildName" class="col-sm-2 col-form-label">Guild Name:</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="guildName"
-                                placeholder="Input a guild name (GitHub Org Name)">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row d-none">
-                        <label for="token" class="col-sm-2 col-form-label">Token key:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="token"
-                                placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62" value="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="repoName" class="col-sm-2 col-form-label">Repository Name:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="repoName" placeholder="Input repo name">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="repoDesc" class="col-sm-2 col-form-label">Repo Description:</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" id="repoDesc"
-                                placeholder="Input repo description"></textarea>
+                                placeholder="Input the guild name (org name)">
                         </div>
                     </div>
 
@@ -212,6 +215,13 @@
                         </ul>
                     </div> -->
 
+                    <div v-if="picked == 'new' || picked == 'existing'" class="form-group row">
+                        <label for="repoName" class="col-sm-2 col-form-label">Repo Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="repoName" placeholder="Input the repo name">
+                        </div>
+                    </div>
+
                     <div class="form-group row">
                         <label for="repoToken" class="col-sm-2 col-form-label">GitHub Token Key:</label>
                         <div class="col-sm-10">
@@ -219,7 +229,15 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div v-if="picked == 'new'" class="form-group row">
+                        <label for="repoDesc" class="col-sm-2 col-form-label">Repo Description:</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="repoDesc"
+                                placeholder="Input repo description"></textarea>
+                        </div>
+                    </div>
+
+                    <div v-if="picked == 'new'" class="form-group row">
                         <label for="repoType" class="col-sm-2 col-form-label">Private or Public Repo?</label>
                         <div class="col-sm-10 input-group">
                             <div class="form-check form-check-inline">
@@ -235,7 +253,7 @@
                     </div>
 
                     <div class='text-right mb-3'>
-                        <button class="btn btn-primary" @click='createGuild()'>Onwards to {}!</button>
+                        <button class="btn btn-primary" @click='createGuild()'>Create an account</button>
                     </div>
 
                 </div>
@@ -257,9 +275,10 @@
 
         var app = new Vue(
             {
-                el: "#signUpNewTeam",
+                el: "#signUpJoinTeam",
                 data: {
                     emails: [],
+                    picked: 'new'
                 },
                 methods: {
                     addEmail: function () {
@@ -319,7 +338,7 @@
                         var body = {
                             'email': email
                         }
-                        
+
                         request.open("POST", url, true);
                         request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
                         request.send(JSON.stringify(body));
