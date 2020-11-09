@@ -236,7 +236,7 @@
                                     <canvas id="dragon2" width="150" height="150"></canvas>
                                 </label>
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -381,20 +381,27 @@
 
                         if (this.picked == "new") {
                             this.createRepo(token, guildName);
-                            status = this.addGuild(guildName);
-                        }
-                        else if (this.picked == "existing") {
-                            status = this.addGuild(guildName);
-                        }
-                        else{
-                            status = this.getGuild(guildName);
+
+                            if (!this.getGuild(guildName)) {
+                                this.addGuild(guildName);
+                            }
+                        } else if (this.picked == "existing") {
+
+                            if (!this.getGuild(guildName)) {
+                                this.addGuild(guildName);
+                            }
+
+                        } else {
+                            if (this.getGuild(guildName)) {
+                                this.addUser();
+                            }
                         }
 
-                        if (status == true){
+                        if (status == true) {
                             this.addUser();
                             $("#successModal").modal();
                         }
-                        else{
+                        else {
                             $("#failModal").modal();
                         }
                     },
@@ -425,10 +432,10 @@
                                 git_username: document.getElementById("username").value,
                             })
                         }).then(res => {
-                            // $("#successModal").modal();
+                            $("#successModal").modal();
                             return true;
                         }).catch((error) => {
-                            // $("#failModal").modal();
+                            $("#failModal").modal();
                             console.log(error)
                             return false;
                         });
@@ -439,35 +446,28 @@
                             private = "private";
                         }
 
-                        if (!this.getGuild(guildName)){
-                            fetch("http://localhost:5001/add_guild", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-                                body: JSON.stringify({
-                                    name: guildName,
-                                    r_name: document.getElementById("repoName").value,
-                                    r_desc: "",
-                                    r_access: private
-                                })
-                            }).then(res => {
-                                // console.log(this.user.git_username);
-                                return true;
-                            }).catch((error) => {
-                                // $("#failModal").modal();
-                                console.log(error)
-                                return false;
-                            });
-                        }
-                        else{
-                            // $("#failModal").modal();
-                            console.log("add guild error")
+                        fetch("http://localhost:5001/add_guild", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                name: guildName,
+                                r_name: document.getElementById("repoName").value,
+                                r_desc: "",
+                                r_access: private
+                            })
+                        }).then(res => {
+                            // console.log(this.user.git_username);
+                            console.log('guild successfully added, shud return true')
+                            this.addUser()
+                        }).catch((error) => {
+                            $("#failModal").modal();
+                            console.log(error)
                             return false;
-                        }
-
+                        });
                     },
-                    getGuild: function(guildName){
+                    getGuild: function (guildName) {
                         fetch("http://localhost:5001/get_guild?name=" + guildName, {
                             method: "GET",
                             headers: {
@@ -481,8 +481,11 @@
                         });
                     }
 
-                }
+                },
+
+
             }
+
         );
 
         function initialiseImage(src, query, width, height, x, y) {
