@@ -213,7 +213,7 @@
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="class" id="elf" value="elf">
                                 <label class="form-check-label" for="elf"> 
-                                    <span style=';'>Elf</span>
+                                    <span style=''>Elf</span>
                                 <canvas id="elf2" width="150" height="150"></canvas>
                                 <!-- <img id="elfpic" src="../assets/knightselect.png" alt="elf image" /> -->
                                 </label>
@@ -279,7 +279,7 @@
                         </div>
                     </div>
 
-                    <div v-if="picked == 'new'" class="form-group row">
+                    <div v-if="picked == 'new' || picked == 'existing'" class="form-group row">
                         <label for="repoType" class="col-sm-2 col-form-label">Private or Public Repo?</label>
                         <div class="col-sm-10 input-group">
                             <div class="form-check form-check-inline">
@@ -352,7 +352,7 @@
                         if (document.getElementById("private").checked) {
                             private = true;
                         }
-                        console.log(private);
+                        // console.log(private);
 
                         var body = {
                             'name': repoName,
@@ -382,6 +382,7 @@
 
                         if (status == true){
                             this.addUser();
+                            $("#successModal").modal();
                         }
                         else{
                             $("#failModal").modal();
@@ -414,10 +415,11 @@
                                 git_username: document.getElementById("username").value,
                             })
                         }).then(res => {
-                            $("#successModal").modal();
+                            // $("#successModal").modal();
                             return true;
                         }).catch((error) => {
-                            $("#failModal").modal();
+                            // $("#failModal").modal();
+                            console.log(error)
                             return false;
                         });
                     },
@@ -427,7 +429,7 @@
                             private = "private";
                         }
 
-                        if (this.getGuild(guildName)){
+                        if (!this.getGuild(guildName)){
                             fetch("http://localhost:5001/add_guild", {
                                 method: "POST",
                                 headers: {
@@ -436,35 +438,35 @@
                                 body: JSON.stringify({
                                     name: guildName,
                                     r_name: document.getElementById("repoName").value,
-                                    r_desc: document.getElementById("repoDesc").value,
+                                    r_desc: "",
                                     r_access: private
                                 })
                             }).then(res => {
                                 // console.log(this.user.git_username);
                                 return true;
                             }).catch((error) => {
-                                $("#failModal").modal();
+                                // $("#failModal").modal();
+                                console.log(error)
                                 return false;
                             });
                         }
                         else{
-                            $("#failModal").modal();
+                            // $("#failModal").modal();
+                            console.log("add guild error")
                             return false;
                         }
 
                     },
                     getGuild: function(guildName){
-                        fetch("http://localhost:5001/add_guild", {
-                            method: "POST",
+                        fetch("http://localhost:5001/get_guild?name=" + guildName, {
+                            method: "GET",
                             headers: {
                                 "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                name: guildName
-                            })
+                            }
                         }).then(res => {
                             return true;
                         }).catch((error) => {
+                            console.log(error)
                             return false;
                         });
                     }

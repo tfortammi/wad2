@@ -645,7 +645,8 @@
                     userExp: "",
                 },
                 guild: {
-                    name: "wad2_guild",
+                    // name: "wad2_guild",
+                    name: "",
                     streak: "",
                     users: []
                 },
@@ -1047,23 +1048,35 @@
             // When Vue view is created, runs the following functions
             async created() {
 
-                if ( sessionStorage.getItem("user") !== null) {
+                if (sessionStorage.getItem("user") !== null) {
                     // Retrieve
                     this.user.loggedInUser = sessionStorage.getItem("user");
                     console.log(sessionStorage.getItem("user"));
                 }
-                else{
+                else {
                     window.location.replace("./login.html");
                 }
+                // Gets the information of the logged in user
+                await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
+                    var data = res.json().then(data => {
+                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png",
+                            "#ch-img", 65, 260, 0, -70);
+                        this.user.userLevel = data["level"];
+                        this.user.userExp = data["exp"];
+                        this.user.token = data["git_token"];
+                        this.guild.name = data["guild"];
+                    })
+                })
 
                 // Gets all users in the guild
                 var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
                     var data = res.json().then(data => {
                         var user_arr = []
                         for (u of data["users"]) {
-                            user_arr.push([u["name"], u["email"]])
+                            user_arr.push([u["name"], u["email"],u["guild"]])
                         }
                         this.guild.users = user_arr
+                        // console.log(this.guild.users)
                     })
 
                 })
@@ -1076,20 +1089,13 @@
                     })
                 })
 
-                // Gets the information of the logged in user
-                await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
-                    var data = res.json().then(data => {
-                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png",
-                            "#ch-img", 65, 260, 0, -70);
-                        this.user.userLevel = data["level"]
-                        this.user.userExp = data["exp"]
-                    })
-                })
 
                 // Gets guild info
                 await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
                         this.guild.streak = data["streak"]
+                        // this.guild.streak = 2
+
                     })
                 })
 
