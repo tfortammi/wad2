@@ -197,6 +197,13 @@
                 el: "#createGuildOrg",
                 data: {
                     emails: [],
+                    user: {
+                        loggedInUser: "",
+                        userLevel: "",
+                        userExp: "",
+                        token: "",
+                        git_username: ""
+                    },
                 },
                 methods: {
                     addEmail: function () {
@@ -262,11 +269,35 @@
                         request.send(JSON.stringify(body));
                     },
                     createGuild: function () {
-                        var token = document.getElementById("token").placeholder;
+                        var token = this.user.token;
                         var guildName = document.getElementById("guildName").value;
 
                         this.createRepo(token, guildName);
                     }
+                },
+                async created() {
+
+                    if (sessionStorage.getItem("user") !== null) {
+                        // Retrieve
+                        this.user.loggedInUser = sessionStorage.getItem("user");
+                        // console.log(sessionStorage.getItem("user"));
+                    }
+                    else {
+                        window.location.replace("./login.html");
+                    }
+
+                    // Gets the information of the logged in user
+                    await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
+                        var data = res.json().then(data => {
+                            this.user.userLevel = data["level"];
+                            this.user.userExp = data["exp"];
+                            this.user.token = data["git_token"];
+                            this.user.git_username = data["git_username"];
+                            // added dummy value
+                            // this.user.token = "ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62";
+                            // console.log(this.user.token);
+                        })
+                    })
                 }
             }
         );
