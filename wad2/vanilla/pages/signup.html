@@ -21,6 +21,30 @@
             background-color: #02a385;
         }
 
+        #knight2 {
+            width: 100px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #elf2 {
+            width: 100px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #dragon2 {
+            width: 100px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #wizard2 {
+            width: 100px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
         .container {
             border: 5px solid #a8c582;
         }
@@ -165,25 +189,35 @@
                                 <input class="form-check-input" type="radio" name="class" id="knight" value="knight"
                                     checked>
                                 <label class="form-check-label" for="knight">Knight</label>
-                                <img id="knightpic" src="../assets/knightselect.png" alt="knight image" />
+                                <!-- <img id="knightpic" src="../assets/knightselect.png" alt="knight image" /> -->
+                                <canvas id="knight2" width="150" height="150"></canvas>
+
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="class" id="wizard" value="wizard">
                                 <label class="form-check-label" for="wizard">Wizard
-                                    <img id="wizardpic" src="../assets/knightselect.png" alt="wizard image" />
+                                    <!-- <img id="wizardpic" src="../assets/knightselect.png" alt="wizard image" /> -->
                                 </label>
+                                <canvas id="wizard2" width="150" height="150"></canvas>
+
                             </div>
+                            <!-- <img id="knight2" src="../assets/knight.png"> -->
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="class" id="elf" value="elf">
-                                <label class="form-check-label" for="elf">Elf
-                                    <img id="elfpic" src="../assets/knightselect.png" alt="elf image" />
+                                <label class="form-check-label" for="elf"> 
+                                    <span style=';'>Elf</span>
+                                <canvas id="elf2" width="150" height="150"></canvas>
+                                <!-- <img id="elfpic" src="../assets/knightselect.png" alt="elf image" /> -->
                                 </label>
+
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="class" id="dragon" value="dragon">
                                 <label class="form-check-label" for="dragon">Dragon
-                                    <img id="dragonpic" src="../assets/knightselect.png" alt="dragon image" />
+                                    <!-- <img id="dragonpic" src="../assets/knightselect.png" alt="dragon image" /> -->
                                 </label>
+                                <canvas id="dragon2" width="150" height="150"></canvas>
+
                             </div>
                         </div>
                     </div>
@@ -352,6 +386,54 @@
                 }
             }
         );
+
+        function initialiseImage(src, query, width, height, x, y) {
+            let img = new Image();
+            img.src = src;
+            img.onload = function () {
+                init();
+            };
+
+            let canvas = document.querySelector(query);
+            let ctx = canvas.getContext('2d');
+
+            const scale = 2.5;
+            const scaledWidth = scale * width;
+            const scaledHeight = scale * height;
+            function init() {
+                ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            function drawFrame(frameX, frameY, canvasX, canvasY) {
+                ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            const cycleLoop = [0, 1, 2, 3];
+            let currentLoopIndex = 0;
+            let frameCount = 0;
+
+            window.requestAnimationFrame(step);
+            function step() {
+                frameCount++;
+                if (frameCount < 15) {
+                    window.requestAnimationFrame(step);
+                    return;
+                }
+                frameCount = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+                currentLoopIndex++;
+                if (currentLoopIndex >= cycleLoop.length) {
+                    currentLoopIndex = 0;
+                }
+                window.requestAnimationFrame(step);
+            }
+        }
+
+        initialiseImage("../assets/knight_spritesheet.png", "#knight2", 65, 260, 0, -70);
+        initialiseImage("../assets/elf_spritesheet.png", "#elf2", 65, 260, 0, -90);
+        initialiseImage("../assets/dragon_spritesheet.png", "#dragon2", 65, 260, 0, -70);
+        initialiseImage("../assets/wizard_spritesheet.png", "#wizard2", 65, 260, 0, -70);
 
 
     </script>
