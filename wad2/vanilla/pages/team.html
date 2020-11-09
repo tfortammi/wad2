@@ -195,7 +195,7 @@
                             <td>Streak: <span style="font-size: 28px;">{{guild.streak}} days</span></td>
                         </tr>
                         <tr>
-                            <td>Exp Multiplier: </td>
+                            <td>Exp Multiplier: <span style="font-size: 28px;">{{user.userLevel}}</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -289,7 +289,7 @@
                                 var json = JSON.parse(this.responseText);
                                 // console.log(json);
                                 for (member of json) {
-                                    members.push({username: member.login, role: member.type});
+                                    members.push({username: member.login});
                                     app.getCommits(token, member.login);
                                 }
                             }
@@ -424,7 +424,7 @@
                         var data = res.json().then(data => {
                             var user_arr = [];
                             for (u of data["users"]) {
-                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"],u["guild"]]);
+                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"],u["guild"], u["multiplier"], u["role"]]);
                             }
                             this.guild.users = user_arr;
                             // console.log(this.guild.users);
@@ -461,6 +461,7 @@
                             for (user of this.guild.users) {
                                 if (user[2] == member["username"]) {
                                     member["level"] = user[3];
+                                    member["role"] = user[6]
                                     // console.log(member["level"]);
                                 }
                             }
