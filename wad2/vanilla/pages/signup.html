@@ -62,7 +62,6 @@
 </head>
 
 <body>
-
     <div class="modal fade" id='successModal' aria-labelledby="successModal" aria-hidden="true" tabindex="-1"
         role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -77,7 +76,8 @@
                     <p>You have successfully created an account and joined the guild!</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">View my guild!</button>
+                    <a href="./login.html" type="button" class="btn btn-primary" data-dismiss="modal">Log
+                        in</a>
                 </div>
             </div>
         </div>
@@ -96,7 +96,7 @@
                     <p>There has been some issues with creating your account, please contact the administrator!</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Contact admin</button>
+                    <a href="./home.html" type="button" class="btn btn-primary">Contact admin</a>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
                 </div>
             </div>
@@ -185,6 +185,14 @@
                         <div class="col-sm-10">
                             <input type="password" class="form-control" id="password"
                                 placeholder="Choose a password with 8 or more characters with a mix of letters, numbers and symbols">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="role" class="col-sm-2 col-form-label">Role:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="role"
+                                placeholder="Key in your role - eg. Software Developer">
                         </div>
                     </div>
 
@@ -344,7 +352,7 @@
 
                         request.onreadystatechange = function () {
                             if (this.readyState == 4 && this.status == 201) {
-                                $("#successModal").modal();
+                                // $("#successModal").modal();
                             }
                             else if (this.readyState == 4 && this.status != 201) {
                                 $("#failModal").modal();
@@ -366,33 +374,111 @@
                         request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
                         request.send(JSON.stringify(body));
                     },
-                    addMember: function (token, guildName, email) {
-                        var url = `https://api.github.com/orgs/${guildName}/invitations`;
-                        var request = new XMLHttpRequest();
-
-                        request.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 201) {
-                                $("#successModal").modal();
-                            }
-                            else if (this.readyState == 4 && this.status != 201) {
-                                $("#failModal").modal();
-                            }
-                        }
-
-                        var body = {
-                            'email': email
-                        }
-
-                        request.open("POST", url, true);
-                        request.setRequestHeader("Authorization", "token " + token, "Accept", "application/vnd.github.v3+json");
-                        request.send(JSON.stringify(body));
-                    },
                     createGuild: function () {
-                        var token = document.getElementById("token").placeholder;
+                        var token = document.getElementById("repoToken").value;
                         var guildName = document.getElementById("guildName").value;
+                        var status = true;
 
-                        this.createRepo(token, guildName);
+                        if (this.picked == "new") {
+                            this.createRepo(token, guildName);
+                            status = this.addGuild(guildName);
+                        }
+                        else if (this.picked == "existing") {
+                            status = this.addGuild(guildName);
+                        }
+                        else{
+                            status = this.getGuild(guildName);
+                        }
+
+                        if (status == true){
+                            this.addUser();
+                        }
+                        else{
+                            $("#failModal").modal();
+                        }
+                    },
+                    addUser: function () {
+                        var radio_btn = document.getElementsByName("class");
+                        // console.log(radio_btn);
+                        var class_role = "";
+                        for (var radio of radio_btn) {
+                            if (radio.checked == true) {
+                                class_role = radio.id;
+                            }
+                        };
+                        // console.log(class_role);
+
+                        fetch("http://localhost:5001/add_user", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                class: class_role,
+                                email: document.getElementById("email").value,
+                                password: document.getElementById("password").value,
+                                name: document.getElementById("name").value,
+                                role: document.getElementById("role").value,
+                                guild: document.getElementById("guildName").value,
+                                git_token: document.getElementById("repoToken").value,
+                                git_username: document.getElementById("username").value,
+                            })
+                        }).then(res => {
+                            $("#successModal").modal();
+                            return true;
+                        }).catch((error) => {
+                            $("#failModal").modal();
+                            return false;
+                        });
+                    },
+                    addGuild: function (guildName) {
+                        var private = "public";
+                        if (document.getElementById("private").checked) {
+                            private = "private";
+                        }
+
+                        if (this.getGuild(guildName)){
+                            fetch("http://localhost:5001/add_guild", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    name: guildName,
+                                    r_name: document.getElementById("repoName").value,
+                                    r_desc: document.getElementById("repoDesc").value,
+                                    r_access: private
+                                })
+                            }).then(res => {
+                                // console.log(this.user.git_username);
+                                return true;
+                            }).catch((error) => {
+                                $("#failModal").modal();
+                                return false;
+                            });
+                        }
+                        else{
+                            $("#failModal").modal();
+                            return false;
+                        }
+
+                    },
+                    getGuild: function(guildName){
+                        fetch("http://localhost:5001/add_guild", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                name: guildName
+                            })
+                        }).then(res => {
+                            return true;
+                        }).catch((error) => {
+                            return false;
+                        });
                     }
+
                 }
             }
         );
