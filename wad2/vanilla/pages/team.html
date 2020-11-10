@@ -270,6 +270,7 @@
                     ],
                     members: [
                     ],
+                    top5:[],
                     tableOptions: {
                         search: true,
                         showColumns: true,
@@ -437,7 +438,7 @@
                         var data = res.json().then(data => {
                             var user_arr = [];
                             for (u of data["users"]) {
-                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"], u["guild"], u["multiplier"], u["role"]]);
+                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"], u["guild"], u["multiplier"], u["role"], u["class"]]);
                             }
                             this.guild.users = user_arr;
                             // console.log(this.guild.users);
@@ -468,12 +469,14 @@
                             for (user of this.guild.users) {
                                 if (user[2] == member["username"]) {
                                     member["level"] = user[3];
-                                    member["role"] = user[6]
+                                    member["role"] = user[6];
+                                    member["class"] = user[7];
                                     // console.log(member["level"]);
                                 }
                             }
                         }
                         this.sortedMembersAsc();
+                        this.top5 = this.members.slice(0,5);
                     }
                 }
             }
