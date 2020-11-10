@@ -167,7 +167,76 @@
                 -webkit-animation: displace 10s linear infinite;
                 animation: displace 3s linear infinite;
             }
+        }
 
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -527,7 +596,9 @@
                                                     <td class="meeting-row">
                                                         <a v-bind:href="meeting.room_link" target="_blank"
                                                             class="btn btn-success">Join</a>
-                                                        <a class="btn btn-info">Generate Invite</a>
+                                                        <button type="button" class="btn btn-info" data-toggle="modal"
+                                                            v-bind:data-target="meeting.html_button_id">Generate
+                                                            Invite</button>
                                                     </td>
                                                 </tr>
 
@@ -611,6 +682,38 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Generate meeting invite modals -->
+                <div v-for="(meeting, index) in upcoming_meetings.meetings">
+                    <div class="modal fade" v-bind:id="meeting.html_modal_id" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Copy Meeting Invite</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Meeting Invite <br>
+                                    <textarea readonly v-bind:id="meeting.html_textarea_id"
+                                        style="width: 100%; padding: 10px;"
+                                        rows="8">{{meeting["organizer"]}} would like to invite you to a scheduled video meeting. &#13;&#10;&#13;&#10;Topic: {{meeting["name"]}}&#13;&#10;Start Time: {{meeting["start"]}}&#13;&#10;End Time: Time: {{meeting["end"]}}&#13;&#10;&#13;&#10;Join Daily.co meeting:&#13;&#10;{{meeting["room_link"]}}</textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" v-on:click="copyInvite(meeting.html_textarea_id)"
+                                        class="btn btn-primary">Copy Message Invite</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Snackbar -->
+                <div id="snackbar">Copied to clipboard!</div>
+
             </div>
 
         </div>
@@ -621,10 +724,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-        </script>
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
-        </script>
+    </script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
@@ -688,7 +791,9 @@
             },
             methods: {
                 loadGantt: function () {
-                    google.charts.load('current', { 'packages': ['gantt'] });
+                    google.charts.load('current', {
+                        'packages': ['gantt']
+                    });
                     google.charts.setOnLoadCallback(this.drawChart);
                 },
                 loadCalendar: function () {
@@ -785,18 +890,18 @@
                 addMeeting: function () {
 
                     fetch("http://localhost:5001/add_meeting", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            attendees: this.meeting.attendees,
-                            start: this.meeting.start,
-                            end: this.meeting.end,
-                            name: this.meeting.name,
-                            organizer: this.user.loggedInUser,
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                attendees: this.meeting.attendees,
+                                start: this.meeting.start,
+                                end: this.meeting.end,
+                                name: this.meeting.name,
+                                organizer: this.user.loggedInUser,
+                            })
                         })
-                    })
                         .then(response => response.json())
                         .then(data => {
                             var request = new XMLHttpRequest();
@@ -910,9 +1015,11 @@
                         var smallest = 100000000000000
                         var biggest = 0
                         tasks.forEach(task => {
-                            var task_arr = [task["id"], task["name"], (task["status"]).toString(), new Date(
-                                task["start"]), new Date(task["end"]), null, 100, task[
-                            "dependency"]]
+                            var task_arr = [task["id"], task["name"], (task["status"]).toString(),
+                                new Date(
+                                    task["start"]), new Date(task["end"]), null, 100, task[
+                                    "dependency"]
+                            ]
                             gantt_tasks.push(task_arr)
 
                             var task_start = new Date(task["start"]).getTime() / 1000
@@ -1002,7 +1109,7 @@
                                             .addedNodes,
                                             function (addedNode) {
                                                 if ((addedNode.tagName ===
-                                                    'rect') && (addedNode
+                                                        'rect') && (addedNode
                                                         .getAttribute(
                                                             'fill') === 'white'
                                                     )) {
@@ -1042,8 +1149,16 @@
                         chart.draw(dataTable, options);
                     }
 
+                },
+                copyInvite: function (inviteId) {
+                    var copyText = document.getElementById(inviteId);
+                    copyText.select();
+                    document.execCommand("copy");
+                    //alert("Copied the text: " + copyText.value);
+                    var x = document.getElementById("snackbar");
+                    x.className = "show";
+                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
                 }
-
             },
             // When Vue view is created, runs the following functions
             async created() {
@@ -1052,8 +1167,7 @@
                     // Retrieve
                     this.user.loggedInUser = sessionStorage.getItem("user");
                     console.log(sessionStorage.getItem("user"));
-                }
-                else {
+                } else {
                     window.location.replace("./login.html");
                 }
                 // Gets the information of the logged in user
@@ -1073,7 +1187,7 @@
                     var data = res.json().then(data => {
                         var user_arr = []
                         for (u of data["users"]) {
-                            user_arr.push([u["name"], u["email"],u["guild"]])
+                            user_arr.push([u["name"], u["email"], u["guild"]])
                         }
                         this.guild.users = user_arr
                         // console.log(this.guild.users)
