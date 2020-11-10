@@ -173,9 +173,9 @@
                 <div class="col" id="ch-window">
                     <!-- <canvas id="ch-img" width="150" height="150"></canvas>
                     <canvas id="demon" width="150" height="150"></canvas> -->
-                    <canvas v-show='top3.length > 0' id="top0" class='allClasses' width="150" height="150">hello</canvas>
-                    <canvas v-show='top3.length > 1' id="top1" class='allClasses' width="150" height="150"></canvas>
-                    <canvas v-show='top3.length > 2' id="top2" class='allClasses' width="150" height="150"></canvas>
+                    <canvas v-show='members.length > 0' id="top0" class='allClasses' width="150" height="150">hello</canvas>
+                    <canvas v-show='members.length > 1' id="top1" class='allClasses' width="150" height="150"></canvas>
+                    <canvas v-show='members.length > 2' id="top2" class='allClasses' width="150" height="150"></canvas>
                     <!-- <img id="ch-img" src="../assets/knight.png"> -->
                 </div>
             </div>
@@ -279,7 +279,7 @@
                     ],
                     members: [
                     ],
-                    top3:[],
+                    // top3:[],
                     tableOptions: {
                         search: true,
                         showColumns: true,
@@ -485,9 +485,9 @@
                             }
                         }
                         this.sortedMembersAsc();
-                        this.top3 = this.members.slice(0,3);
+                        this.members = this.members.slice(0,3);
                         var i = 0;
-                        for (var top of this.top3) {
+                        for (var top of this.members) {
                             console.log(top.class, i)
                             initialiseImage("../assets/" + top.class + "_spritesheet.png", "#top" + i, 65, 260, 0, -70);
                             i += 1
@@ -569,10 +569,10 @@
             }
         }
 
-        initialiseImage("../assets/knight_spritesheet.png", "#ch-img", 65, 260, 0, -70);
+        // initialiseImage("../assets/knight_spritesheet.png", "#ch-img", 65, 260, 0, -70);
         // initialiseImage("../assets/knight_spritesheet.png", "#knight", 65, 260, 0, -70);
         // initialiseImage("../assets/elf_spritesheet.png", "#elf", 65, 260, 0, -70);
-        initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
+        // initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
     </script>
 </body>
