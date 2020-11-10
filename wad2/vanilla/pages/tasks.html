@@ -1173,7 +1173,6 @@
                     // Retrieve
                     this.user.loggedInUser = sessionStorage.getItem("user");
                     this.guild.name = sessionStorage.getItem("guildName");
-                    this.guild.reponame = sessionStorage.getItem("repoName");
                 } else {
                     window.location.replace("./login.html");
                 }
@@ -1214,7 +1213,7 @@
                 await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
                         this.guild.streak = data["streak"]
-                        // this.guild.streak = 2
+                        this.guild.reponame = data["r_name"]
 
                     })
                 })

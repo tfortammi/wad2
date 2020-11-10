@@ -157,9 +157,8 @@
                                 sessionStorage.setItem("user", this.loginInfo.email);
                                 this.getGuild();
 
-                                if (sessionStorage.getItem("guildName") != null ) {
-                                    window.location.replace("./tasks.html");
-                                }
+                                setTimeout(function () { window.location.replace("./tasks.html"); }, 1000);
+
                             }
                             else {
                                 $("#failModal").modal();
@@ -173,15 +172,6 @@
                                 this.guildName = data["guild"];
                                 // console.log(this.guildName);
                                 sessionStorage.setItem("guildName", this.guildName);
-                                // this.getRepo();
-                            })
-                        })
-                    },
-                    getRepo: function () {
-                        fetch("http://localhost:5001/get_guild?name=" + this.guildName).then(res => {
-                            var data = res.json().then(data => {
-                                this.repoName = data["r_name"];
-                                sessionStorage.setItem("repoName", this.repoName);
                             })
                         })
                     },
