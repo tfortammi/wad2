@@ -167,6 +167,8 @@
             <div class="col-lg-10 p-0">
                 <div class="col" id="ch-window">
                     <canvas id="ch-img" width="150" height="150"></canvas>
+                    <canvas id="knight" width="150" height="150"></canvas>
+                    <canvas id="elf" width="150" height="150"></canvas>
                     <canvas id="demon" width="150" height="150"></canvas>
                     <!-- <img id="ch-img" src="../assets/knight.png"> -->
                 </div>
@@ -192,10 +194,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Streak: <span style="font-size: 28px;">{{guild.streak}} days</span></td>
+                            <td style="font-size: 28px;">Streak: {{guild.streak}} days</td>
                         </tr>
                         <tr>
-                            <td>Exp Multiplier: <span style="font-size: 28px;">{{user.userLevel}}</span></td>
+                            <td style="font-size: 28px;">Exp Multiplier: {{user.userLevel}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -552,6 +554,8 @@
         }
 
         initialiseImage("../assets/knight_spritesheet.png", "#ch-img", 65, 260, 0, -70);
+        initialiseImage("../assets/knight_spritesheet.png", "#knight", 65, 260, 0, -70);
+        initialiseImage("../assets/elf_spritesheet.png", "#elf", 65, 260, 0, -70);
         initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
 
