@@ -109,7 +109,11 @@
                     </div>
 
                     <div class='text-right mb-3'>
-                        <button class="btn btn-primary" @click='login()'>Onwards to ProjectQuest!</button>
+                        <button class="btn btn-primary" @click='login()' id="submitBtn">Onwards to ProjectQuest!</button>
+                        <button class="btn btn-primary d-none" id="loadingBtn" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
                     </div>
 
                 </div>
@@ -142,6 +146,8 @@
                 },
                 methods: {
                     login: function () {
+                        this.loading();
+
                         fetch("http://localhost:5001/login", {
                             method: "POST",
                             headers: {
@@ -161,6 +167,7 @@
 
                             }
                             else {
+                                this.loading();
                                 $("#failModal").modal();
                             }
 
@@ -178,6 +185,19 @@
                     logout: function () {
                         sessionStorage.clear();
                         window.location.replace("./home.html");
+                    },
+                    loading: function () {
+                        var loadBtn = document.getElementById("loadingBtn");
+                        var submitBtn = document.getElementById("submitBtn");
+
+                        if (loadBtn.classList.contains("d-none")){
+                            loadBtn.classList.remove("d-none");
+                            submitBtn.classList.add("d-none");
+                        }
+                        else{
+                            loadBtn.classList.add("d-none");
+                            submitBtn.classList.remove("d-none");
+                        }
                     }
                 },
 
