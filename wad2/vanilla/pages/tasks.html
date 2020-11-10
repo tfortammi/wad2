@@ -489,9 +489,10 @@
                         <a class="nav-link" href="./team.html">Team <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
+                
                 <ul class='navbar-nav ml-auto'>
                     <li class="nav-item m-1">
-                        <a class="btn btn-secondary" href="./createguildorg.html">Create Guild</a>
+                        <a class="btn btn-secondary" @click='logout()'>Logout</a>
                     </li>
                 </ul>
             </div>
@@ -1158,7 +1159,11 @@
                     //alert("Copied the text: " + copyText.value);
                     var x = document.getElementById("snackbar");
                     x.className = "show";
-                    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                },
+                logout: function () {
+                    sessionStorage.clear()
+                    window.location.replace("./home.html");
                 }
             },
             // When Vue view is created, runs the following functions
