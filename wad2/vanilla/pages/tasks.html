@@ -396,7 +396,7 @@
                                     <span class="input-group-text" id="basic-addon1">Dependency</span>
                                 </div>
                                 <select v-model="tasks.dependency" class="custom-select" id="inputGroupSelect01">
-                                    <option v-for="task in tasks.tasks" v-bind:id="task['id']">{{task["name"]}}
+                                    <option v-for="task in tasks.tasks" v-bind:value="task['id']">{{task["name"]}}
                                         [{{new Date(task["end"]).toLocaleDateString()}}]</option>
                                 </select>
                             </div>
@@ -1173,6 +1173,7 @@
                     // Retrieve
                     this.user.loggedInUser = sessionStorage.getItem("user");
                     this.guild.name = sessionStorage.getItem("guildName");
+                    this.tasks.guild = this.guild.name;
                 } else {
                     window.location.replace("./login.html");
                 }
