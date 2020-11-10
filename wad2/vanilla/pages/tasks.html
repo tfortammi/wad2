@@ -724,10 +724,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
-    </script>
+        </script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
@@ -751,7 +751,8 @@
                     // name: "wad2_guild",
                     name: "",
                     streak: "",
-                    users: []
+                    users: [],
+                    reponame: ""
                 },
                 tasks: {
                     tasks: [],
@@ -890,18 +891,18 @@
                 addMeeting: function () {
 
                     fetch("http://localhost:5001/add_meeting", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                attendees: this.meeting.attendees,
-                                start: this.meeting.start,
-                                end: this.meeting.end,
-                                name: this.meeting.name,
-                                organizer: this.user.loggedInUser,
-                            })
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            attendees: this.meeting.attendees,
+                            start: this.meeting.start,
+                            end: this.meeting.end,
+                            name: this.meeting.name,
+                            organizer: this.user.loggedInUser,
                         })
+                    })
                         .then(response => response.json())
                         .then(data => {
                             var request = new XMLHttpRequest();
@@ -1016,9 +1017,9 @@
                         var biggest = 0
                         tasks.forEach(task => {
                             var task_arr = [task["id"], task["name"], (task["status"]).toString(),
-                                new Date(
-                                    task["start"]), new Date(task["end"]), null, 100, task[
-                                    "dependency"]
+                            new Date(
+                                task["start"]), new Date(task["end"]), null, 100, task[
+                            "dependency"]
                             ]
                             gantt_tasks.push(task_arr)
 
@@ -1109,7 +1110,7 @@
                                             .addedNodes,
                                             function (addedNode) {
                                                 if ((addedNode.tagName ===
-                                                        'rect') && (addedNode
+                                                    'rect') && (addedNode
                                                         .getAttribute(
                                                             'fill') === 'white'
                                                     )) {
@@ -1157,7 +1158,7 @@
                     //alert("Copied the text: " + copyText.value);
                     var x = document.getElementById("snackbar");
                     x.className = "show";
-                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
                 }
             },
             // When Vue view is created, runs the following functions
@@ -1166,7 +1167,8 @@
                 if (sessionStorage.getItem("user") !== null) {
                     // Retrieve
                     this.user.loggedInUser = sessionStorage.getItem("user");
-                    console.log(sessionStorage.getItem("user"));
+                    this.guild.name = sessionStorage.getItem("guildName");
+                    this.guild.reponame = sessionStorage.getItem("repoName");
                 } else {
                     window.location.replace("./login.html");
                 }
@@ -1178,7 +1180,6 @@
                         this.user.userLevel = data["level"];
                         this.user.userExp = data["exp"];
                         this.user.token = data["git_token"];
-                        this.guild.name = data["guild"];
                     })
                 })
 

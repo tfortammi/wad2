@@ -236,10 +236,11 @@
                     guild: {
                         name: "",
                         streak: "",
-                        users: []
+                        users: [],
+                        reponame: ""
                     },
-                    teamname: 'JH-and-WX',
-                    reponame: "private_test",
+                    // teamname: 'JH-and-WX',
+                    // reponame: "private_test",
                     user: {
                         loggedInUser: "",
                         userLevel: "",
@@ -280,7 +281,7 @@
                         this.getTeamStats(token);
                     },
                     getMembers: function (token) {
-                        var url = `https://api.github.com/orgs/${this.teamname}/members?role=all`;
+                        var url = `https://api.github.com/orgs/${this.guild.name}/members?role=all`;
                         var request = new XMLHttpRequest();
                         var members = this.members;
 
@@ -289,7 +290,7 @@
                                 var json = JSON.parse(this.responseText);
                                 // console.log(json);
                                 for (member of json) {
-                                    members.push({username: member.login});
+                                    members.push({ username: member.login });
                                     app.getCommits(token, member.login);
                                 }
                             }
@@ -300,8 +301,8 @@
                         request.send();
                     },
                     getCommits: function (token, author) {
-                        var orgname = this.teamname;
-                        var repo = this.reponame;
+                        var orgname = this.guild.name;
+                        var repo = this.guild.reponame;
                         var members = this.members;
                         var url = `https://api.github.com/repos/${orgname}/${repo}/commits?author=${author}`;
                         var request = new XMLHttpRequest();
@@ -324,8 +325,8 @@
                         request.send();
                     },
                     getTeamStats: function (token) {
-                        var orgname = this.teamname;
-                        var repo = this.reponame;
+                        var orgname = this.guild.name;
+                        var repo = this.guild.reponame;
                         var url = `https://api.github.com/repos/${orgname}/${repo}/stats/participation`;
                         var request = new XMLHttpRequest();
 
@@ -377,15 +378,15 @@
                     //     })
                     // }
                     ,
-                    updateStreak: function (){
+                    updateStreak: function () {
                         fetch("http://localhost:5001/update_guild_streak/inc", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                name : this.guild.name,
-                                toAdd : 3,
+                                name: this.guild.name,
+                                toAdd: 3,
                             })
                         }).then(res => {
                             console.log(this.guild.streak);
@@ -397,11 +398,20 @@
                     if (sessionStorage.getItem("user") !== null) {
                         // Retrieve
                         this.user.loggedInUser = sessionStorage.getItem("user");
+                        this.guild.name = sessionStorage.getItem("guildName");
+                        // this.guild.reponame = sessionStorage.getItem("repoName");
                         // console.log(sessionStorage.getItem("user"));
                     }
                     else {
                         window.location.replace("./login.html");
                     }
+                    // Gets guild info
+                    await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
+                        var data = res.json().then(data => {
+                            this.guild.streak = data["streak"];
+                            this.guild.reponame = data["r_name"];
+                        })
+                    })
 
                     // Gets the information of the logged in user
                     await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
@@ -409,7 +419,7 @@
                             this.user.userLevel = data["level"];
                             this.user.userExp = data["exp"];
                             this.user.token = data["git_token"];
-                            this.guild.name = data["guild"];
+                            // this.guild.name = data["guild"];
                             // console.log(this.guild.name);
                             // added dummy value
                             // this.user.token = "ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62";
@@ -418,13 +428,13 @@
 
                         })
                     })
-                    
+
                     // Gets all users in the guild
                     var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
                         var data = res.json().then(data => {
                             var user_arr = [];
                             for (u of data["users"]) {
-                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"],u["guild"], u["multiplier"], u["role"]]);
+                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"], u["guild"], u["multiplier"], u["role"]]);
                             }
                             this.guild.users = user_arr;
                             // console.log(this.guild.users);
@@ -432,12 +442,6 @@
 
                     })
 
-                    // Gets guild info
-                    await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
-                        var data = res.json().then(data => {
-                            this.guild.streak = data["streak"];
-                        })
-                    })
 
                     const headers = {
                         "Authorization": `Token ${this.user.token}`,
