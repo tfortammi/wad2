@@ -128,7 +128,7 @@
 </head>
 
 <body>
-
+    <div id="team">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">WAD</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -149,13 +149,13 @@
             </ul>
             <ul class='navbar-nav ml-auto'>
                 <li class="nav-item m-1">
-                    <a class="btn btn-secondary" href="./createguildorg.html">Create Guild</a>
+                    <a class="btn btn-secondary" @click='logout()'>Logout</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container" id="team">
+    <div class="container">
         <br />
 
         <div class="row justify-content-md-center">
@@ -204,6 +204,7 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+    </div>
     </div>
 
 
@@ -289,7 +290,7 @@
                                 var json = JSON.parse(this.responseText);
                                 // console.log(json);
                                 for (member of json) {
-                                    members.push({username: member.login});
+                                    members.push({ username: member.login });
                                     app.getCommits(token, member.login);
                                 }
                             }
@@ -377,19 +378,23 @@
                     //     })
                     // }
                     ,
-                    updateStreak: function (){
+                    updateStreak: function () {
                         fetch("http://localhost:5001/update_guild_streak/inc", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                name : this.guild.name,
-                                toAdd : 3,
+                                name: this.guild.name,
+                                toAdd: 3,
                             })
                         }).then(res => {
                             console.log(this.guild.streak);
                         })
+                    },
+                    logout: function () {
+                        sessionStorage.clear()
+                        window.location.replace("./home.html");
                     }
                 },
                 async created() {
@@ -418,13 +423,13 @@
 
                         })
                     })
-                    
+
                     // Gets all users in the guild
                     var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
                         var data = res.json().then(data => {
                             var user_arr = [];
                             for (u of data["users"]) {
-                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"],u["guild"], u["multiplier"], u["role"]]);
+                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"], u["guild"], u["multiplier"], u["role"]]);
                             }
                             this.guild.users = user_arr;
                             // console.log(this.guild.users);

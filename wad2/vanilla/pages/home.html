@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="../style.css">
 
     <style>
-    
-
         #hero {
             width: 100%;
             background-color: #57D2F4;
@@ -38,9 +36,9 @@
         }
 
         #scene {
-           position: absolute;
-           top: 70%;
-           right: 20%;
+            position: absolute;
+            top: 70%;
+            right: 20%;
         }
 
         .section {
@@ -106,94 +104,103 @@
 
 
         }
-
     </style>
 </head>
 
 <body>
+    <div id='home'>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">WAD</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./tasks.html">Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./team.html">Team</a>
+                    </li>
+                </ul>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">WAD</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./tasks.html">Tasks</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="./team.html">Team</a>
-                </li>
-            </ul>
-            <ul class='navbar-nav ml-auto'>
-                <li class="nav-item m-1">
-                    <a class="btn btn-secondary" href="./createguildorg.html">Create Guild</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+                <ul v-if="loggedInStatus !== null " class='navbar-nav ml-auto'>
+                    <li class="nav-item m-1">
+                        <a class="btn btn-secondary" @click='logout()'>Logout</a>
+                    </li>
+                </ul>
+                <ul v-else class='navbar-nav ml-auto'>
+                    <li class="nav-item m-1">
+                        <a class="btn btn-secondary" href="./login.html">Login</a>
+                    </li>
+                    <li class=" nav-item m-1">
+                        <a class="btn btn-secondary" href="./signup.html">Create Guild</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-    <div class="container-fluid" style="overflow: hidden;">
-        <div class="row">
-            <div class="col p-0" id="hero">
-                <br>
-                <div class="jumbotron jumbotron-fluid p-5" data-depth="0.1">
-                    <h1 class="display-4">ProjectQuest</h1>
-                    <p class="lead">Build your guild and manage software projects easily and effectively using ProjectQuest!</p>
+        <div class="container-fluid" style="overflow: hidden;">
+            <div class="row">
+                <div class="col p-0" id="hero">
                     <br>
-                    <p class="lead">
-                      <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-                    </p>
-                </div>
-                <div id="scene">
-                    <div data-depth="0.6" id="chars">
-                        <canvas id="elf" width="60" height="100"></canvas>
-                        <canvas id="dragon" width="60" height="100"></canvas>
-                        <canvas id="knight" width="60" height="100"></canvas>
-                        <canvas id="wizard" width="60" height="100"></canvas>
+                    <div class="jumbotron jumbotron-fluid p-5" data-depth="0.1">
+                        <h1 class="display-4">ProjectQuest</h1>
+                        <p class="lead">Build your guild and manage software projects easily and effectively using
+                            ProjectQuest!</p>
+                        <br>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                        </p>
                     </div>
+                    <div id="scene">
+                        <div data-depth="0.6" id="chars">
+                            <canvas id="elf" width="60" height="100"></canvas>
+                            <canvas id="dragon" width="60" height="100"></canvas>
+                            <canvas id="knight" width="60" height="100"></canvas>
+                            <canvas id="wizard" width="60" height="100"></canvas>
+                        </div>
+                    </div>
+
                 </div>
-                
             </div>
+
+            <div class="row text-center b1">
+                <div class="col-sm section">
+                    <br><br><br><br>
+                    <h1>Make Team Management Fun & Easy</h1>
+                </div>
+                <div class="col-sm section">
+                    <img width="80%" src="../assets/people.png">
+                </div>
+            </div>
+
+            <div class="row text-center b2">
+                <div class="col-sm section">
+                    <img width="80%" src="../assets/graph.png">
+                </div>
+                <div class="col-sm section">
+                    <br><br><br><br>
+                    <h1>Track & Reward Progress</h1>
+                </div>
+            </div>
+
+            <div class="row text-center b1">
+                <div class="col-sm section">
+                    <br><br><br><br>
+                    <h1>Manage Remote<br>Teams</h1>
+                </div>
+                <div class="col-sm section">
+                    <img width="60%" src="../assets/computer.png">
+                </div>
+            </div>
+
         </div>
 
-        <div class="row text-center b1">
-            <div class="col-sm section">
-                <br><br><br><br>
-                <h1>Make Team Management Fun & Easy</h1>
-            </div>
-            <div class="col-sm section">
-                <img width="80%" src="../assets/people.png">
-            </div>
-        </div>
-
-        <div class="row text-center b2">
-            <div class="col-sm section">
-                <img width="80%" src="../assets/graph.png">
-            </div>
-            <div class="col-sm section">
-                <br><br><br><br>
-                <h1>Track & Reward Progress</h1>
-            </div>
-        </div>
-
-        <div class="row text-center b1">
-            <div class="col-sm section">
-                <br><br><br><br>
-                <h1>Manage Remote<br>Teams</h1>
-            </div>
-            <div class="col-sm section">
-                <img width="60%" src="../assets/computer.png">
-            </div>
-        </div>
-
-    </div>
-        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -209,17 +216,26 @@
 
         var app = new Vue(
             {
-                el: "#home"
+                el: "#home",
+                data: {
+                    loggedInStatus: sessionStorage.getItem("user")
+                },
+                methods: {
+                    logout: function () {
+                        sessionStorage.clear()
+                        window.location.replace("./home.html");
+                    }
+                }
             }
         );
 
         var scene = document.getElementById('scene');
         var parallaxInstance;
-        if ($(window).width() > 514){
+        if ($(window).width() > 514) {
             parallaxInstance = new Parallax(scene);
-        } 
+        }
 
-        window.onresize = function() {
+        window.onresize = function () {
             location.reload()
         }
 
@@ -248,7 +264,7 @@
                 scaledHeight = scale * height;
                 y = -20
             }
-            
+
             function init() {
                 ctx.drawImage(img, 0, 0, width, height, -3, y, scaledWidth, scaledHeight);
             }

@@ -78,7 +78,7 @@
             </ul>
             <ul class='navbar-nav ml-auto'>
                 <li class="nav-item m-1">
-                    <a class="btn btn-secondary" href="./createguildorg.html">Create Guild</a>
+                    <a class="btn btn-secondary" href="./signup.html">Create Guild</a>
                 </li>
             </ul>
         </div>
@@ -161,6 +161,10 @@
                             }
 
                         })
+                    },
+                    logout: function () {
+                        sessionStorage.clear();
+                        window.location.replace("./home.html");
                     }
                 },
                 
