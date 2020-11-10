@@ -771,6 +771,9 @@ def add_meeting():
 
     try:
         request.json["id"] = str(uuid.uuid4())
+        request.json["html_button_id"] = ("#M" + request.json["id"]).replace("_", "")
+        request.json["html_modal_id"] = ("M" + request.json["id"]).replace("_", "")
+        request.json["html_textarea_id"] = ("Copy" + request.json["id"]).replace("_", "")
         request.json["start"] = datetime.strptime(request.json["start"], "%m/%d/%Y %H:%M")
         request.json["end"] = datetime.strptime(request.json["end"], "%m/%d/%Y %H:%M")
 
