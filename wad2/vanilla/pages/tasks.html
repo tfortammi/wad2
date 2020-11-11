@@ -103,6 +103,10 @@
             border: 5px solid #a8c582;
         }
 
+        #sidebar button {
+            font-size: 13px;
+        }
+
         .sidebar-btn {
             margin: 5px 0px;
             width: 120px;
@@ -245,6 +249,27 @@
 
     <div id="tasks">
 
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="taskModal"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Task</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to complete this task? 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" v-on:click="completeTask" data-dismiss="modal">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- MODIFY TASK MODAL-->
         <div class="modal fade" id="modTaskModal" tabindex="-1" role="dialog" aria-labelledby="modTaskModal"
             aria-hidden="true">
@@ -322,10 +347,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save
-                            Changes</button>
-                        <button type="button" class="btn btn-primary" v-on:click="completeTask"
-                            data-dismiss="modal">Complete Task</button>
+                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save Changes</button>
+                        <button v-if="chosenTask.status == false" type="button" class="btn btn-primary" data-target="#confirmModal" data-toggle="modal" data-dismiss="modal">Complete Task</button>
                     </div>
                 </div>
             </div>
@@ -487,6 +510,9 @@
                     </li>
                     <li class="nav-item ">
                         <a class="nav-link" href="./team.html">Team <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="./user.html">User</a>
                     </li>
                 </ul>
                 
@@ -763,7 +789,8 @@
                     end: "",
                     dependency: "",
                     priority: "",
-                    category: ""
+                    category: "",
+                    status: ""
                 },
                 chosenTask: {
                     id: "",
@@ -773,7 +800,8 @@
                     end: "",
                     dependency: "",
                     priority: "",
-                    category: ""
+                    category: "",
+                    status: ""
                 },
                 meeting: {
                     name: "",
@@ -847,7 +875,7 @@
                             console.log(typeof data["new_exp"])
                             this.user.userExp = parseInt(data["new_exp"])
                             this.user.userLevel = parseInt(data["new_level"])
-                            // location.reload()
+                            location.reload()
                         })
                         
                     })
@@ -1044,8 +1072,6 @@
                         // add data to data table
                         dataTable.addRows(gantt_tasks)
 
-                        console.log((biggest - smallest) / 10000)
-
                         // options for gantt chart
                         var options = {
                             height: dataTable.getNumberOfRows() * 50,
@@ -1067,8 +1093,8 @@
                                     strokeWidth: 0
                                 },
                                 labelStyle: {
-                                    fontName: "VT323",
-                                    fontSize: 17
+                                    fontName: "Helvetica",
+                                    fontSize: 13
                                 },
                                 sortTasks: true,
                                 criticalPathEnabled: true
@@ -1099,6 +1125,7 @@
                                     this.chosenTask.dependency = data["dependency"]
                                     this.chosenTask.assignedTo = data["assignedTo"]
                                     this.chosenTask.id = task_id
+                                    this.chosenTask.status = data["status"]
 
                                     $('#modTaskModal').modal('show');
 

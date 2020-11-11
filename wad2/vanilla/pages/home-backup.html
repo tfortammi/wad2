@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        #hero {
+            width: 100%;
+            background-color: white;
+        }
+
+        #hero h1 {
+            font-size: 3em;
+        }
+
+        #hero .lead {
+            font-size: 1.5em;
+        }
+
+        #hero-bg {
+            background-image: url("../assets/bg.jpg");
+            background-color: white;
+            background-size: cover;
+            background-position: top 300px;
+            width: 100%;
+            background-repeat: no-repeat;
+        }
+
+        #scene {
+            position: absolute;
+            top: 70%;
+            right: 10vw;
+        }
+
+        .section {
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            margin: 5% 0%;
+        }
+
+        .b1 h1 {
+            margin-left: 10%;
+        }
+
+        .b2 img {
+            margin-left: 10%;
+        }
+
+        .b1 {
+            background-color: white;
+        }
+
+        .b2 {
+            background-color: rgb(236, 236, 236);
+        }
+
+        @media (max-width: 1439px) {
+            #scene {
+                position: relative;
+                top: 70%;
+                left: 10vw;
+            }
+        }
+
+        @media (max-width: 767px) {
+
+            #hero .lead {
+                font-size: 1em;
+            }
+
+            #hero h1 {
+                font-size: 1.5em;
+            }
+
+            #hero-bg {
+                height: 40vh;
+            }
+
+
+            #scene {
+                position: relative;
+                left: 15%;
+                top: 70%;
+            }
+
+            .section {
+                height: 30vh;
+                margin-top: 10%;
+                display: flex;
+                align-items: center;
+                text-align: center;
+
+            }
+
+            .section h1 {
+                margin-left: 0%;
+                font-size: 2em;
+                margin: auto;
+            }
+
+            .b1 img {
+                margin: auto;
+                position: relative;
+                top: -30%;
+            }
+
+            .b2 img {
+                margin: auto;
+                position: relative;
+            }
+
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id='home'>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">WAD</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./tasks.html">Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./team.html">Team</a>
+                    </li>
+                </ul>
+
+                <ul v-if="loggedInStatus !== null " class='navbar-nav ml-auto'>
+                    <li class="nav-item m-1">
+                        <a class="btn btn-secondary" @click='logout()'>Logout</a>
+                    </li>
+                </ul>
+                <ul v-else class='navbar-nav ml-auto'>
+                    <li class="nav-item m-1">
+                        <a class="btn btn-secondary" href="./login.html">Login</a>
+                    </li>
+                    <li class=" nav-item m-1">
+                        <a class="btn btn-secondary" href="./signup.html">Create Guild</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container-fluid" style="overflow: hidden;">
+            <div class="row">
+                <div class="col-sm p-5" id="hero">
+                    <br>
+                    <div>
+                        <h1 class="font-weight-bold">ProjectQuest</h1>
+                        <p class="lead">Build your guild and manage software projects easily and effectively using
+                            ProjectQuest!</p>
+                        <br>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                        </p>
+                    </div>
+
+                </div>
+                <div class="col-sm p-0" id="hero-bg">
+                    <div id="scene">
+                        <div data-depth="0.9" id="chars">
+                            <canvas id="elf" width="60" height="100"></canvas>
+                            <canvas id="dragon" width="60" height="100"></canvas>
+                            <canvas id="knight" width="60" height="100"></canvas>
+                            <canvas id="wizard" width="60" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row text-center b1">
+                <div class="col-sm section">
+                    <br><br><br><br>
+                    <h1>Make Team Management Fun & Easy</h1>
+                </div>
+                <div class="col-sm section">
+                    <img width="80%" src="../assets/people.png">
+                </div>
+            </div>
+
+            <div class="row text-center b2">
+                <div class="col-sm section">
+                    <img width="80%" src="../assets/graph.png">
+                </div>
+                <div class="col-sm section">
+                    <br><br><br><br>
+                    <h1>Track & Reward Progress</h1>
+                </div>
+            </div>
+
+            <div class="row text-center b1">
+                <div class="col-sm section">
+                    <br><br><br><br>
+                    <h1>Manage Remote<br>Teams</h1>
+                </div>
+                <div class="col-sm section">
+                    <img width="60%" src="../assets/computer.png">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+    <script>
+
+        var app = new Vue(
+            {
+                el: "#home",
+                data: {
+                    loggedInStatus: sessionStorage.getItem("user")
+                },
+                methods: {
+                    logout: function () {
+                        sessionStorage.clear()
+                        window.location.replace("./home.html");
+                    }
+                }
+            }
+        );
+
+        var scene = document.getElementById('scene');
+        var parallaxInstance;
+        if ($(window).width() > 514) {
+            parallaxInstance = new Parallax(scene);
+        }
+
+        window.onresize = function () {
+            location.reload()
+        }
+
+        function initialiseImage(src, query) {
+            let img = new Image();
+            img.src = src;
+            img.onload = function () {
+                init();
+            };
+
+            let canvas = document.querySelector(query);
+            let ctx = canvas.getContext('2d');
+
+            var scale = 1.2;
+            var width = 65;
+            var height = 170;
+            var scaledWidth = scale * width;
+            var scaledHeight = scale * height;
+            var y = -20
+
+            if ($(window).width() < 514) {
+                scale = 1;
+                width = 65;
+                height = 100;
+                scaledWidth = scale * width;
+                scaledHeight = scale * height;
+                y = -20
+            }
+
+            function init() {
+                ctx.drawImage(img, 0, 0, width, height, -3, y, scaledWidth, scaledHeight);
+            }
+
+            function drawFrame(frameX, frameY, canvasX, canvasY) {
+                ctx.drawImage(img, frameX * width, 0, width, height, -3, y, scaledWidth, scaledHeight);
+            }
+
+            const cycleLoop = [0, 1, 2, 3];
+            let currentLoopIndex = 0;
+            let frameCount = 0;
+
+            window.requestAnimationFrame(step);
+            function step() {
+                frameCount++;
+                if (frameCount < 15) {
+                    window.requestAnimationFrame(step);
+                    return;
+                }
+                frameCount = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+                currentLoopIndex++;
+                if (currentLoopIndex >= cycleLoop.length) {
+                    currentLoopIndex = 0;
+                }
+                window.requestAnimationFrame(step);
+            }
+        }
+
+        initialiseImage("../assets/elf_spritesheet.png", "#elf");
+        initialiseImage("../assets/knight_spritesheet.png", "#knight");
+        initialiseImage("../assets/wizard_spritesheet.png", "#wizard");
+        initialiseImage("../assets/dragon_spritesheet.png", "#dragon");
+
+    </script>
+</body>
+
+</html>

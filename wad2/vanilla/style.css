@@ -3,8 +3,13 @@
 /* GLOBAL STYLES */
 
 * {
-    font-family: "VT323", monospace;
+    /* font-family: "VT323", monospace; */
     /* color: #A41E29; */
+}
+
+#lvl-window {
+    font-family: "VT323", monospace !important;
+
 }
 
 body {
