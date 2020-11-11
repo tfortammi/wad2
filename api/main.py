@@ -468,11 +468,10 @@ def add_user():
 
         user_ref.document().set(request.json)
 
-        inventory_ref = db.collection(u"Inventory")
-        inventory_ref.document().set({
+        claimed_ref = db.collection(u"Claimed")
+        claimed_ref.document().set({
             "email" : request.json["email"],
-            "claimed" : [],
-            "used" : []
+            "rewards" : []
         })
 
         return jsonify({"success": True}), 200
@@ -919,15 +918,23 @@ def modify_meeting():
         return {"error": "Cannot modify meeting."}, 500
 
 # =========================== # 
-#    REWARDS + INVENTORY      #
+#      REWARDS + CLAIMED      #
 # =========================== # 
 
+# REWARDS
+# -----------------------------
 # Database fields: 
 #    - id: "" (string)
 #    - name: "Golden Village Movie Ticket" (string)
-#    - cost: 50 (int)
+#    - level: 10 (int)
 #    - category: "entertainment" (string) [OPTIONS: entertainment, shopping, foodNbvg, services, others]
 #    - guild: "wad2_guild" (string)
+
+# CLAIMED
+# -----------------------------
+# Database fields: 
+#    - email: "naruto@wad2.co" (string)
+#    - rewards: ["reward_id_1", ....] (string array)
 
 # Add a reward into the database 
 @app.route("/add_reward", methods=["POST"])
@@ -970,16 +977,14 @@ def remove_reward():
     """
 
     try:
-        inventory_ref = db.collection(u"Inventory")
-        docs = inventory_ref.stream()
+        claimed_ref = db.collection(u"Claimed")
+        docs = claimed_ref.stream()
 
         for doc in docs:
-            if request.json["id"] in doc.to_dict()["claimed"]:
-                doc.to_dict()["claimed"].remove(request.json["id"])
-                inventory_ref.document(doc.id).update({u"claimed": doc.to_dict()["claimed"]})
-            elif request.json["id"] in doc.to_dict()["used"]:
-                doc.to_dict()["used"].remove(request.json["id"])
-                inventory_ref.document(doc.id).update({u"used": doc.to_dict()["used"]})
+            if request.json["id"] in doc.to_dict()["rewards"]:
+                to_remove = doc.to_dict()["rewards"].copy()
+                to_remove.remove(request.json["id"])
+                claimed_ref.document(doc.id).update({u"rewards": to_remove})
 
         reward_ref = db.collection(u"Reward")
         docs = reward_ref.stream()
@@ -994,32 +999,89 @@ def remove_reward():
         return jsonify({"success": True}), 200
     except Exception as e:
         print(e)
-        return {"error": "Cannot add reward."}, 500
+        return {"error": "Cannot delete specified reward."}, 500
 
 # Get rewards by guild from the database 
 @app.route("/get_rewards_by_guild")
 def get_rewards_by_guild():
     """
-        Get rewards from database by guild arranged according to level.
+        Get rewards from database by guild.
         
-        Expected JSON object:
-        {
-            "guild" : <string: reward's id>
-        }
+        Expected GET params:
+            - "guild" = <string: guild's name>
     """
 
     try:
         reward_ref = db.collection(u"Reward")
-        docs = reward_ref.order_by(u'level').where("guild", "==", request.args.get("guild")).stream()
+        docs = reward_ref.where("guild", "==", request.args.get("guild")).stream()
 
         reward_list = []
         for doc in docs:
             reward_list.append(doc.to_dict())
+        
+        # sorted(reward_list, key = lambda x: x['level'])
     
-        return {"users": reward_list}, 200
+        return {"rewards": reward_list}, 200.
     except Exception as e:
         print(e)
-        return {"error": "Cannot add reward."}, 500
+        return {"error": "Cannot get rewards."}, 500
+
+# Get rewards by guild and category from the database 
+@app.route("/get_rewards_by_guild_and_cat")
+def get_rewards_by_guild_and_cat():
+    """
+        Get rewards from database by guild arranged.
+        
+        Expected GET params:
+            - "guild" = <string: guild that reward belong to>
+            - "cat" = <string: category of rewards to retrieve> [OPTIONS: entertainment, shopping, foodNbvg, services, others, all]
+    """
+
+    try:
+        reward_ref = db.collection(u"Reward")
+        if request.args.get("cat") == "all":
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).stream()
+        else:
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).where("category", "==", request.args.get("cat")).stream()
+
+        reward_list = []
+        for doc in docs:
+            reward_list.append(doc.to_dict())
+        
+        # sorted(reward_list, key = lambda x: x['level']) # If you need the rewards to be sorted according to the lowest level then uncomment this
+    
+        return {"rewards": reward_list}, 200.
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot get rewards."}, 500
+
+# Remove a reward from the database 
+@app.route("/claim_reward", methods=["POST"])
+def claim_reward():
+    """
+        Remove a reward from database with its id.
+        
+        Expected JSON object:
+        {
+            "id" : <string: reward's id>,
+            "email" : <string: user's email>
+        }
+    """
+
+    try:
+        claimed_ref = db.collection(u"Claimed")
+        docs = claimed_ref.stream()
+
+        for doc in docs:
+            if request.json["email"] == doc.to_dict()["email"]:
+                to_add = doc.to_dict()["rewards"].copy()
+                to_add.append(request.json["id"])
+                claimed_ref.document(doc.id).update({u"rewards": to_add})
+
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot delete specified reward."}, 500
 
 
 # =========================== # 

@@ -9,14 +9,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
     <link rel="stylesheet" href="../style.css">
+
+    <link href="../vendor/datatables/datatable.min.css" rel="stylesheet">
+    <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css">
     <link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
         body {
-            background-image: url("../assets/city.jpg");
+            background-image: url("../assets/bg.jpg");
             background-size: cover;
             background-repeat: no-repeat;
         }
@@ -45,9 +50,9 @@
 
         #ch-window {
             width: 100%;
-            height: 100%;
+            height: 150px;
             border: 5px solid #a8c582;
-            background: url("../assets/city.gif") no-repeat;
+            background: url("../assets/shop.gif") no-repeat;
             background-size: auto;
         }
 
@@ -272,25 +277,15 @@
             <br>
 
             <div class="row justify-content-md-center">
-                <!-- CHARACTER INFO CONTAINER -->
-                <div class="col-lg-2 text-center py-3" id="lvl-window">
-                    <h1 id="lvl" class="font-weight-bold">Lvl: {{user.userLevel}}</h1>
-                    <h4 id="exp">EXP: {{user.userExp}}</h4>
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" v-bind:style="{width: user.userExp + '%'}"
-                            v-bind:aria-valuenow="user.userExp" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-                <!-- CHARACTER RUNNING CONTAINER -->
-                <div class="col-lg-10 p-0">
+                <div class="col-lg-12 p-0">
                     <div class="col" id="ch-window">
-                        <canvas id="ch-img" width="150" height="150"></canvas>
+
                     </div>
                 </div>
             </div>
             <br>
 
-            <div id="rewards-container" class="row justify-content-md-center">
+            <div id="rewards-container" style="overflow: scroll;" class="row justify-content-md-center">
                 <ul style="border-bottom: 5px solid #a8c582;" class="w-100 nav nav-fill nav-pills mb-3" id="pills-tab"
                     role="tablist">
                     <li class="nav-item" style="border-right: 5px solid #a8c582;">
@@ -299,116 +294,166 @@
                             aria-selected="true">Add new reward</a>
                     </li>
                     <li class="nav-item">
-                        <a style="border-radius: 0px !important;" class="nav-link" id="pills-past-tab"
-                            data-toggle="pill" href="#pills-past" role="tab" aria-controls="pills-past"
+                        <a style="border-radius: 0px !important;" class="nav-link" id="pills-rewards-tab"
+                            data-toggle="pill" href="#pills-rewards" role="tab" aria-controls="pills-rewards"
                             aria-selected="false">View your guild's rewards</a>
                     </li>
                 </ul>
 
                 <div class="container-fluid">
-                    <div class="tab-content w-100" id="pills-tabContent"></div>
-                    <div class="tab-pane fade show active" id="pills-form" role="tabpanel"
-                        aria-labelledby="pills-form-tab">
-                        <div class="form-group row">
-                            <label for="name" class="col-sm-2 col-form-label">Name:</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name"
-                                    placeholder="Enter a name for the reward">
+                    <div class="tab-content w-100" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-form" role="tabpanel"
+                            aria-labelledby="pills-form-tab">
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-2 col-form-label">Name:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="name"
+                                        placeholder="Enter a name for the reward">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="level" class="col-sm-2 col-form-label">Level needed to redeem:</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="level"
+                                        placeholder="For e.g. If members can redeem the reward when they reach level 10, specify 10!">
+                                </div>
+                            </div>
+
+                            <div class="form-group row cc-selector">
+                                <label for="class" class="col-sm-2 col-form-label">Choose the classification for the
+                                    reward:</label>
+                                <div class="col-sm-10 input-group">
+                                    <table class="table-responsive">
+                                        <tr>
+                                            <td>
+                                                <div style="margin-left: 0.75rem" class="form-check form-check-inline"
+                                                    data-toggle="tooltip" data-placement="top" title="Entertainment">
+                                                    <input checked="checked" id="entertainment" type="radio"
+                                                        name="category" value="entertainment" />
+                                                    <label class="drinkcard-cc entertainment"
+                                                        for="entertainment"></label>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div style="margin-left: 0.75rem" class="form-check form-check-inline"
+                                                    data-toggle="tooltip" data-placement="top" title="Food & Beverages">
+                                                    <input id="foodNbvg" type="radio" name="category"
+                                                        value="foodNbvg" />
+                                                    <label class="drinkcard-cc foodNbvg" for="foodNbvg"></label>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div style="margin-left: 0.75rem" class="form-check form-check-inline"
+                                                    data-toggle="tooltip" data-placement="top" title="Shopping">
+                                                    <input id="shopping" type="radio" name="category"
+                                                        value="shopping" />
+                                                    <label class="drinkcard-cc shopping" for="shopping"></label>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div style="margin-left: 0.75rem" class="form-check form-check-inline"
+                                                    data-toggle="tooltip" data-placement="top" title="Services">
+                                                    <input id="services" type="radio" name="category"
+                                                        value="services" />
+                                                    <label class="drinkcard-cc services" for="services"></label>
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div style="margin-left: 0.75rem" class="form-check form-check-inline"
+                                                    data-toggle="tooltip" data-placement="top" title="Others">
+                                                    <input id="others" type="radio" name="category" value="others" />
+                                                    <label class="drinkcard-cc others" for="others"></label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr style="text-align: center;">
+                                            <td>Entertainment</td>
+                                            <td>Food N Beverage</td>
+                                            <td>Shopping</td>
+                                            <td>Services</td>
+                                            <td>Others</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class='text-center my-4'>
+                                <button class="btn btn-primary" @click='createReward()'>Create reward!</button>
+                            </div>
+
+                            <div id="empty-alert" style="display: none;"
+                                class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Holy guacamole!</strong> Please ensure that none of the fields has been left
+                                empty.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="level" class="col-sm-2 col-form-label">Level needed to redeem:</label>
-                            <div class="col-sm-10">
-                                <input type="number" class="form-control" id="level"
-                                    placeholder="For e.g. If members can redeem the reward when they reach level 10, specify 10!">
-                            </div>
-                        </div>
-
-                        <div class="form-group row cc-selector">
-                            <label for="class" class="col-sm-2 col-form-label">Choose the classification for the
-                                reward:</label>
-                            <div class="col-sm-10 input-group">
-                                <table class="table-responsive">
-                                    <tr>
-                                        <td>
-                                            <div style="margin-left: 0.75rem" class="form-check form-check-inline"
-                                                data-toggle="tooltip" data-placement="top" title="Entertainment">
-                                                <input checked="checked" id="entertainment" type="radio"
-                                                    name="category" value="entertainment" />
-                                                <label class="drinkcard-cc entertainment" for="entertainment"></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div style="margin-left: 0.75rem" class="form-check form-check-inline"
-                                                data-toggle="tooltip" data-placement="top" title="Food & Beverages">
-                                                <input id="foodNbvg" type="radio" name="category"
-                                                    value="foodNbvg" />
-                                                <label class="drinkcard-cc foodNbvg" for="foodNbvg"></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div style="margin-left: 0.75rem" class="form-check form-check-inline"
-                                                data-toggle="tooltip" data-placement="top" title="Shopping">
-                                                <input id="shopping" type="radio" name="category"
-                                                    value="shopping" />
-                                                <label class="drinkcard-cc shopping" for="shopping"></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div style="margin-left: 0.75rem" class="form-check form-check-inline"
-                                                data-toggle="tooltip" data-placement="top" title="Services">
-                                                <input id="services" type="radio" name="category"
-                                                    value="services" />
-                                                <label class="drinkcard-cc services" for="services"></label>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div style="margin-left: 0.75rem" class="form-check form-check-inline"
-                                                data-toggle="tooltip" data-placement="top" title="Others">
-                                                <input id="others" type="radio" name="category"
-                                                    value="others" />
-                                                <label class="drinkcard-cc others" for="others"></label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr style="text-align: center;">
-                                        <td>Entertainment</td>
-                                        <td>Food N Beverage</td>
-                                        <td>Shopping</td>
-                                        <td>Services</td>
-                                        <td>Others</td>
-                                    </tr>
+                        <div v-if="toggleTable" class="tab-pane fade" id="pills-rewards" role="tabpanel"
+                            aria-labelledby="pills-rewards-tab">
+                            <div class="table-responsive pb-3">
+                                <table style="background-color: white;" class="table table-bordered" id="dataTable"
+                                    width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Level to Redeem</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Level to Redeem</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody id="rowsHTML"></tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <div class='text-center my-4'>
-                            <button class="btn btn-primary" @click='createReward()'>Create reward!</button>
+                        <div v-else style="height: 300px" class="tab-pane fade" id="pills-rewards" role="tabpanel"
+                            aria-labelledby="pills-rewards-tab">
+                            <div class="animate__animated animate__shakeX alert alert-warning text-center" role="alert">
+                                You've yet to add any rewards for your guild! &#9785;
+                            </div>
                         </div>
 
-                        <div id="empty-alert" style="display: none;" class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Holy guacamole!</strong> Please ensure that none of the fields has been left empty.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
                     </div>
+                </div>
 
-
-                    <div class="tab-pane fade" id="pills-past" role="tabpanel" aria-labelledby="pills-past-tab">
-                        hello
+                <!-- Deleted successfully modal -->
+                <div id="deleteModal" class="modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Deleted successfully!</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div style="text-align: center;" class="modal-body">
+                                <img style="margin:auto;" class="text-center" src="../assets/tick.gif">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-
 
     <script type="text/javascript" src="http://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -424,7 +469,30 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
     <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
     <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+
+    <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
     <script>
+        function deleteReward(id) {
+            var request = new XMLHttpRequest();
+
+            request.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    var responseText = JSON.parse(this.responseText);
+                    $('#deleteModal').modal('show');
+                    $('#deleteModal').on('hidden.bs.modal', function () {
+                        location.reload();
+                    });
+                }
+            }
+
+            var url = "http://localhost:5001/remove_reward";
+            request.open("POST", url, true);
+            request.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            request.send(JSON.stringify({"id" : id}));  
+        }
+
         var app = new Vue({
             el: '#tasks',
             data: {
@@ -433,7 +501,9 @@
                     userLevel: "",
                     userExp: "",
                     guild: ""
-                }
+                },
+                rewards: [],
+                toggleTable: true
             },
             methods: {
                 createReward: function () {
@@ -449,7 +519,7 @@
                             category = radio.id;
                         }
                     };
-                    
+
                     if (name.trim() === "" || level.trim() === "") {
                         document.getElementById("empty-alert").style.display = "block";
                     } else {
@@ -460,12 +530,12 @@
                             },
                             body: JSON.stringify({
                                 name: name,
-                                level: level,
+                                level: parseInt(level),
                                 category: category,
                                 guild: this.user.guild,
                             })
                         }).then(res => {
-                            location.reload()
+                            location.reload();
                         })
                     }
 
@@ -489,70 +559,42 @@
                 // Gets the information of the logged in user
                 await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
                     var data = res.json().then(data => {
-                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png",
-                            "#ch-img", 65, 260, 0, -70);
                         this.user.userLevel = data["level"];
                         this.user.userExp = data["exp"];
                         this.user.token = data["git_token"];
                     })
                 })
 
+                // Gets all the rewards
+                await fetch("http://localhost:5001/get_rewards_by_guild?guild=" + this.user.guild).then(
+                    res => {
+                        var data = res.json().then(data => {
+                            this.rewards = data["rewards"];
+                            if (data["rewards"].length == 0) {
+                                this.toggleTable = false;
+                            } else {
+                                var dynamic = "";
+                                for (reward of this.rewards) {
+                                    dynamic += `
+                                    <tr>
+                                        <td>${reward.level}</td>
+                                        <td>${reward.name}</td>
+                                        <td>${reward.category}</td>
+                                        <td><button type="button" onclick="deleteReward('${reward.id}')" class="btn btn-danger">Delete</button></td>
+                                    </tr>
+                                `;
+                                }
+                                document.getElementById("rowsHTML").innerHTML = dynamic;
+
+                                $('#dataTable').DataTable();
+                            }
+                        })
+                    })
+
             }
         });
-
-
-        function initialiseImage(src, query, width, height, x, y) {
-            // Create image object
-            let img = new Image();
-            img.src = src;
-            img.onload = function () {
-                init();
-            };
-
-            // Create canvas and context
-            let canvas = document.querySelector(query);
-            let ctx = canvas.getContext('2d');
-
-            // set size of image
-            const scale = 2.5;
-            const scaledWidth = scale * width;
-            const scaledHeight = scale * height;
-
-            // Function for Initial state of image
-            function init() {
-                ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
-            }
-
-            // Function to draw new images based on inputs
-            function drawFrame(frameX, frameY, canvasX, canvasY) {
-                ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
-            }
-
-            const cycleLoop = [0, 1, 2, 3];
-            let currentLoopIndex = 0;
-            let frameCount = 0;
-
-            // Request next frame based on cycleloop
-            window.requestAnimationFrame(step);
-
-            // Clears old frame and replaces with new frame based on new values
-            function step() {
-                frameCount++;
-                if (frameCount < 15) {
-                    window.requestAnimationFrame(step);
-                    return;
-                }
-                frameCount = 0;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
-                currentLoopIndex++;
-                if (currentLoopIndex >= cycleLoop.length) {
-                    currentLoopIndex = 0;
-                }
-                window.requestAnimationFrame(step);
-            }
-        }
     </script>
+
 </body>
 
 </html>
