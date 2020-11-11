@@ -108,11 +108,12 @@
             width: 120px;
         }
 
-        #gantt-chart, #calendar-col {
+        #gantt-chart,
+        #calendar-col {
             border: 5px solid #a8c582;
             height: 420px;
         }
-        
+
         #meeting-list {
             border: 5px solid #a8c582;
             height: 420px;
@@ -166,11 +167,77 @@
                 -webkit-animation: displace 10s linear infinite;
                 animation: displace 3s linear infinite;
             }
+        }
 
-         }
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
 
-         
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
 
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -329,7 +396,7 @@
                                     <span class="input-group-text" id="basic-addon1">Dependency</span>
                                 </div>
                                 <select v-model="tasks.dependency" class="custom-select" id="inputGroupSelect01">
-                                    <option v-for="task in tasks.tasks" v-bind:id="task['id']">{{task["name"]}}
+                                    <option v-for="task in tasks.tasks" v-bind:value="task['id']">{{task["name"]}}
                                         [{{new Date(task["end"]).toLocaleDateString()}}]</option>
                                 </select>
                             </div>
@@ -422,9 +489,10 @@
                         <a class="nav-link" href="./team.html">Team <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
+                
                 <ul class='navbar-nav ml-auto'>
                     <li class="nav-item m-1">
-                        <a class="btn btn-secondary" href="./createguildorg.html">Create Guild</a>
+                        <a class="btn btn-secondary" @click='logout()'>Logout</a>
                     </li>
                 </ul>
             </div>
@@ -458,16 +526,20 @@
             <div class="row justify-content-md-center">
                 <!-- BUTTON SIDEBAR -->
                 <div class="col-lg-2 py-3 text-center" id="sidebar">
-                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleView('meetings')">View {{nextView}}</button>
-                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleTaskView">View: {{taskView}}</button>
-                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal" data-toggle="modal">Add Task</button>
-                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal" data-toggle="modal">Add Meeting</button>
+                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleView('meetings')">View
+                        {{nextView}}</button>
+                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleTaskView">View:
+                        {{taskView}}</button>
+                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal"
+                        data-toggle="modal">Add Task</button>
+                    <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
+                        data-toggle="modal">Add Meeting</button>
                 </div>
-                
+
                 <!-- GANTT CHART -->
                 <div class="col-lg-10" id="gantt-chart" style="overflow: scroll;">
                     <div class="container">
-                        <div class="row" >
+                        <div class="row">
                             <div class="col text-center mt-2" :key="viewKey">
                                 <div id="gantt_div"></div>
                             </div>
@@ -477,9 +549,9 @@
 
                 <div class="col-lg-10" id="calendar-col" style="overflow: scroll; display: none;">
                     <div class="container">
-                        <div class="row" >
+                        <div class="row">
                             <div class="col text-center mt-2" :key="viewKey">
-                                <div id="calendar_div" ></div>
+                                <div id="calendar_div"></div>
                             </div>
                         </div>
                     </div>
@@ -525,7 +597,9 @@
                                                     <td class="meeting-row">
                                                         <a v-bind:href="meeting.room_link" target="_blank"
                                                             class="btn btn-success">Join</a>
-                                                        <a class="btn btn-info">Generate Invite</a>
+                                                        <button type="button" class="btn btn-info" data-toggle="modal"
+                                                            v-bind:data-target="meeting.html_button_id">Generate
+                                                            Invite</button>
                                                     </td>
                                                 </tr>
 
@@ -597,7 +671,8 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td colspan="5" class="text-center meeting-row">You do not have any past meetings.</td>
+                                                    <td colspan="5" class="text-center meeting-row">You do not have any
+                                                        past meetings.</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -608,6 +683,38 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Generate meeting invite modals -->
+                <div v-for="(meeting, index) in upcoming_meetings.meetings">
+                    <div class="modal fade" v-bind:id="meeting.html_modal_id" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Copy Meeting Invite</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Meeting Invite <br>
+                                    <textarea readonly v-bind:id="meeting.html_textarea_id"
+                                        style="width: 100%; padding: 10px;"
+                                        rows="8">{{meeting["organizer"]}} would like to invite you to a scheduled video meeting. &#13;&#10;&#13;&#10;Topic: {{meeting["name"]}}&#13;&#10;Start Time: {{meeting["start"]}}&#13;&#10;End Time: Time: {{meeting["end"]}}&#13;&#10;&#13;&#10;Join Daily.co meeting:&#13;&#10;{{meeting["room_link"]}}</textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" v-on:click="copyInvite(meeting.html_textarea_id)"
+                                        class="btn btn-primary">Copy Message Invite</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Snackbar -->
+                <div id="snackbar">Copied to clipboard!</div>
+
             </div>
 
         </div>
@@ -618,10 +725,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
-    </script>
+        </script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
@@ -636,14 +743,17 @@
                 nextView: "Meeting",
                 viewKey: 0,
                 user: {
-                    loggedInUser: "naruto@wad2.co",
+                    // loggedInUser: "naruto@wad2.co",
+                    loggedInUser: "",
                     userLevel: "",
                     userExp: "",
                 },
                 guild: {
-                    name: "wad2_guild",
+                    // name: "wad2_guild",
+                    name: "",
                     streak: "",
-                    users: []
+                    users: [],
+                    reponame: ""
                 },
                 tasks: {
                     tasks: [],
@@ -682,13 +792,15 @@
                 },
             },
             methods: {
-                loadGantt: function() {
-                    google.charts.load('current', { 'packages': ['gantt'] });
+                loadGantt: function () {
+                    google.charts.load('current', {
+                        'packages': ['gantt']
+                    });
                     google.charts.setOnLoadCallback(this.drawChart);
                 },
-                loadCalendar: function() {
+                loadCalendar: function () {
                     event_list = []
-                    
+
                     for (const task of this.tasks.tasks) {
                         var e = {}
                         e["id"] = task["id"]
@@ -697,28 +809,28 @@
 
                         event_list.push(e)
                     }
-                    
+
                     var calendarEl = document.getElementById('calendar_div');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
                         initialView: $(window).width() < 514 ? 'listWeek' : 'dayGridMonth',
                         events: event_list,
                         eventTextColor: "black",
                         themeSystem: "bootstrap",
-                        windowResize: function(arg) {
-                            if ($(window).width() < 514){
+                        windowResize: function (arg) {
+                            if ($(window).width() < 514) {
                                 console.log(arg.view.type)
-                                calendar.changeView('listWeek' );
+                                calendar.changeView('listWeek');
                             } else {
-                                calendar.changeView('dayGridMonth' );
+                                calendar.changeView('dayGridMonth');
                             }
                         }
-                        
+
                     });
 
                     calendar.render();
 
                 },
-                completeTask: function() {
+                completeTask: function () {
                     fetch("http://localhost:5001/complete_task", {
                         method: "POST",
                         headers: {
@@ -785,18 +897,18 @@
                 addMeeting: function () {
 
                     fetch("http://localhost:5001/add_meeting", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                attendees: this.meeting.attendees,
-                                start: this.meeting.start,
-                                end: this.meeting.end,
-                                name: this.meeting.name,
-                                organizer: this.user.loggedInUser,
-                            })
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            attendees: this.meeting.attendees,
+                            start: this.meeting.start,
+                            end: this.meeting.end,
+                            name: this.meeting.name,
+                            organizer: this.user.loggedInUser,
                         })
+                    })
                         .then(response => response.json())
                         .then(data => {
                             var request = new XMLHttpRequest();
@@ -869,7 +981,7 @@
                     }
 
                 },
-                toggleTaskView: function() {
+                toggleTaskView: function () {
 
                     if (this.taskView == "Gantt") {
                         document.getElementById("meeting-list").style.display = "none";
@@ -910,9 +1022,11 @@
                         var smallest = 100000000000000
                         var biggest = 0
                         tasks.forEach(task => {
-                            var task_arr = [task["id"], task["name"], (task["status"]).toString(), new Date(
+                            var task_arr = [task["id"], task["name"], (task["status"]).toString(),
+                            new Date(
                                 task["start"]), new Date(task["end"]), null, 100, task[
-                                "dependency"]]
+                            "dependency"]
+                            ]
                             gantt_tasks.push(task_arr)
 
                             var task_start = new Date(task["start"]).getTime() / 1000
@@ -964,7 +1078,7 @@
                         // Create gantt chart
                         var chart = new google.visualization.Gantt(document.getElementById('gantt_div'));
                         var container = document.getElementById("gantt_div")
-                        
+
                         // When user selects task, open modify task popup
                         google.visualization.events.addListener(chart, "select", () => {
                             var select = chart.getSelection();
@@ -1002,7 +1116,7 @@
                                             .addedNodes,
                                             function (addedNode) {
                                                 if ((addedNode.tagName ===
-                                                        'rect') && (addedNode
+                                                    'rect') && (addedNode
                                                         .getAttribute(
                                                             'fill') === 'white'
                                                     )) {
@@ -1035,28 +1149,59 @@
                             });
                         });
 
-                        google.visualization.events.addListener(chart, "error", function(googleError) {
+                        google.visualization.events.addListener(chart, "error", function (googleError) {
                             google.visualization.errors.removeError(googleError.id)
                         })
 
                         chart.draw(dataTable, options);
                     }
 
+                },
+                copyInvite: function (inviteId) {
+                    var copyText = document.getElementById(inviteId);
+                    copyText.select();
+                    document.execCommand("copy");
+                    //alert("Copied the text: " + copyText.value);
+                    var x = document.getElementById("snackbar");
+                    x.className = "show";
+                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                },
+                logout: function () {
+                    sessionStorage.clear()
+                    window.location.replace("./home.html");
                 }
-
             },
             // When Vue view is created, runs the following functions
             async created() {
-                
+
+                if (sessionStorage.getItem("user") !== null) {
+                    // Retrieve
+                    this.user.loggedInUser = sessionStorage.getItem("user");
+                    this.guild.name = sessionStorage.getItem("guildName");
+                    this.tasks.guild = this.guild.name;
+                } else {
+                    window.location.replace("./login.html");
+                }
+                // Gets the information of the logged in user
+                await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
+                    var data = res.json().then(data => {
+                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png",
+                            "#ch-img", 65, 260, 0, -70);
+                        this.user.userLevel = data["level"];
+                        this.user.userExp = data["exp"];
+                        this.user.token = data["git_token"];
+                    })
+                })
 
                 // Gets all users in the guild
                 var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
                     var data = res.json().then(data => {
                         var user_arr = []
                         for (u of data["users"]) {
-                            user_arr.push([u["name"], u["email"]])
+                            user_arr.push([u["name"], u["email"], u["guild"]])
                         }
                         this.guild.users = user_arr
+                        // console.log(this.guild.users)
                     })
 
                 })
@@ -1069,25 +1214,18 @@
                     })
                 })
 
-                // Gets the information of the logged in user
-                await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
-                    var data = res.json().then(data => {
-                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png",
-                            "#ch-img", 65, 260, 0, -70);
-                        this.user.userLevel = data["level"]
-                        this.user.userExp = data["exp"]
-                    })
-                })
 
                 // Gets guild info
                 await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
                         this.guild.streak = data["streak"]
+                        this.guild.reponame = data["r_name"]
+
                     })
                 })
 
 
-                
+
                 // Initialises image of bad guys
                 initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
@@ -1137,11 +1275,11 @@
                         })
                     })
 
-               
-            }
-                
 
-                
+            }
+
+
+
 
         });
 

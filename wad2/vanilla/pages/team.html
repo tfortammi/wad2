@@ -62,9 +62,14 @@
         }
 
         #demon {
-            width: 110px;
+            width: 100px;
             margin-top: 10px;
             margin-left: 100px;
+        }
+
+        .allClasses {
+            width: 100px;
+            margin-top: 15px;
         }
 
         #lvl-container {
@@ -110,7 +115,7 @@
                 margin-left: 20px;
             }
 
-            
+
             #ch-window {
                 width: 100%;
                 height: 100%;
@@ -133,7 +138,7 @@
 </head>
 
 <body>
-
+    <div id="team">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">WAD</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -142,49 +147,47 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item ">
-                    <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="./home.html">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="./tasks.html">Tasks</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="./team.html">Team</a>
+                    <a class="nav-link" href="./team.html">Team <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <ul class='navbar-nav ml-auto'>
+                <li class="nav-item m-1">
+                    <a class="btn btn-secondary" @click='logout()'>Logout</a>
                 </li>
             </ul>
         </div>
-        <ul class='navbar-nav ml-auto'>
-            <li class="nav-item m-1">
-                <a class="btn btn-secondary" href="./createguildorg.html">Create Guild</a>
-            </li>
-        </ul>
     </nav>
 
-    <div class="container" id="team">
-        <br>
-        <div class="form-group row d-none">
-            <label for="token" class="col-sm-2 col-form-label">Token key:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="token"
-                    placeholder="ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62" value="">
-            </div>
-        </div>
+    <div class="container">
+        <br />
 
         <div class="row justify-content-md-center">
             <div class="col-lg-2 text-center py-3" id="lvl-window">
-                <h1 class="font-weight-bold"> {{ teamname }}</h1>
+                <h2 class="font-weight-bold"> {{ guild.name }}</h2>
                 <a class="btn btn-primary" href="./inviteorgmembers.html">Invite Members</a>
             </div>
+            <!-- CHARACTER RUNNING CONTAINER -->
             <div class="col-lg-10 p-0">
                 <div class="col" id="ch-window">
-                    <canvas id="ch-img" width="150" height="150"></canvas>
-                    <canvas id="demon" width="150" height="150"></canvas>
+                    <!-- <canvas id="ch-img" width="150" height="150"></canvas>
+                    <canvas id="demon" width="150" height="150"></canvas> -->
+                    <canvas v-show='top3.length > 0' id="top0" class='allClasses' width="150" height="150">hello</canvas>
+                    <canvas v-show='top3.length > 1' id="top1" class='allClasses' width="150" height="150"></canvas>
+                    <canvas v-show='top3.length > 2' id="top2" class='allClasses' width="150" height="150"></canvas>
                     <!-- <img id="ch-img" src="../assets/knight.png"> -->
                 </div>
             </div>
         </div>
         <br>
-
+        <div>
+        </div>
         <div class='row' v-if='members.length > 0'>
             <div class='col p-0'>
                 <bootstrap-table :columns="columns" :data="members" :options="tableOptions" data-pagination="true">
@@ -197,11 +200,17 @@
             <div class="col-sm-4 text-center">
                 <table class='table table-borderless' style='height:100%;'>
                     <thead>
-                        <tr><th><span class='display-4'>TEAM</span></th></tr>
+                        <tr>
+                            <th><span class='display-4'>TEAM</span></th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Streak:</td></tr>
-                        <tr><td>Exp Multiplier:</td></tr>
+                        <tr>
+                            <td style="font-size: 28px;">Streak: {{guild.streak}} days</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 28px;">Exp Multiplier: {{user.userLevel}}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -209,6 +218,7 @@
                 <canvas id="myChart"></canvas>
             </div>
         </div>
+    </div>
     </div>
 
 
@@ -238,27 +248,43 @@
                     'BootstrapTable': BootstrapTable
                 },
                 data: {
-                    guildname: 'wad2_guild',
-                    teamname: 'JH-and-WX',
-                    reponame: "private_test",
+                    guild: {
+                        name: "",
+                        streak: "",
+                        users: [],
+                        reponame: ""
+                    },
+                    // teamname: 'JH-and-WX',
+                    // reponame: "private_test",
+                    user: {
+                        loggedInUser: "",
+                        userLevel: "",
+                        userExp: "",
+                        token: "",
+                        git_username: ""
+                    },
                     columns: [
                         {
                             title: 'Username',
+                            field: "username",
                         },
                         {
                             title: 'Role',
+                            field: "role",
                         },
                         {
                             title: 'Commits',
+                            field: "commits",
                         }
                         ,
                         {
                             title: 'Level',
-                            field: 'level'
+                            field: "level",
                         }
                     ],
                     members: [
                     ],
+                    top3:[],
                     tableOptions: {
                         search: true,
                         showColumns: true,
@@ -266,12 +292,12 @@
                 },
                 methods: {
                     displayTable: function () {
-                        var token = document.getElementById("token").placeholder;
+                        var token = this.user.token;
                         this.getMembers(token);
                         this.getTeamStats(token);
                     },
                     getMembers: function (token) {
-                        var url = `https://api.github.com/orgs/${this.teamname}/members?role=all`;
+                        var url = `https://api.github.com/orgs/${this.guild.name}/members?role=all`;
                         var request = new XMLHttpRequest();
                         var members = this.members;
 
@@ -280,13 +306,8 @@
                                 var json = JSON.parse(this.responseText);
                                 // console.log(json);
                                 for (member of json) {
-                                    // let new_obj = {};
-                                    // new_obj["username"] = member.login;
-                                    // new_obj["role"] = member.type;
-                                    // members.push(new_obj);
-                                    members.push([member.login, member.type]);
+                                    members.push({ username: member.login });
                                     app.getCommits(token, member.login);
-
                                 }
                             }
                         }
@@ -296,8 +317,8 @@
                         request.send();
                     },
                     getCommits: function (token, author) {
-                        var orgname = this.teamname;
-                        var repo = this.reponame;
+                        var orgname = this.guild.name;
+                        var repo = this.guild.reponame;
                         var members = this.members;
                         var url = `https://api.github.com/repos/${orgname}/${repo}/commits?author=${author}`;
                         var request = new XMLHttpRequest();
@@ -306,9 +327,9 @@
                             if (this.readyState == 4 && this.status == 200) {
                                 var data = JSON.parse(this.responseText);
                                 for (member of members) {
-                                    if (member[0] == author) {
-                                        // member["commits"] = data.length
-                                        member.push(data.length);
+                                    if (member["username"] == author) {
+                                        member["commits"] = data.length;
+                                        // member.push(data.length);
                                     }
                                     app.sortedMembersAsc()
                                 }
@@ -320,16 +341,15 @@
                         request.send();
                     },
                     getTeamStats: function (token) {
-                        var orgname = this.teamname;
-                        var repo = this.reponame;
+                        var orgname = this.guild.name;
+                        var repo = this.guild.reponame;
                         var url = `https://api.github.com/repos/${orgname}/${repo}/stats/participation`;
                         var request = new XMLHttpRequest();
 
                         request.onreadystatechange = function () {
                             if (this.readyState == 4 && this.status == 200) {
                                 var json = JSON.parse(this.responseText);
-                                console.log(json)
-                                // myChart.data.datasets[0].data = [json.all[51], json.all[50], json.all[49], json.all[48], json.all[47], json.all[46]]
+                                // console.log(json)
                                 myChart.data.datasets[0].data = json.all.slice(46, 52)
                                 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
                                 let currentMonth = new Date().getMonth()
@@ -344,22 +364,143 @@
                     },
                     sortedMembersAsc: function () {
                         function compare(a, b) {
-                            if (a[2] > b[2])
+                            if (a["commits"] > b["commits"])
                                 return -1;
-                            if (a[2] < b[2])
+                            if (a["commits"] < b["commits"])
                                 return 1;
                             return 0;
                         }
                         return this.members.sort(compare);
                     }
+                    // ,
+                    // addUser: function () {
+                    //     fetch("http://localhost:5001/add_user", {
+                    //         method: "POST",
+                    //         headers: {
+                    //             "Content-Type": "application/json"
+                    //         },
+                    //         body: JSON.stringify({
+                    //             class: "knight",
+                    //             email: "nic@wad.co",
+                    //             password: "password",
+                    //             name: "Nic Wong",
+                    //             role: "Big boss",
+                    //             guild: "JH-and-WX",
+                    //             git_token: "ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62",
+                    //             git_username: "nicwongg",
+                    //         })
+                    //     }).then(res => {
+                    //         console.log(this.user.git_username);
+                    //     })
+                    // }
+                    ,
+                    updateStreak: function () {
+                        fetch("http://localhost:5001/update_guild_streak/inc", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                name: this.guild.name,
+                                toAdd: 3,
+                            })
+                        }).then(res => {
+                            console.log(this.guild.streak);
+                        })
+                    },
+                    logout: function () {
+                        sessionStorage.clear()
+                        window.location.replace("./home.html");
+                    }
                 },
-                computed: {
+                async created() {
 
+                    if (sessionStorage.getItem("user") !== null) {
+                        // Retrieve
+                        this.user.loggedInUser = sessionStorage.getItem("user");
+                        this.guild.name = sessionStorage.getItem("guildName");
+                    }
+                    else {
+                        window.location.replace("./login.html");
+                    }
+                    // Gets guild info
+                    await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
+                        var data = res.json().then(data => {
+                            this.guild.streak = data["streak"];
+                            this.guild.reponame = data["r_name"];
+                        })
+                    })
+
+                    // Gets the information of the logged in user
+                    await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
+                        var data = res.json().then(data => {
+                            this.user.userLevel = data["level"];
+                            this.user.userExp = data["exp"];
+                            this.user.token = data["git_token"];
+                            // this.guild.name = data["guild"];
+                            // console.log(this.guild.name);
+                            // added dummy value
+                            // this.user.token = "ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62";
+                            // console.log(this.user.token);
+                            this.displayTable();
+
+                        })
+                    })
+
+                    // Gets all users in the guild
+                    var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
+                        var data = res.json().then(data => {
+                            var user_arr = [];
+                            for (u of data["users"]) {
+                                user_arr.push([u["name"], u["email"], u["git_username"], u["level"], u["guild"], u["multiplier"], u["role"], u["class"]]);
+                            }
+                            this.guild.users = user_arr;
+                            // console.log(this.guild.users);
+                        })
+
+                    })
+
+
+                    const headers = {
+                        "Authorization": `Token ${this.user.token}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+
+                    await fetch("https://api.github.com/user", {
+                        'method': "GET",
+                        'headers': headers
+                    }).then(res => {
+                        var data = res.json().then(data => {
+                            this.user.git_username = data.login;
+                            // console.log(this.user.git_username);
+                        })
+                    })
+
+                    if (this.members.length > 0 && this.guild.users.length > 0) {
+                        // console.log(this.guild.users);
+                        for (member of this.members) {
+                            // console.log(member[0]);
+                            for (user of this.guild.users) {
+                                if (user[2] == member["username"]) {
+                                    member["level"] = user[3];
+                                    member["role"] = user[6];
+                                    member["class"] = user[7];
+                                    // console.log(member["level"]);
+                                }
+                            }
+                        }
+                        this.sortedMembersAsc();
+                        this.top3 = this.members.slice(0,3);
+                        var i = 0;
+                        for (var top of this.top3) {
+                            console.log(top.class, i)
+                            initialiseImage("../assets/" + top.class + "_spritesheet.png", "#top" + i, 65, 260, 0, -70);
+                            i += 1
+                        }
+                    }
                 }
             }
         );
-
-        app.displayTable();
 
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
@@ -379,6 +520,7 @@
                 }]
             },
             options: {
+                responsive: true,
                 scales: {
                     yAxes: [{
                         ticks: {
@@ -432,9 +574,10 @@
             }
         }
 
-        initialiseImage("../assets/knight_spritesheet.png", "#ch-img", 65, 260, 0, -70);
-        initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
-
+        // initialiseImage("../assets/knight_spritesheet.png", "#ch-img", 65, 260, 0, -70);
+        // initialiseImage("../assets/knight_spritesheet.png", "#knight", 65, 260, 0, -70);
+        // initialiseImage("../assets/elf_spritesheet.png", "#elf", 65, 260, 0, -70);
+        // initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
 
     </script>
 </body>
