@@ -729,10 +729,15 @@
                             email: this.user.loggedInUser
                         })
                     }).then(res => {
-                        data = res.json()
-                        this.user.userExp = data["new_exp"]
-                        this.user.userLevel = data["new_level"]
-                        // location.reload()
+
+                        res.json().then(data => {
+                            console.log(data["new_exp"])
+                            console.log(typeof data["new_exp"])
+                            this.user.userExp = parseInt(data["new_exp"])
+                            this.user.userLevel = parseInt(data["new_level"])
+                            // location.reload()
+                        })
+                        
                     })
                 },
                 modifyTask: function () {
