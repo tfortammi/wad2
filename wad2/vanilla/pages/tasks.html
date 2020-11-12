@@ -411,7 +411,7 @@
                                 </div>
                                 <select v-model="tasks.assignedTo" class="custom-select" multiple
                                     id="inputGroupSelect01">
-                                    <option v-for="user in guild.users" v-bind:id="user[1]">{{user[0]}}</option>
+                                    <option v-for="user in guild.users" v-bind:id="user[1]" v-bind:value="user[1]">{{user[0]}}</option>
                                 </select>
                             </div>
                             <div class="input-group mb-3">
