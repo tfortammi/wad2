@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 from datetime import datetime
+from datetime import datetime
+from dateutil import tz
 from os import environ
 import requests
 import json
@@ -80,6 +82,59 @@ def get_all_tasks():
     
     try:
         return {"tasks": task_list}, 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot retrieve tasks."}, 500
+
+# Get all the tasks assigned to a user within the database - CHECKED
+@app.route("/get_assigned_tasks")
+def get_assigned_tasks():
+    """
+        Get all tasks specific to a guild within database.
+        
+        Expected GET params:
+            - "email" = <string: user's email>
+    """
+    task_ref = db.collection(u"Task")
+    docs = task_ref.stream()
+    
+    task_list = {
+        "completed" : [],
+        "incomplete" : {
+            "high" : [],
+            "medium" : [],
+            "low" : []
+        }
+    }
+
+    for doc in docs:
+        if request.args.get("email") in doc.to_dict()["assignedTo"]:
+            if doc.to_dict()["status"] == True:
+                task_list["completed"].append(doc.to_dict())
+            else:
+                if doc.to_dict()["priority"] == "high":
+                    task_list["incomplete"]["high"].append(doc.to_dict())
+                elif doc.to_dict()["priority"] == "medium":
+                    task_list["incomplete"]["medium"].append(doc.to_dict())
+                else:
+                    task_list["incomplete"]["low"].append(doc.to_dict())
+    
+    task_list["completed"] = sorted(task_list["completed"], key = lambda x: datetime.strptime(str(x["end"]).split("+")[0].split(" ")[0], "%Y-%m-%d"))
+
+    if (len(task_list["completed"]) > 5):
+        task_list["completed"] = task_list["completed"][:5]
+
+    for key, value in task_list["incomplete"].items():
+        task_list["incomplete"][key] = sorted(value, key = lambda x: datetime.strptime(str(x["end"]).split("+")[0].split(" ")[0], "%Y-%m-%d"))
+
+    # for completed_task in task_list["completed"]:
+    #     completed_task["end_html"] = str(completed_task["end"]).split("+")[0].split(" ")[0]
+
+    # for key in task_list["incomplete"]:
+    #     for incomplete_task in task_list["incomplete"][key]:
+    #         incomplete_task["end"] = "hi"
+    try:
+        return task_list, 200
     except Exception as e:
         print(e)
         return {"error": "Cannot retrieve tasks."}, 500
@@ -1086,6 +1141,7 @@ def claim_reward():
 # =============== # 
 #      CHAT       #
 # =============== # 
+#TODO: Create chat when guild is created
 @app.route("/add_chat", methods=["POST"])
 def add_chat():
     """
