@@ -1130,7 +1130,8 @@ def update_chat():
         for doc in docs:
             if request.json["guild"] == doc.to_dict()["guild"]:
                 history = json.loads(doc.to_dict()["history"])
-                history[request.json["by"]] = request.json["msg"]
+                dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                history[dt_string] = {request.json["by"] : request.json["msg"]}
                 chat_ref.document(doc.id).update({u"history": json.dumps(history)})
 
         return jsonify({"success": True}), 200
