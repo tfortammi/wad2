@@ -30,9 +30,15 @@
         }
 
         #login {
-
-            max-width: 390px;
+            max-width: 65%;
         }
+
+        @media (max-width: 426px) {
+            #login {
+                max-width: 90%;
+            }
+        }
+
     </style>
 </head>
 
@@ -49,9 +55,10 @@
                 </div>
                 <div class="modal-body" id="modal-body">
                     <p>Please check your username and password again!</p>
-                    <p>If you do not have an account, sign up for an account <a href="./signup.html"> here!</a></p>
+                    <p>If you do not have an account, sign up for an account!</p>
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="window.location.href='./signup.html'">Register</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
                 </div>
             </div>
@@ -109,6 +116,7 @@
                     </div>
 
                     <div class='text-right mb-3'>
+                        <button class="btn btn-secondary" onclick="window.location.href='./signup.html'">Register</button>
                         <button class="btn btn-primary" @click='login()' id="submitBtn">Onwards to ProjectQuest!</button>
                         <button class="btn btn-primary d-none" id="loadingBtn" disabled>
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

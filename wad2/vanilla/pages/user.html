@@ -160,6 +160,53 @@
             height: 100px !important;
         }
 
+        #ch-img {
+            width: 100px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        #attackModal .modal-body {
+            background-image: url("../assets/wall.png");
+            height: 200px;
+        }
+
+        #attack {
+            position: absolute;
+            left: 50%;
+            z-index: 100;
+        }
+
+        #demon2 {
+            position: absolute;
+            left: 50%;
+        }
+
+        #task-complete {
+            color: white;
+            width: 40%;
+            position: absolute;
+            top: 80px;
+            left: 50px;
+        }
+
+        @media (max-width: 767.98px) {
+            #attack {
+                position: absolute;
+                left: 35%;
+                z-index: 100;
+            }
+
+            #demon2 {
+                position: absolute;
+                left: 35%;
+            }
+
+            #task-complete {
+                z-index: 10000;
+            }
+        }
+
 
     </style>
 </head>
@@ -280,6 +327,22 @@
             </div>
         </div>
 
+        <div class="modal fade" id="attackModal" tabindex="-1" role="dialog" aria-labelledby="attackModal"aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="task-complete">
+                            <h4>Task Completed! Great job!</h4>
+                        </div>
+                        <canvas id="attack" width="150" height="150"></canvas>
+                        <canvas id="demon2" width="150" height="150"></canvas>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- MAIN CONTENT -->
         <div class="container" style="height: 100%;">
@@ -321,8 +384,8 @@
                             </tr>
                         </thead>
                         
-                        <tr v-for="task in tasks.tasks" v-on:click="openTaskModal(task)">
-                            <td >{{ task.name }}</td>
+                        <tr v-for="task in tasks.tasks" >
+                            <td v-on:click="openTaskModal(task)">{{ task.name }}</td>
                             <td >{{ new Date(task.end).toLocaleDateString() }}</td>
                             <td class="text-center">
                                 <button type="button" v-if="task.status == false" class="btn btn-primary" v-on:click="completeTask">Complete</button>
@@ -424,6 +487,7 @@
             methods: {
                 
                 completeTask: function () {
+                    $("#attackModal").modal("show")
                     fetch("http://localhost:5001/complete_task", {
                         method: "POST",
                         headers: {
@@ -522,6 +586,8 @@
 
                 // Initialises image of bad guys
                 initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
+                initialiseImage("../assets/demon_spritesheet.png", "#demon2", 65, 170, 0, -20);
+                initialiseAttackImage("../assets/attack_spritesheet.png", "#attack", 0.3, 550, 450, 0, 0);
 
                 
 
@@ -599,6 +665,59 @@
                 window.requestAnimationFrame(step);
             }
         }
+    
+        function initialiseAttackImage(src, query, scale, width, height, x, y) {
+            // Create image object
+            let img = new Image();
+            img.src = src;
+            img.onload = function () {
+                init();
+            };
+
+            // Create canvas and context
+            let canvas = document.querySelector(query);
+            let ctx = canvas.getContext('2d');
+
+            // set size of image
+            const scaledWidth = scale * width;
+            const scaledHeight = scale * height;
+
+            // Function for Initial state of image
+            function init() {
+                ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            // Function to draw new images based on inputs
+            function drawFrame(frameX, frameY, canvasX, canvasY) {
+                ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            const cycleLoop = [0, 1, 2, 3];
+            let currentLoopIndex = 0;
+            let frameCount = 0;
+
+            // Request next frame based on cycleloop
+            window.requestAnimationFrame(step);
+
+            // Clears old frame and replaces with new frame based on new values
+            function step() {
+                frameCount++;
+                if (frameCount < 15) {
+                    window.requestAnimationFrame(step);
+                    return;
+                }
+                frameCount = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+                currentLoopIndex++;
+                if (currentLoopIndex >= cycleLoop.length) {
+                    currentLoopIndex = 0;
+                }
+                window.requestAnimationFrame(step);
+            }
+        }
+    
+    
     </script>
 </body>
 
