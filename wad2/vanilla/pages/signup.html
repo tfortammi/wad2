@@ -495,7 +495,7 @@
                         if (document.getElementById("private").checked) {
                             private = "private";
                         }
-
+                        // this.addChat(guildName)
                         fetch("http://localhost:5001/add_guild", {
                             method: "POST",
                             headers: {
@@ -527,8 +527,23 @@
                             return true;
                         }).catch((error) => {
                             console.log(error)
+                            console.log("shud return")
                             return false;
                         });
+                    },
+                    addChat: function (guildName) {
+                        fetch("http://localhost:5001/add_chat", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            guild: guildName
+                        })
+                    }).then(res => {
+                        console.log(res.json())
+                        // location.reload()
+                    })
                     },
                     logout: function () {
                         sessionStorage.clear()

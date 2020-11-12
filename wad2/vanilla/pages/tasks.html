@@ -113,7 +113,8 @@
         }
 
         #gantt-chart,
-        #calendar-col {
+        #calendar-col,
+        #chat-window {
             border: 5px solid #a8c582;
             height: 420px;
         }
@@ -556,6 +557,8 @@
                         {{nextView}}</button>
                     <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleTaskView">View:
                         {{taskView}}</button>
+                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="showChat">Chat with Team
+                        </button>                    
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal"
                         data-toggle="modal">Add Task</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
@@ -573,6 +576,19 @@
                     </div>
                 </div>
 
+                <!-- CHAT WINDOW -->
+                <div class="col-lg-10" id="chat-window" style="overflow: scroll; display: none;">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col text-center mt-2">
+                                <div id="chat-div" style='overflow: auto;'>
+                                    <div v-for='(chat_info, timestamp) in chats'>{{timestamp}}{{ chat_info }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="col-lg-10" id="calendar-col" style="overflow: scroll; display: none;">
                     <div class="container">
                         <div class="row">
@@ -768,6 +784,8 @@
                 taskView: "Gantt",
                 nextView: "Meeting",
                 viewKey: 0,
+                interval: '',
+                chats: [],
                 user: {
                     // loggedInUser: "naruto@wad2.co",
                     loggedInUser: "",
@@ -987,6 +1005,7 @@
 
                 },
                 toggleView: function (view) {
+                    clearInterval(this.interval)
 
                     if (view == "meetings") {
                         var meeting_flag = !this.meeting_flag;
@@ -996,26 +1015,27 @@
                             document.getElementById("gantt-chart").style.display = "none";
                             document.getElementById("calendar-col").style.display = "none";
                             document.getElementById("meeting-list").style.display = "block";
+                            document.getElementById("chat-window").style.display = "none";
 
                             this.nextView = "Tasks"
                         } else {
                             document.getElementById("gantt-chart").style.display = "block";
                             document.getElementById("meeting-list").style.display = "none";
                             document.getElementById("calendar-col").style.display = "none";
+                            document.getElementById("chat-window").style.display = "none";
 
                             this.nextView = "Meetings"
-
                         }
                     }
-
                 },
                 toggleTaskView: function () {
+                    clearInterval(this.interval)
 
                     if (this.taskView == "Gantt") {
                         document.getElementById("meeting-list").style.display = "none";
                         document.getElementById("calendar-col").style.display = "block";
                         document.getElementById("gantt-chart").style.display = "none";
-
+                        document.getElementById("chat-window").style.display = "none";
                         this.loadCalendar()
 
                         this.taskView = "Calendar"
@@ -1024,10 +1044,38 @@
                         document.getElementById("meeting-list").style.display = "none";
                         document.getElementById("calendar-col").style.display = "none";
                         document.getElementById("gantt-chart").style.display = "block";
+                        document.getElementById("chat-window").style.display = "none";
 
                         this.taskView = "Gantt"
                     }
+                },
+                showChat: function () {
+                    document.getElementById("meeting-list").style.display = "none";
+                    document.getElementById("calendar-col").style.display = "none";
+                    document.getElementById("gantt-chart").style.display = "none";
+                    document.getElementById("chat-window").style.display = "block";
+                    document.getElementById('chat-window').scrollTop = 9999999;
+                    this.interval = setInterval(() => this.getChat(), 1000);
+                    this.checkChat = true
+                },
+                getChat: function () {
+                    fetch("http://localhost:5001/get_chat_history?guild=" + this.guild.name, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then(res => {
+                        
+                        res.json().then(data => {
+                            if (data.history == undefined) {
 
+                            }
+                            this.chats = data.history
+                            console.log(this.chats)
+                        })
+                    }).catch((error) => {
+                        console.log(error)
+                    });
                 },
                 // Draws Gantt Chart
                 drawChart: function () {
@@ -1200,7 +1248,6 @@
             },
             // When Vue view is created, runs the following functions
             async created() {
-
                 if (sessionStorage.getItem("user") !== null) {
                     // Retrieve
                     this.user.loggedInUser = sessionStorage.getItem("user");

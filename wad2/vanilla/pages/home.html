@@ -45,6 +45,12 @@
                 visibility: hidden;
             }
         }
+
+        .btn-secondary {
+            border: 4px solid #9ea5ad;
+            background-color: #d0dde8;
+            color: #A41E29 !important;
+        }
   </style>
 
 </head>
@@ -73,9 +79,17 @@
             </li>
         </ul>
         
-        <ul class='navbar-nav ml-auto'>
+        <ul class='navbar-nav ml-auto' id='logoutDiv'>
             <li class="nav-item m-1">
-                <a class="btn btn-secondary" @click='logout()' style="color: white;">Logout</a>
+                <a class="btn btn-secondary" onclick='logout()'>Logout</a>
+            </li>
+        </ul>
+        <ul class='navbar-nav ml-auto' id='loginDiv'>
+            <li class="nav-item m-1">
+                <a class="btn btn-secondary" href="./login.html">Login</a>
+            </li>
+            <li class=" nav-item m-1">
+                <a class="btn btn-secondary" href="./signup.html">Create Guild</a>
             </li>
         </ul>
     </div>
@@ -456,7 +470,23 @@
   <script src="assets/js/main.js"></script>
 
   <script>
-      function initialiseImage(src, query) {
+
+        function toggleNavBar() {
+            if (sessionStorage.getItem("user") !== null) {
+                document.getElementById("logoutDiv").style.display = ''
+                document.getElementById("loginDiv").style.display = 'none'
+            } else {
+                document.getElementById("logoutDiv").style.display = 'none'
+                document.getElementById("loginDiv").style.display = ''
+            }
+        }
+
+        function logout() {
+            sessionStorage.clear()
+            window.location.replace("./home.html");
+        }
+
+        function initialiseImage(src, query) {
             let img = new Image();
             img.src = src;
             img.onload = function () {
@@ -516,6 +546,7 @@
         initialiseImage("../assets/knight_spritesheet.png", "#knight");
         initialiseImage("../assets/wizard_spritesheet.png", "#wizard");
         initialiseImage("../assets/dragon_spritesheet.png", "#dragon");
+        toggleNavBar()
   </script>
 
 </body>
