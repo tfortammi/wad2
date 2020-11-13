@@ -103,6 +103,41 @@
         </div>
     </div>
 
+    <div class="modal fade" id='loggedInModal' aria-labelledby="loggedInModal" aria-hidden="true" tabindex="-1"
+        data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">You have already logged in!</h5>
+                </div>
+                <div class="modal-body">
+                    <p>If you want to create a new account, please logout!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="app.logout()">Logout</button>
+                    <a href="tasks.html" type="button" class="btn btn-primary">Return</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id='emptyInput' aria-labelledby="emptyInput" aria-hidden="true" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Oh no...</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Please make sure you have filled up all of the inputs!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Return to signup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">WAD</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -133,7 +168,7 @@
     </nav>
 
     <div class="container-fluid" id="signUpJoinTeam">
-        <div class='container mt-3'>
+        <div class='container my-3'>
             <div class="row">
                 <div class="col">
                     <h3 class='text-center p-3'>
@@ -164,6 +199,7 @@
                         <label for="name" class="col-sm-2 col-form-label">Name:</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                            <p class="text-danger" id="nameError"></p>
                         </div>
                     </div>
 
@@ -172,6 +208,7 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="email"
                                 placeholder="Enter your email (this will be your username to log in)">
+                            <p class="text-danger" id="emailError"></p>
                         </div>
                     </div>
 
@@ -180,6 +217,7 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="username"
                                 placeholder="Choose your GitHub username">
+                            <p class="text-danger" id="usernameError"></p>
                         </div>
                     </div>
 
@@ -188,6 +226,7 @@
                         <div class="col-sm-10">
                             <input type="password" class="form-control" id="password"
                                 placeholder="Choose a password with 8 or more characters with a mix of letters, numbers and symbols">
+                            <p class="text-danger" id="passwordError"></p>
                         </div>
                     </div>
 
@@ -196,6 +235,7 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="role"
                                 placeholder="Key in your role - eg. Software Developer">
+                            <p class="text-danger" id="roleError"></p>
                         </div>
                     </div>
 
@@ -248,6 +288,7 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="guildName"
                                 placeholder="Input the guild name (org name)">
+                            <p class="text-danger" id="guildNameError"></p>
                         </div>
                     </div>
 
@@ -274,6 +315,7 @@
                         <label for="repoName" class="col-sm-2 col-form-label">Repo Name:</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="repoName" placeholder="Input the repo name">
+                            <p class="text-danger" id="repoNameError"></p>
                         </div>
                     </div>
 
@@ -281,6 +323,7 @@
                         <label for="repoToken" class="col-sm-2 col-form-label">GitHub Token Key:</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="repoToken" placeholder="Input repo token key">
+                            <p class="text-danger" id="repoTokenError"></p>
                         </div>
                     </div>
 
@@ -382,6 +425,10 @@
                         var guildName = document.getElementById("guildName").value;
                         var status = true;
 
+                        if (this.emptyInput()) {
+                            return
+                        }
+
                         if (this.picked == "new") {
                             this.createRepo(token, guildName);
 
@@ -448,7 +495,7 @@
                         if (document.getElementById("private").checked) {
                             private = "private";
                         }
-
+                        // this.addChat(guildName)
                         fetch("http://localhost:5001/add_guild", {
                             method: "POST",
                             headers: {
@@ -480,16 +527,117 @@
                             return true;
                         }).catch((error) => {
                             console.log(error)
+                            console.log("shud return")
                             return false;
                         });
+                    },
+                    addChat: function (guildName) {
+                        fetch("http://localhost:5001/add_chat", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            guild: guildName
+                        })
+                    }).then(res => {
+                        console.log(res.json())
+                        // location.reload()
+                    })
+                    },
+                    logout: function () {
+                        sessionStorage.clear()
+                        window.location.replace("./home.html");
+                    },
+                    emptyInput: function () {
+                        var email = document.getElementById("email").value.trim();
+                        var password = document.getElementById("password").value.trim();
+                        var name = document.getElementById("name").value.trim();
+                        var role = document.getElementById("role").value.trim();
+                        var guild = document.getElementById("guildName").value.trim();
+                        var git_token = document.getElementById("repoToken").value.trim();
+                        var git_username = document.getElementById("username").value.trim();
+
+                        if (email == "" || password == "" || name == "" || role == "" || guild == "" || git_token == "" || git_username == "") {
+                            $("#emptyInput").modal();
+                            return true;
+                        }
+                        return false;
+                    }
+                },
+                async created() {
+
+                    if (sessionStorage.getItem("user") !== null) {
+                        $("#loggedInModal").modal();
+                        // setTimeout(function () { window.location.replace("./tasks.html"); }, 1000);
+                    }
+                }
+            }
+        );
+
+        // validate the inputs
+        $(document).ready(function () {
+            $("input[type='text']").blur(function () {
+                var errorId = this.id + "Error";
+                var error = "";
+
+                if (this.value == "") {
+                    var inputName = this.id;
+
+                    if (this.id == "guildName") {
+                        inputName = "guild name";
+                    }
+                    else if (this.id == "repoName") {
+                        inputName = "repo name";
+                    }
+                    else if (this.id == "repoToken") {
+                        inputName = "repo token key"
                     }
 
-                },
+                    error = "Please enter your " + inputName;
+                }
+                document.getElementById(errorId).innerText = error;
+            });
+            $("input[type='password']").blur(function () {
+                var errorId = this.id + "Error";
+                var error = "";
+                var password = this.value;
 
+                // Validate length
+                if (password.length < 8) {
+                    error += "<li>is more than 8 characters</li>";
+                }
 
-            }
+                // lower case letters
+                var lowerCaseLetters = /[a-z]/g;
+                if (!password.match(lowerCaseLetters)) {
+                    error += "<li>has lower case letters</li>";
+                }
 
-        );
+                // Validate capital letters
+                var upperCaseLetters = /[A-Z]/g;
+                if (!password.match(upperCaseLetters)) {
+                    error += "<li>has upper case letters</li>";
+                }
+
+                // Validate numbers
+                var numbers = /[0-9]/g;
+                if (!password.match(numbers)) {
+                    error += "<li>has numbers</li>";
+                }
+
+                // Validate symbols
+                var symbols = /[!@#$%^&*]/g;
+                if (!password.match(symbols)) {
+                    error += "<li>has symbols</li>";
+                }
+
+                if (error.length > 0) {
+                    error = "Please ensure that your password: <ul>" + error + "</ul>";
+                }
+                document.getElementById(errorId).innerHTML = error;
+            });
+        });
 
         function initialiseImage(src, query, width, height, x, y) {
             let img = new Image();

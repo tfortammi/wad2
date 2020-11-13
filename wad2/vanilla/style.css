@@ -2,10 +2,10 @@
 
 /* GLOBAL STYLES */
 
-* {
-    /* font-family: "VT323", monospace; */
-    /* color: #A41E29; */
-}
+/*  { */
+/* font-family: "VT323", monospace; */
+/* color: #A41E29; */
+/* } */
 
 #lvl-window {
     font-family: "VT323", monospace !important;
@@ -23,14 +23,19 @@ body {
 .btn-primary {
     border: 4px solid #9CB4BE;
     background-color: #C8F8F4;
-    color:  #A41E29;
+    color: #A41E29;
 }
 
 .btn-warning {
     border: 4px solid #bbbe9c;
     background-color: #f7f8c8;
-    color:  #A41E29;
+    color: #A41E29;
+}
+
+.btn-secondary {
+    border: 4px solid #9ea5ad;
+    background-color: #d0dde8;
+    color: #A41E29;
 }
 
 /* REUSABLE */
-
