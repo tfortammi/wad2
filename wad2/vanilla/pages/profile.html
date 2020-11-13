@@ -796,7 +796,7 @@
                         <canvas id="demon2" width="150" height="150"></canvas>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -920,7 +920,7 @@
                                             <div><button type="button" v-on:click="openTaskModal(task)"
                                                     class="btn btn-secondary badge badge-secondary">Click for more
                                                     details!</button> <button type="button"
-                                                    class="btn btn-success badge badge-success">Complete me!</button>
+                                                    class="btn btn-success badge badge-success" @click="completeTask(task.id)">Complete me!</button>
                                             </div>
                                         </div>
                                         <div class="time">
@@ -1259,7 +1259,7 @@
                     var tourguide = new Tourguide();
                     tourguide.start()
                 },
-                completeTask: function () {
+                completeTask: function (id) {
                     $("#attackModal").modal("show")
                     fetch("http://localhost:5001/complete_task", {
                         method: "POST",
@@ -1267,14 +1267,14 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            id: this.chosenTask.id,
+                            id: id,
                             email: this.user.loggedInUser
                         })
                     }).then(res => {
                         res.json().then(data => {
                             this.user.userExp = parseInt(data["new_exp"])
                             this.user.userLevel = parseInt(data["new_level"])
-                            // location.reload()
+                            location.reload()
                         })
 
                     })

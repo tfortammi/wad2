@@ -114,8 +114,7 @@
         }
 
         #gantt-chart,
-        #calendar-col,
-        #chat-window {
+        #calendar-col {
             border: 5px solid #a8c582;
             height: 420px;
         }
@@ -664,7 +663,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="row">
+                        <div class="row">
                             <div class="input-group mb-3">
                                 <input v-model="chatMsg" type="text" class="form-control"
                                     placeholder="Talk to your team here!" aria-label="Talk to your team here!"
@@ -674,7 +673,7 @@
                                         @click="updateChat()">Send</button>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                 </div> -->
                 
@@ -975,26 +974,26 @@
 
                 },
                 completeTask: function () {
-                    // fetch("http://localhost:5001/complete_task", {
-                    //     method: "POST",
-                    //     headers: {
-                    //         "Content-Type": "application/json"
-                    //     },
-                    //     body: JSON.stringify({
-                    //         id: this.chosenTask.id,
-                    //         email: this.user.loggedInUser
-                    //     })
-                    // }).then(res => {
+                    fetch("http://localhost:5001/complete_task", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: this.chosenTask.id,
+                            email: this.user.loggedInUser
+                        })
+                    }).then(res => {
 
-                    //     res.json().then(data => {
-                    //         console.log(data["new_exp"])
-                    //         console.log(typeof data["new_exp"])
-                    //         this.user.userExp = parseInt(data["new_exp"])
-                    //         this.user.userLevel = parseInt(data["new_level"])
-                    //         location.reload()
-                    //     })
+                        res.json().then(data => {
+                            console.log(data["new_exp"])
+                            console.log(typeof data["new_exp"])
+                            this.user.userExp = parseInt(data["new_exp"])
+                            this.user.userLevel = parseInt(data["new_level"])
+                            location.reload()
+                        })
 
-                    // })
+                    })
                 },
                 modifyTask: function () {
                     fetch("http://localhost:5001/modify_task", {
@@ -1103,7 +1102,6 @@
 
                 },
                 toggleView: function (view) {
-                    clearInterval(this.interval)
 
                     if (view == "meetings") {
                         var meeting_flag = !this.meeting_flag;
@@ -1127,7 +1125,6 @@
                     }
                 },
                 toggleTaskView: function () {
-                    clearInterval(this.interval)
 
                     if (this.taskView == "Gantt") {
                         document.getElementById("meeting-list").style.display = "none";
@@ -1147,15 +1144,15 @@
                         this.taskView = "Gantt"
                     }
                 },
-                showChat: function () {
-                    document.getElementById("meeting-list").style.display = "none";
-                    document.getElementById("calendar-col").style.display = "none";
-                    document.getElementById("gantt-chart").style.display = "none";
-                    document.getElementById("chat-window").style.display = "block";
-                    // document.getElementById('chat-window').scrollTop = 9999999;
-                    // this.interval = setInterval(() => this.getChat(), 1000);
-                    // this.checkChat = true
-                },
+                // showChat: function () {
+                //     document.getElementById("meeting-list").style.display = "none";
+                //     document.getElementById("calendar-col").style.display = "none";
+                //     document.getElementById("gantt-chart").style.display = "none";
+                //     document.getElementById("chat-window").style.display = "block";
+                //     document.getElementById('chat-window').scrollTop = 9999999;
+                //     this.interval = setInterval(() => this.getChat(), 1000);
+                //     this.checkChat = true
+                // },
                 // getChat: function () {
                 //     fetch("http://localhost:5001/get_chat_history?guild=" + this.guild.name, {
                 //         method: "GET",
