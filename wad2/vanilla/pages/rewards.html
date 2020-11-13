@@ -17,6 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
     </script>
+    <link href="https://cdn.jsdelivr.net/gh/LikaloLLC/tourguide.js@0.2.0/tourguide.css" rel="stylesheet">
 
     <style>
         body {
@@ -189,9 +190,9 @@
                     <li class="nav-item m-1">
                         <a class="btn btn-primary" v-if="guild.teamleads == user.loggedInUser" onclick="window.location.href='./rewardsmanagement.html'">Manage Rewards</a>
                     </li>
-                    <!-- <li class="nav-item m-1">
+                    <li class="nav-item m-1">
                         <a class="btn btn-primary" v-on:click="startTour">Tour</a>
-                    </li> -->
+                    </li>
                     <li class="nav-item m-1">
                         <a class="btn btn-secondary" v-on:click="logout">Logout</a>
                     </li>
@@ -217,7 +218,7 @@
 
             <div class="row">
 
-                <div class="col-lg-3">
+                <div class="col-lg-3" data-tour="step: 2; title: Reward Categories; content: Filter available rewards by category">
 
                     <h1 class="my-4">Categories</h1>
                     <div class="list-group">
@@ -263,7 +264,7 @@
                         </a>
                     </div>
 
-                    <div class="row">
+                    <div class="row" data-tour="step: 1; title: Redeem Rewards; content: View available rewards and redeem rewards based on your level">
                         <ul id="card-section" class="paginationTable list-group">
 
                         </ul>
@@ -272,7 +273,7 @@
                     <div class = "row" id="pagination">
                         <div id="pagination-container" style="margin-left: 15px;">
                             <p class='paginacaoCursor' id="beforePagination">
-                                <</p> <p class='paginacaoCursor' id="afterPagination">>
+                                </p> <p class='paginacaoCursor' id="afterPagination">>
                             </p>
                         </div>
                     </div>
@@ -318,6 +319,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
     <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
     <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/gh/LikaloLLC/tourguide.js@0.2.0/tourguide.min.js"></script>
 
     <script>
         function pagination() {
@@ -414,6 +416,10 @@
                 rewardBlocks: []
             },
             methods: {
+                startTour: function() {
+                    var tourguide = new Tourguide();
+                    tourguide.start()
+                },
                 resetFilter: function () {
                     var cards = document.getElementsByClassName("card");
                     for (c of cards) {

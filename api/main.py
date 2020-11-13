@@ -312,6 +312,9 @@ def modify_task():
         if (processed_json["dependency"] == "none"):
             processed_json["dependency"] = ""
 
+        if ("dependency" not in processed_json):
+            processed_json["dependency"] = ""
+
         if bool(processed_json):
             task_ref = db.collection(u"Task")
             doc_id = list(task_ref.where("id", "==", request.json["id"]).stream())[0].id
@@ -322,6 +325,7 @@ def modify_task():
         return jsonify({"success": True}), 200
 
     except Exception as e:
+        traceback.print_exc()
         print(e)
         return {"error": "Cannot modify task."}, 500
 
@@ -968,9 +972,9 @@ def get_past_meetings():
 
         for doc in docs:
             if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
-                if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
-                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
         sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings), reverse = True)]
     
@@ -998,9 +1002,9 @@ def get_upcoming_meetings():
 
         for doc in docs:
             if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
-                if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
-                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
         sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
     

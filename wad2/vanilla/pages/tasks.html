@@ -403,7 +403,7 @@
                                     <span class="input-group-text" id="basic-addon1">Dependency</span>
                                 </div>
                                 <select v-model="chosenTask.dependency" class="custom-select" id="inputGroupSelect01">
-                                    <option value="none">None</option>
+                                    <option selected value="none">None</option>
                                     <option v-for="task in tasks.tasks" v-bind:id="task['id']"
                                         v-bind:value="task['id']">{{task["name"]}}
                                         [{{new Date(task["end"]).toLocaleDateString()}}]</option>
@@ -1014,7 +1014,8 @@
                             guild: this.chosenTask.guild
                         })
                     }).then(res => {
-                        location.reload()
+
+                        // location.reload()
                     })
                 },
                 addTask: function () {
