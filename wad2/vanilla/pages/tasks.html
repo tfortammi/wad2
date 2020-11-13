@@ -261,11 +261,12 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to complete this task? 
+                        Are you sure you want to complete this task?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" v-on:click="completeTask" data-dismiss="modal">Confirm</button>
+                        <button type="button" class="btn btn-success" v-on:click="completeTask"
+                            data-dismiss="modal">Confirm</button>
                     </div>
                 </div>
             </div>
@@ -348,8 +349,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save Changes</button>
-                        <button v-if="chosenTask.status == false" type="button" class="btn btn-primary" data-target="#confirmModal" data-toggle="modal" data-dismiss="modal">Complete Task</button>
+                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save
+                            Changes</button>
+                        <button v-if="chosenTask.status == false" type="button" class="btn btn-primary"
+                            data-target="#confirmModal" data-toggle="modal" data-dismiss="modal">Complete Task</button>
                     </div>
                 </div>
             </div>
@@ -412,7 +415,8 @@
                                 </div>
                                 <select v-model="tasks.assignedTo" class="custom-select" multiple
                                     id="inputGroupSelect01">
-                                    <option v-for="user in guild.users" v-bind:id="user[1]" v-bind:value="user[1]">{{user[0]}}</option>
+                                    <option v-for="user in guild.users" v-bind:id="user[1]" v-bind:value="user[1]">
+                                        {{user[0]}}</option>
                                 </select>
                             </div>
                             <div class="input-group mb-3">
@@ -516,7 +520,7 @@
                         <a class="nav-link" href="./user.html">User</a>
                     </li>
                 </ul>
-                
+
                 <ul class='navbar-nav ml-auto'>
                     <li class="nav-item m-1">
                         <a class="btn btn-secondary" @click='logout()'>Logout</a>
@@ -558,7 +562,7 @@
                     <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleTaskView">View:
                         {{taskView}}</button>
                     <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="showChat">Chat with Team
-                        </button>                    
+                    </button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal"
                         data-toggle="modal">Add Task</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal"
@@ -586,9 +590,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="input-group mb-3">
+                                <input v-model="chatMsg" type="text" class="form-control"
+                                    placeholder="Talk to your team here!" aria-label="Talk to your team here!"
+                                    aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        @click="updateChat()">Send</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-10" id="calendar-col" style="overflow: scroll; display: none;">
                     <div class="container">
                         <div class="row">
@@ -786,9 +801,11 @@
                 viewKey: 0,
                 interval: '',
                 chats: [],
+                chatMsg: "",
                 user: {
                     // loggedInUser: "naruto@wad2.co",
                     loggedInUser: "",
+                    name: "",
                     userLevel: "",
                     userExp: "",
                 },
@@ -895,7 +912,7 @@
                             this.user.userLevel = parseInt(data["new_level"])
                             location.reload()
                         })
-                        
+
                     })
                 },
                 modifyTask: function () {
@@ -1065,7 +1082,6 @@
                             "Content-Type": "application/json"
                         }
                     }).then(res => {
-                        
                         res.json().then(data => {
                             if (data.history == undefined) {
 
@@ -1076,6 +1092,27 @@
                     }).catch((error) => {
                         console.log(error)
                     });
+                },
+                updateChat: function () {
+                    if (this.chatMsg != "") {
+                        fetch("http://localhost:5001/update_chat", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                guild: this.guild.name,
+                                msg: this.chatMsg,
+                                by: this.user.name
+                            })
+                        }).then(res => {
+                            console.log(res.json());
+                            this.chatMsg = "";
+                            // location.reload()
+                        }).catch((error) => {
+                            console.log(error)
+                        });
+                    }
                 },
                 // Draws Gantt Chart
                 drawChart: function () {
@@ -1239,7 +1276,7 @@
                     //alert("Copied the text: " + copyText.value);
                     var x = document.getElementById("snackbar");
                     x.className = "show";
-                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
                 },
                 logout: function () {
                     sessionStorage.clear()
@@ -1264,6 +1301,7 @@
                         this.user.userLevel = data["level"];
                         this.user.userExp = data["exp"];
                         this.user.token = data["git_token"];
+                        this.user.name = data["name"];
                     })
                 })
 
@@ -1423,7 +1461,7 @@
                 window.requestAnimationFrame(step);
             }
         }
-    
+
     </script>
 </body>
 
