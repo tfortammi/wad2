@@ -802,6 +802,7 @@
             </div>
         </div>
 
+        <!-- CHANGE PASSWORD MODAL -->
         <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -846,7 +847,37 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='clearFields'>Close</button>
-                        <button type="button" class="btn btn-primary">Change password</button>
+                        <button type="button" class="btn btn-primary" @click='changePassword'>Change password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASSWORD CHANGE SUCCESS MODAL -->
+        <div class="modal fade" id="successPw" tabindex="-1" role="dialog" aria-labelledby="successPw"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                            <h4>Password Changed!</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASSWORD CHANGE FAILURE MODAL -->
+        <div class="modal fade" id="failurePw" tabindex="-1" role="dialog" aria-labelledby="failurePw"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                            <h4>Please check your input fields again!</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='openPasswordModal'>Close</button>
                     </div>
                 </div>
             </div>
@@ -1219,7 +1250,8 @@
                     newpassword: "",
                     cfmpassword: "",
                     fieldValidations: [],
-                    notSame: false
+                    notSame: false,
+                    passwordValid: false
                 }
             },
             methods: {
@@ -1299,11 +1331,37 @@
                         this.change.fieldValidations.push("has symbols")
                     }
 
-                    console.log(this.change.fieldValidations)
+                    if (this.change.fieldValidations.length < 1) { 
+                        this.change.passwordValid = true
+                    } else {
+                        this.change.passwordValid = false
+                    }
                 },
                 changePassword: function () {
-                    if (this.user.password == this.change.currpassword) {
-                        // change password if validated
+                    if (this.user.password == this.change.currpassword && this.change.passwordValid) {
+                        console.log("hi")
+                        fetch("http://localhost:5001/modify_user", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                email: this.user.loggedInUser,
+                                password: this.change.newpassword
+                            })
+                        }).then(res => {
+                            $('#passwordModal').modal('hide');
+                            this.user.password = this.change.newpassword
+                            $('#successPw').modal('show')
+                            this.clearFields()
+                        }).catch(e => {
+                            console.log(e);
+                            $('#passwordModal').modal('hide');
+                            $('#failurePw').modal('show')
+                        })
+                    } else {
+                        $('#passwordModal').modal('hide');
+                        $('#failurePw').modal('show')
                     }
                 }
             },
