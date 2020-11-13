@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 from datetime import datetime
+from datetime import datetime
+from dateutil import tz
 from os import environ
 import requests
 import json
@@ -17,32 +19,41 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import firebase_admin
 
+import traceback
+
 # =========================== # 
 #     APP INITIALIZATION      #
 # =========================== # 
 
 app = Flask(__name__)
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "wad-project-293012-d84d8e3a5ca6.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "wad-project-backup-4f432f39d484.json"
 
 cred = credentials.ApplicationDefault()
 firebase_admin.initialize_app(cred, {
-    "projectId": "wad-project-293012"
+    "projectId": "wad-project-backup"
 })
 
 db = firestore.client()
 
 CORS(app)
 
-# =========================== # 
-#     VAR INITIALIZATION      #
-# =========================== # 
+# ======================== # 
+#      INITIALIZATION      #
+# ======================== # 
 
 EXP_CONST = {
     "high" : 15,
     "medium" : 10,
     "low" : 5,
 } 
+
+def chunks(lst, n):
+    return_list = []
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        return_list.append(lst[i:i + n])
+    return return_list
 
 # =========================== # 
 #          TASKS              #
@@ -80,6 +91,59 @@ def get_all_tasks():
     
     try:
         return {"tasks": task_list}, 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot retrieve tasks."}, 500
+
+# Get all the tasks assigned to a user within the database - CHECKED
+@app.route("/get_assigned_tasks")
+def get_assigned_tasks():
+    """
+        Get all tasks specific to a guild within database.
+        
+        Expected GET params:
+            - "email" = <string: user's email>
+    """
+    task_ref = db.collection(u"Task")
+    docs = task_ref.stream()
+    
+    task_list = {
+        "completed" : [],
+        "incomplete" : {
+            "high" : [],
+            "medium" : [],
+            "low" : []
+        }
+    }
+
+    for doc in docs:
+        if request.args.get("email") in doc.to_dict()["assignedTo"]:
+            if doc.to_dict()["status"] == True:
+                task_list["completed"].append(doc.to_dict())
+            else:
+                if doc.to_dict()["priority"] == "high":
+                    task_list["incomplete"]["high"].append(doc.to_dict())
+                elif doc.to_dict()["priority"] == "medium":
+                    task_list["incomplete"]["medium"].append(doc.to_dict())
+                else:
+                    task_list["incomplete"]["low"].append(doc.to_dict())
+    
+    task_list["completed"] = sorted(task_list["completed"], key = lambda x: datetime.strptime(str(x["end"]).split("+")[0].split(" ")[0], "%Y-%m-%d"))
+
+    if (len(task_list["completed"]) > 5):
+        task_list["completed"] = task_list["completed"][:5]
+
+    for key, value in task_list["incomplete"].items():
+        task_list["incomplete"][key] = sorted(value, key = lambda x: datetime.strptime(str(x["end"]).split("+")[0].split(" ")[0], "%Y-%m-%d"))
+
+    # for completed_task in task_list["completed"]:
+    #     completed_task["end_html"] = str(completed_task["end"]).split("+")[0].split(" ")[0]
+
+    # for key in task_list["incomplete"]:
+    #     for incomplete_task in task_list["incomplete"][key]:
+    #         incomplete_task["end"] = "hi"
+    try:
+        return task_list, 200
     except Exception as e:
         print(e)
         return {"error": "Cannot retrieve tasks."}, 500
@@ -307,10 +371,20 @@ def add_guild():
             "r_access" : <string: guild's repository access status>,
         }
     """
+    # Add guild
     guild_ref = db.collection(u"Guild")
     docs = guild_ref.stream()
 
     request.json["streak"] = 0
+
+    # Add guild chat history 
+    #TODO: delete if not needed 
+    chat_ref = db.collection(u"Chat")
+    docs = chat_ref.stream()
+
+    request.json["history"] = "{}"
+
+    chat_ref.document().set(request.json)
 
     try:
         guild_ref.document().set(request.json)
@@ -467,6 +541,13 @@ def add_user():
         request.json["hp"] = 100
 
         user_ref.document().set(request.json)
+
+        claimed_ref = db.collection(u"Claimed")
+        claimed_ref.document().set({
+            "email" : request.json["email"],
+            "rewards" : []
+        })
+
         return jsonify({"success": True}), 200
 
     except Exception as e:
@@ -813,6 +894,62 @@ def remove_meeting():
         print(e)
         return {"error": "Cannot remove meeting."}, 500
 
+# Get all past meetings
+@app.route("/get_all_past_meetings")
+def get_all_past_meetings():
+    """
+        List past meetings 
+        
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
+
+        meetings = []
+        meeting_timings = []
+
+        for doc in docs:
+            if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                meetings.append(doc.to_dict())
+                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+        
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+    
+        return {"meetings": sorted_meetings}, 200
+
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return {"error": "Cannot retrieve meetings."}, 500
+
+# Get all upcoming meetings 
+@app.route("/get_all_upcoming_meetings")
+def get_all_upcoming_meetings():
+    """
+        List upcoming meetings 
+        
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
+
+        meetings = []
+        meeting_timings = []
+
+        for doc in docs:
+            if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                meetings.append(doc.to_dict())
+                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+        
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+    
+        return {"meetings": sorted_meetings}, 200
+
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot retrieve meetings."}, 500
+
+
 # Get past meetings that has the specified email address as its organizer or attendee 
 @app.route("/get_past_meetings")
 def get_past_meetings():
@@ -909,6 +1046,303 @@ def modify_meeting():
     except Exception as e:
         print(e)
         return {"error": "Cannot modify meeting."}, 500
+
+# =========================== # 
+#      REWARDS + CLAIMED      #
+# =========================== # 
+
+# REWARDS
+# -----------------------------
+# Database fields: 
+#    - id: "" (string)
+#    - name: "Golden Village Movie Ticket" (string)
+#    - level: 10 (int)
+#    - category: "entertainment" (string) [OPTIONS: entertainment, shopping, foodNbvg, services, others]
+#    - guild: "wad2_guild" (string)
+
+# CLAIMED
+# -----------------------------
+# Database fields: 
+#    - email: "naruto@wad2.co" (string)
+#    - rewards: ["reward_id_1", ....] (string array)
+
+# Add a reward into the database 
+@app.route("/add_reward", methods=["POST"])
+def add_reward():
+    """
+        Add a new reward into database with a random uuid as id.
+        
+        Expected JSON object:
+        {
+            "name" : <string: reward's name>,
+            "level" : <int: level needed to redeem the reward>,
+            "class" : <string: classification of reward>,
+            "guild" : <string: guild that reward belong to>,
+        }
+    """
+
+    try:
+        request.json["id"] = str(uuid.uuid4())
+
+        reward_ref = db.collection(u"Reward")
+        docs = reward_ref.stream()
+
+        reward_ref.document().set(request.json)
+
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot add reward."}, 500
+
+# Remove a reward from the database 
+@app.route("/remove_reward", methods=["POST"])
+def remove_reward():
+    """
+        Remove a reward from database with its id.
+        
+        Expected JSON object:
+        {
+            "id" : <string: reward's id>
+        }
+    """
+
+    try:
+        claimed_ref = db.collection(u"Claimed")
+        docs = claimed_ref.stream()
+
+        for doc in docs:
+            if request.json["id"] in doc.to_dict()["rewards"]:
+                to_remove = doc.to_dict()["rewards"].copy()
+                to_remove.remove(request.json["id"])
+                claimed_ref.document(doc.id).update({u"rewards": to_remove})
+
+        reward_ref = db.collection(u"Reward")
+        docs = reward_ref.stream()
+        id_to_remove = ""
+
+        for doc in docs:
+            if doc.to_dict()["id"] == request.json["id"]:
+                id_to_remove = doc.id
+        
+        reward_ref.document(id_to_remove).delete()
+
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot delete specified reward."}, 500
+
+# Get rewards by guild from the database 
+@app.route("/get_rewards_by_guild")
+def get_rewards_by_guild():
+    """
+        Get rewards from database by guild.
+        
+        Expected GET params:
+            - "guild" = <string: guild's name>
+    """
+
+    try:
+        reward_ref = db.collection(u"Reward")
+        docs = reward_ref.where("guild", "==", request.args.get("guild")).stream()
+
+        reward_list = []
+        for doc in docs:
+            reward_list.append(doc.to_dict())
+        
+        # sorted(reward_list, key = lambda x: x['level'])
+    
+        return {"rewards": reward_list}, 200.
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot get rewards."}, 500
+
+# Get rewards by guild and category from the database 
+@app.route("/get_rewards_by_guild_and_cat")
+def get_rewards_by_guild_and_cat():
+    """
+        Get rewards from database by guild arranged.
+        
+        Expected GET params:
+            - "guild" = <string: guild that reward belong to>
+            - "cat" = <string: category of rewards to retrieve> [OPTIONS: entertainment, shopping, foodNbvg, services, others, all]
+    """
+
+    try:
+        reward_ref = db.collection(u"Reward")
+        if request.args.get("cat") == "all":
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).stream()
+        else:
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).where("category", "==", request.args.get("cat")).stream()
+
+        reward_list = []
+        for doc in docs:
+            reward_list.append(doc.to_dict())
+        
+        # sorted(reward_list, key = lambda x: x['level']) # If you need the rewards to be sorted according to the lowest level then uncomment this
+    
+        return {"rewards": reward_list}, 200.
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot get rewards."}, 500
+
+# Get rewards by guild and category from the database 
+@app.route("/get_rewards_in_threes")
+def get_rewards_in_threes():
+    """
+        Get rewards from database by guild and cat arranged in aoa.
+        
+        Expected GET params:
+            - "guild" = <string: guild that reward belong to>
+            - "cat" = <string: category of rewards to retrieve> [OPTIONS: entertainment, shopping, foodNbvg, services, others, all]
+    """
+
+    try:
+        reward_ref = db.collection(u"Reward")
+        if request.args.get("cat") == "all":
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).stream()
+        else:
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).where("category", "==", request.args.get("cat")).stream()
+
+        reward_list = []
+        for doc in docs:
+            reward_list.append(doc.to_dict())
+        
+        reward_list = sorted(reward_list, key = lambda x: x['level']) 
+
+        reward_list = chunks(reward_list, 3)
+    
+        return {"rewards": reward_list}, 200.
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot get rewards."}, 500
+
+# Remove a reward from the database 
+@app.route("/claim_reward", methods=["POST"])
+def claim_reward():
+    """
+        Remove a reward from database with its id.
+        
+        Expected JSON object:
+        {
+            "id" : <string: reward's id>,
+            "email" : <string: user's email>
+        }
+    """
+
+    try:
+        claimed_ref = db.collection(u"Claimed")
+        docs = claimed_ref.stream()
+
+        for doc in docs:
+            if request.json["email"] == doc.to_dict()["email"]:
+                to_add = doc.to_dict()["rewards"].copy()
+                to_add.append(request.json["id"])
+                claimed_ref.document(doc.id).update({u"rewards": to_add})
+
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot claim reward."}, 500
+
+# Remove a reward from the database 
+@app.route("/get_claimed_reward")
+def get_claimed_reward():
+    """
+    Get the rewards already claimed by the user.
+    
+    Expected GET params:
+        - "email" = <string: user's email>
+    """
+    try:
+        claimed_ref = db.collection(u"Claimed")
+        rewards_list = list(claimed_ref.where("email", "==", request.args.get("email")).stream())[0].to_dict()["rewards"]
+
+        return {"rewards" : rewards_list}, 200
+                
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot get claimed rewards."}, 500
+
+
+# =============== # 
+#      CHAT       #
+# =============== # 
+@app.route("/add_chat", methods=["POST"])
+def add_chat():
+    """
+        Add a new chat record into database.
+        
+        Expected JSON object:
+        {
+            "guild" : <string: guild that chat belong to>,
+        }
+    """
+
+    try:
+        chat_ref = db.collection(u"Chat")
+        docs = chat_ref.stream()
+
+        request.json["history"] = "{}"
+
+        chat_ref.document().set(request.json)
+
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot add chat."}, 500
+
+@app.route("/update_chat", methods=["POST"])
+def update_chat():
+    """
+        Add a new chat record into database.
+        
+        Expected JSON object:
+        {
+            "guild" : <string: guild that chat belong to>,
+            "msg" : <string: new msg content>
+            "by": <string: user that the new msg belongs to>
+        }
+    """
+
+    try:
+        chat_ref = db.collection(u"Chat")
+        docs = chat_ref.stream()
+
+        for doc in docs:
+            if request.json["guild"] == doc.to_dict()["guild"]:
+                history = json.loads(doc.to_dict()["history"])
+                dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                history[dt_string] = {request.json["by"] : request.json["msg"]}
+                chat_ref.document(doc.id).update({u"history": json.dumps(history)})
+
+        return jsonify({"success": True}), 200
+
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot update chat."}, 500
+
+@app.route("/get_chat_history")
+def get_chat_history():
+    """
+        Retrieve chat history of a specific guild.
+        
+        Expected GET params:
+            - "guild" = <string: guild's name>
+    """
+
+    try:
+        chat_ref = db.collection(u"Chat")
+        docs = chat_ref.stream()
+
+        for doc in docs:
+            if request.args.get("guild") == doc.to_dict()["guild"]:
+                return {"history": json.loads(doc.to_dict()["history"])}, 200
+
+        return {"error": "Cannot find chat history."}, 401
+
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot update chat."}, 500
 
 # =========================== # 
 #      HYBRID FUNCTIONS       #
