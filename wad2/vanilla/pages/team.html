@@ -141,16 +141,16 @@
 <body>
     <div id="team">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="./home.html">WAD</a>
+            <a class="navbar-brand" href="./home.html">ProjectQuest</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item ">
+                    <!-- <li class="nav-item ">
                         <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
-                    </li>
+                    </li> -->
                     <li class="nav-item ">
                         <a class="nav-link" href="./tasks.html">Tasks </a>
                     </li>
@@ -201,15 +201,23 @@
         <div>
         </div>
         <div class='row' v-if='members.length > 0' data-tour="step: 2; title: Leaderboard; content: Track your team members' progress on this leaderboard">
-            <h1>Leaderboard</h1>
+            <h1 class='col-12 text-center'>Leaderboard</h1>
             <div class='col p-0'>
                 <bootstrap-table :columns="columns" :data="members" :options="tableOptions" data-pagination="true">
                 </bootstrap-table>
             </div>
         </div>
+
+        <div v-else class='row text-center'>
+            <h3 class='col-12'>Leaderboard</h3>
+            <div class='col p-0'>
+                Error! Please contact the administrator to connect your GitHub!
+                <hr>
+            </div>
+        </div>
         <br v-if='members.length > 0'>
 
-        <div class="row" data-tour="step: 3; title: Team Statistics; content: Get an overview of your team's progress and statistics">
+        <div class="row mb-3" data-tour="step: 3; title: Team Statistics; content: Get an overview of your team's progress and statistics">
             <div class="col-sm-4 text-center">
                 <table class='table table-borderless' style='height:100%;' >
                     <thead>
@@ -229,6 +237,7 @@
             </div>
             <div class='col-sm-8'>
                 <canvas id="myChart"></canvas>
+                <span v-if='noChart'>Your chart is empty, please contact the admin!</span>
             </div>
         </div>
     </div>
@@ -302,7 +311,8 @@
                     tableOptions: {
                         search: true,
                         showColumns: true,
-                    }
+                    },
+                    noChart: false
                 },
                 methods: {
                     
@@ -370,10 +380,14 @@
                                 var json = JSON.parse(this.responseText);
                                 // console.log(json)
                                 myChart.data.datasets[0].data = json.all.slice(46, 52)
+
                                 let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
                                 let currentMonth = new Date().getMonth()
                                 myChart.data.labels = months.slice(currentMonth - 5, currentMonth + 1)
                                 myChart.update()
+                            } 
+                            if (this.status == 401) {
+                                team.noChart = true
                             }
                         }
 

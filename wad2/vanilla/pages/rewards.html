@@ -161,32 +161,42 @@
 
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">WAD</a>
+            <a class="navbar-brand" href="./home.html">ProjectQuest</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
+                    <!-- <li class="nav-item ">
+                        <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                    </li> -->
                     <li class="nav-item ">
-                        <a class="nav-link" href="./home.html">Home </a>
+                        <a class="nav-link" href="./tasks.html">Tasks </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link active" href="./tasks.html">Tasks </a>
+                        <a class="nav-link" href="./team.html">Team </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="./team.html">Team</a>
+                        <a class="nav-link" href="./profile.html">Profile</a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="./user.html">User<span class="sr-only">(current)</span></a>
-                    </li>
+                      <a class="nav-link active" href="./rewards.html">Rewards</a>
+                  </li>
                 </ul>
-
-                <ul class='navbar-nav ml-auto'>
+                
+                <ul class='navbar-nav ml-auto' id='logoutDiv'>
                     <li class="nav-item m-1">
-                        <a class="btn btn-secondary" @click='logout()'>Logout</a>
+                        <a class="btn btn-primary" v-if="guild.teamleads == user.loggedInUser" onclick="window.location.href='./rewardsmanagement.html'">Manage Rewards</a>
+                    </li>
+                    <!-- <li class="nav-item m-1">
+                        <a class="btn btn-primary" v-on:click="startTour">Tour</a>
+                    </li> -->
+                    <li class="nav-item m-1">
+                        <a class="btn btn-secondary" v-on:click="logout">Logout</a>
                     </li>
                 </ul>
+                
             </div>
         </nav>
 
@@ -393,6 +403,14 @@
                     guild: "",
                     rewards: []
                 },
+                guild: {
+                    // name: "wad2_guild",
+                    name: "",
+                    streak: "",
+                    users: [],
+                    reponame: "",
+                    teamleads: ""
+                },
                 rewardBlocks: []
             },
             methods: {
@@ -524,6 +542,7 @@
                     // Retrieve
                     this.user.loggedInUser = sessionStorage.getItem("user");
                     this.user.guild = sessionStorage.getItem("guildName");
+                    this.guild.name = sessionStorage.getItem("guildName");
                 } else {
                     window.location.replace("./login.html");
                 }
@@ -540,6 +559,16 @@
                 await fetch("http://localhost:5001/get_claimed_reward?email=" + this.user.loggedInUser).then(res => {
                     var data = res.json().then(data => {
                         this.user.rewards = data["rewards"];
+                    })
+                })
+
+                await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
+                    var data = res.json().then(data => {
+                        this.guild.streak = data["streak"]
+                        this.guild.reponame = data["r_name"]
+                        this.guild.teamleads = data["team_lead"]
+                        console.log(this.user.loggedInUser)
+                        console.log(this.guild.teamleads)
                     })
                 })
 
