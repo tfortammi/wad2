@@ -38,15 +38,20 @@ db = firestore.client()
 
 CORS(app)
 
-# =========================== # 
-#     VAR INITIALIZATION      #
-# =========================== # 
+# ======================== # 
+#      INITIALIZATION      #
+# ======================== # 
 
 EXP_CONST = {
     "high" : 15,
     "medium" : 10,
     "low" : 5,
 } 
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
 
 # =========================== # 
 #          TASKS              #
@@ -364,10 +369,20 @@ def add_guild():
             "r_access" : <string: guild's repository access status>,
         }
     """
+    # Add guild
     guild_ref = db.collection(u"Guild")
     docs = guild_ref.stream()
 
     request.json["streak"] = 0
+
+    # Add guild chat history 
+    #TODO: delete if not needed 
+    chat_ref = db.collection(u"Chat")
+    docs = chat_ref.stream()
+
+    request.json["history"] = "{}"
+
+    chat_ref.document().set(request.json)
 
     try:
         guild_ref.document().set(request.json)
@@ -1168,6 +1183,37 @@ def get_rewards_by_guild_and_cat():
         print(e)
         return {"error": "Cannot get rewards."}, 500
 
+# Get rewards by guild and category from the database 
+@app.route("/get_rewards_in_threes")
+def get_rewards_in_threes():
+    """
+        Get rewards from database by guild and cat arranged in aoa.
+        
+        Expected GET params:
+            - "guild" = <string: guild that reward belong to>
+            - "cat" = <string: category of rewards to retrieve> [OPTIONS: entertainment, shopping, foodNbvg, services, others, all]
+    """
+
+    try:
+        reward_ref = db.collection(u"Reward")
+        if request.args.get("cat") == "all":
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).stream()
+        else:
+            docs = reward_ref.where("guild", "==", request.args.get("guild")).where("category", "==", request.args.get("cat")).stream()
+
+        reward_list = []
+        for doc in docs:
+            reward_list.append(doc.to_dict())
+        
+        sorted(reward_list, key = lambda x: x['level']) 
+
+
+    
+        return {"rewards": reward_list}, 200.
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot get rewards."}, 500
+
 # Remove a reward from the database 
 @app.route("/claim_reward", methods=["POST"])
 def claim_reward():
@@ -1199,7 +1245,6 @@ def claim_reward():
 # =============== # 
 #      CHAT       #
 # =============== # 
-#TODO: Create chat when guild is created
 @app.route("/add_chat", methods=["POST"])
 def add_chat():
     """
