@@ -49,9 +49,11 @@ EXP_CONST = {
 } 
 
 def chunks(lst, n):
+    return_list = []
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+        return_list.append(lst[i:i + n])
+    return return_list
 
 # =========================== # 
 #          TASKS              #
@@ -1205,9 +1207,9 @@ def get_rewards_in_threes():
         for doc in docs:
             reward_list.append(doc.to_dict())
         
-        sorted(reward_list, key = lambda x: x['level']) 
+        reward_list = sorted(reward_list, key = lambda x: x['level']) 
 
-
+        reward_list = chunks(reward_list, 3)
     
         return {"rewards": reward_list}, 200.
     except Exception as e:
@@ -1240,7 +1242,26 @@ def claim_reward():
         return jsonify({"success": True}), 200
     except Exception as e:
         print(e)
-        return {"error": "Cannot delete specified reward."}, 500
+        return {"error": "Cannot claim reward."}, 500
+
+# Remove a reward from the database 
+@app.route("/get_claimed_reward")
+def get_claimed_reward():
+    """
+    Get the rewards already claimed by the user.
+    
+    Expected GET params:
+        - "email" = <string: user's email>
+    """
+    try:
+        claimed_ref = db.collection(u"Claimed")
+        rewards_list = list(claimed_ref.where("email", "==", request.args.get("email")).stream())[0].to_dict()["rewards"]
+
+        return {"rewards" : rewards_list}, 200
+                
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot get claimed rewards."}, 500
 
 # =============== # 
 #      CHAT       #
