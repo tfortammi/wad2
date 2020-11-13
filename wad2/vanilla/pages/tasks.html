@@ -242,6 +242,49 @@
                 opacity: 0;
             }
         }
+
+        #attackModal .modal-body {
+            background-image: url("../assets/wall.png");
+            height: 200px;
+        }
+
+        #attack {
+            position: absolute;
+            left: 50%;
+            z-index: 100;
+        }
+
+        #demon2 {
+            position: absolute;
+            left: 50%;
+        }
+
+        #task-complete {
+            color: white;
+            width: 40%;
+            position: absolute;
+            top: 80px;
+            left: 50px;
+        }
+
+        @media (max-width: 767.98px) {
+            #attack {
+                position: absolute;
+                left: 35%;
+                z-index: 100;
+            }
+
+            #demon2 {
+                position: absolute;
+                left: 35%;
+            }
+
+            #task-complete {
+                top: 60px;
+                width: 50%;
+                z-index: 10000;
+            }
+        }
     </style>
 </head>
 
@@ -260,11 +303,31 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to complete this task? 
+                        Are you sure you want to complete this task?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success" v-on:click="completeTask" data-dismiss="modal">Confirm</button>
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" v-on:click="openCompleteTaskModal"
+                            data-dismiss="modal">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="attackModal" tabindex="-1" role="dialog" aria-labelledby="attackModal"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="task-complete">
+                            <h4>Task Completed! Great job!</h4>
+                        </div>
+                        <canvas id="attack" width="150" height="150"></canvas>
+                        <canvas id="demon2" width="150" height="150"></canvas>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" v-on:click="completeTask"
+                            data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -347,8 +410,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save Changes</button>
-                        <button v-if="chosenTask.status == false" type="button" class="btn btn-primary" data-target="#confirmModal" data-toggle="modal" data-dismiss="modal">Complete Task</button>
+                        <button type="button" class="btn btn-primary" v-on:click="modifyTask" data-dismiss="modal">Save
+                            Changes</button>
+                        <button v-if="chosenTask.status == false" type="button" class="btn btn-primary"
+                            data-target="#confirmModal" data-toggle="modal" data-dismiss="modal">Complete Task</button>
                     </div>
                 </div>
             </div>
@@ -515,7 +580,7 @@
                         <a class="nav-link" href="./user.html">User</a>
                     </li>
                 </ul>
-                
+
                 <ul class='navbar-nav ml-auto'>
                     <li class="nav-item m-1">
                         <a class="btn btn-secondary" @click='logout()'>Logout</a>
@@ -820,6 +885,9 @@
                 },
             },
             methods: {
+                openCompleteTaskModal: function () {
+                    $("#attackModal").modal("show")
+                },
                 loadGantt: function () {
                     google.charts.load('current', {
                         'packages': ['gantt']
@@ -859,26 +927,26 @@
 
                 },
                 completeTask: function () {
-                    fetch("http://localhost:5001/complete_task", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            id: this.chosenTask.id,
-                            email: this.user.loggedInUser
-                        })
-                    }).then(res => {
+                    // fetch("http://localhost:5001/complete_task", {
+                    //     method: "POST",
+                    //     headers: {
+                    //         "Content-Type": "application/json"
+                    //     },
+                    //     body: JSON.stringify({
+                    //         id: this.chosenTask.id,
+                    //         email: this.user.loggedInUser
+                    //     })
+                    // }).then(res => {
 
-                        res.json().then(data => {
-                            console.log(data["new_exp"])
-                            console.log(typeof data["new_exp"])
-                            this.user.userExp = parseInt(data["new_exp"])
-                            this.user.userLevel = parseInt(data["new_level"])
-                            location.reload()
-                        })
-                        
-                    })
+                    //     res.json().then(data => {
+                    //         console.log(data["new_exp"])
+                    //         console.log(typeof data["new_exp"])
+                    //         this.user.userExp = parseInt(data["new_exp"])
+                    //         this.user.userLevel = parseInt(data["new_level"])
+                    //         location.reload()
+                    //     })
+
+                    // })
                 },
                 modifyTask: function () {
                     fetch("http://localhost:5001/modify_task", {
@@ -1191,7 +1259,7 @@
                     //alert("Copied the text: " + copyText.value);
                     var x = document.getElementById("snackbar");
                     x.className = "show";
-                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
                 },
                 logout: function () {
                     sessionStorage.clear()
@@ -1255,6 +1323,8 @@
 
                 // Initialises image of bad guys
                 initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
+                initialiseImage("../assets/demon_spritesheet.png", "#demon2", 65, 170, 0, -20);
+                initialiseAttackImage("../assets/attack_spritesheet.png", "#attack", 0.3, 550, 450, 0, 0);
 
                 this.loadGantt()
 
@@ -1376,7 +1446,58 @@
                 window.requestAnimationFrame(step);
             }
         }
-    
+        function initialiseAttackImage(src, query, scale, width, height, x, y) {
+            // Create image object
+            let img = new Image();
+            img.src = src;
+            img.onload = function () {
+                init();
+            };
+
+            // Create canvas and context
+            let canvas = document.querySelector(query);
+            let ctx = canvas.getContext('2d');
+
+            // set size of image
+            const scaledWidth = scale * width;
+            const scaledHeight = scale * height;
+
+            // Function for Initial state of image
+            function init() {
+                ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            // Function to draw new images based on inputs
+            function drawFrame(frameX, frameY, canvasX, canvasY) {
+                ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            const cycleLoop = [0, 1, 2, 3];
+            let currentLoopIndex = 0;
+            let frameCount = 0;
+
+            // Request next frame based on cycleloop
+            window.requestAnimationFrame(step);
+
+            // Clears old frame and replaces with new frame based on new values
+            function step() {
+                frameCount++;
+                if (frameCount < 15) {
+                    window.requestAnimationFrame(step);
+                    return;
+                }
+                frameCount = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+                currentLoopIndex++;
+                if (currentLoopIndex >= cycleLoop.length) {
+                    currentLoopIndex = 0;
+                }
+                window.requestAnimationFrame(step);
+            }
+        }
+
+
     </script>
 </body>
 
