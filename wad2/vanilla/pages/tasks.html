@@ -631,8 +631,8 @@
                         {{taskView}}</button>
                     <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleView('meetings')" data-tour="step: 4; title: View Meetings; content: Checkout the team's past and upcoming meetings, and generate invites here">View
                         {{nextView}}</button>
-                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="showChat" data-tour="step: 5; title: Real Time Chat; content: Chat real time with your team here">Chat with Team
-                        </button>                    
+                    <!-- <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="showChat" data-tour="step: 5; title: Real Time Chat; content: Chat real time with your team here">Chat with Team
+                        </button>                     -->
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal"
                         data-toggle="modal" data-tour="step: 6; title: Add Task; content: Click this to create new tasks and assign them to team members">Add Task</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal" data-tour="step: 6; title: Add Meetings; content: Set a date for a video meeting and invite your team by clicking here"
@@ -644,6 +644,10 @@
                     <div class="container">
                         <div class="row">
                             <div class="col text-center mt-2" :key="viewKey">
+                                <div class="p-5" v-if="tasks.tasks.length == 0">
+                                    <h1 >No Tasks yet</h1>
+                                    <p>Click add Task to start creating new tasks!</p>
+                                </div>
                                 <div id="gantt_div"></div>
                             </div>
                         </div>
@@ -1031,7 +1035,7 @@
                         })
                     }).then(res => {
                         console.log(res.json())
-                        // location.reload()
+                        location.reload()
                     })
                 },
                 addMeeting: function () {
@@ -1109,14 +1113,14 @@
                             document.getElementById("gantt-chart").style.display = "none";
                             document.getElementById("calendar-col").style.display = "none";
                             document.getElementById("meeting-list").style.display = "block";
-                            document.getElementById("chat-window").style.display = "none";
+                            // document.getElementById("chat-window").style.display = "none";
 
                             this.nextView = "Tasks"
                         } else {
                             document.getElementById("gantt-chart").style.display = "block";
                             document.getElementById("meeting-list").style.display = "none";
                             document.getElementById("calendar-col").style.display = "none";
-                            document.getElementById("chat-window").style.display = "none";
+                            // document.getElementById("chat-window").style.display = "none";
 
                             this.nextView = "Meetings"
                         }
@@ -1129,7 +1133,7 @@
                         document.getElementById("meeting-list").style.display = "none";
                         document.getElementById("calendar-col").style.display = "block";
                         document.getElementById("gantt-chart").style.display = "none";
-                        document.getElementById("chat-window").style.display = "none";
+                        // document.getElementById("chat-window").style.display = "none";
                         this.loadCalendar()
 
                         this.taskView = "Calendar"
@@ -1138,7 +1142,7 @@
                         document.getElementById("meeting-list").style.display = "none";
                         document.getElementById("calendar-col").style.display = "none";
                         document.getElementById("gantt-chart").style.display = "block";
-                        document.getElementById("chat-window").style.display = "none";
+                        // document.getElementById("chat-window").style.display = "none";
 
                         this.taskView = "Gantt"
                     }
@@ -1239,9 +1243,14 @@
                             gantt_width = 850
                         }
 
+                        var gantt_height = dataTable.getNumberOfRows() * 50
+                        if (gantt_height < 150) {
+                            gantt_height = 150
+                        }
+
                         // options for gantt chart
                         var options = {
-                            height: dataTable.getNumberOfRows() * 50,
+                            height: gantt_height,
                             width: gantt_width,
                             gantt: {
                                 backgroundColor: "transparent",

@@ -14,6 +14,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css">
     <link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/gh/LikaloLLC/tourguide.js@0.2.0/tourguide.css" rel="stylesheet">
     <style>
         body {
             background-image: url("../assets/bg.jpg");
@@ -688,6 +689,9 @@
                 
                 <ul class='navbar-nav ml-auto' id='logoutDiv'>
                     <li class="nav-item m-1">
+                        <a class="btn btn-primary" v-on:click="startTour">Tour</a>
+                    </li>
+                    <li class="nav-item m-1">
                         <a class="btn btn-secondary" v-on:click="logout">Logout</a>
                     </li>
                 </ul>
@@ -826,7 +830,7 @@
                 <div class="col">
                     <div class="container page-todo bootstrap snippets bootdeys">
                         <div style="max-height: 750px; overflow-y: scroll;" class="tasks">
-                            <div class="task-list">
+                            <div class="task-list"  data-tour="step: 1; title: Task List; content: Check all the tasks assigned to you here">
                                 <h1>Tasks</h1>
                                 <blockquote class="blockquote text-right">
                                     <p class="mb-0">{{ this.quote.text }}</p>
@@ -914,10 +918,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col" >
                     <div class="container page-todo bootstrap snippets bootdeys">
                         <div class="tasks">
-                            <div class="task-list">
+                            <div class="task-list" data-tour="step: 2; title: Completed Tasks; content: Tasks you've marked as complete will go here">
                                 <h1>Completed Tasks</h1>
 
                                 <div v-if="tasks.completed.length > 0">
@@ -950,7 +954,7 @@
 
             <hr>
 
-            <div class="row justify-content-md-center p-4">
+            <div class="row justify-content-md-center p-4" data-tour="step: 3; title: Your Meetings; content: Not sure if you have a meeting coming up? Check out all meetings you're supposed to attend here">
                 <div class="col-lg-10" id="meeting-list">
                     <div class="container">
                         <div class="row">
@@ -1101,6 +1105,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
     <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
     <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/gh/LikaloLLC/tourguide.js@0.2.0/tourguide.min.js"></script>
     <script>
         var app = new Vue({
             el: '#tasks',
@@ -1164,7 +1169,10 @@
                 },
             },
             methods: {
-
+                startTour: function() {
+                    var tourguide = new Tourguide();
+                    tourguide.start()
+                },
                 completeTask: function () {
                     $("#attackModal").modal("show")
                     fetch("http://localhost:5001/complete_task", {
