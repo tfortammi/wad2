@@ -27,11 +27,11 @@ import traceback
 
 app = Flask(__name__)
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "wad-project-293012-d84d8e3a5ca6.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "wad-project-backup-4f432f39d484.json"
 
 cred = credentials.ApplicationDefault()
 firebase_admin.initialize_app(cred, {
-    "projectId": "wad-project-293012"
+    "projectId": "wad-project-backup"
 })
 
 db = firestore.client()
@@ -892,9 +892,9 @@ def get_all_past_meetings():
         meeting_timings = []
 
         for doc in docs:
-            if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+            if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                 meetings.append(doc.to_dict())
-                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
         sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
     
@@ -920,9 +920,9 @@ def get_all_upcoming_meetings():
         meeting_timings = []
 
         for doc in docs:
-            if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+            if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                 meetings.append(doc.to_dict())
-                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
         sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
     
