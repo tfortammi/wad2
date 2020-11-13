@@ -480,7 +480,8 @@
                                 </div>
                                 <select v-model="tasks.assignedTo" class="custom-select" multiple
                                     id="inputGroupSelect01">
-                                    <option v-for="user in guild.users" v-bind:id="user[1]" v-bind:value="user[1]">{{user[0]}}</option>
+                                    <option v-for="user in guild.users" v-bind:id="user[1]" v-bind:value="user[1]">
+                                        {{user[0]}}</option>
                                 </select>
                             </div>
                             <div class="input-group mb-3">
@@ -650,7 +651,7 @@
                 </div>
 
                 <!-- CHAT WINDOW -->
-                <div class="col-lg-10" id="chat-window" style="overflow: scroll; display: none;">
+                <!-- <div class="col-lg-10" id="chat-window" style="overflow: scroll; display: none;">
                     <div class="container">
                         <div class="row">
                             <div class="col text-center mt-2">
@@ -659,8 +660,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="input-group mb-3">
+                                <input v-model="chatMsg" type="text" class="form-control"
+                                    placeholder="Talk to your team here!" aria-label="Talk to your team here!"
+                                    aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        @click="updateChat()">Send</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </div> -->
                 
                 <!-- CALENDAR DIV -->
                 <div class="col-lg-10" id="calendar-col" style="overflow: scroll; display: none;">
@@ -859,9 +871,11 @@
                 viewKey: 0,
                 interval: '',
                 chats: [],
+                chatMsg: "",
                 user: {
                     // loggedInUser: "naruto@wad2.co",
                     loggedInUser: "",
+                    name: "",
                     userLevel: "",
                     userExp: "",
                 },
@@ -1129,34 +1143,54 @@
                         this.taskView = "Gantt"
                     }
                 },
-                showChat: function () {
-                    document.getElementById("meeting-list").style.display = "none";
-                    document.getElementById("calendar-col").style.display = "none";
-                    document.getElementById("gantt-chart").style.display = "none";
-                    document.getElementById("chat-window").style.display = "block";
-                    document.getElementById('chat-window').scrollTop = 9999999;
-                    this.interval = setInterval(() => this.getChat(), 1000);
-                    this.checkChat = true
-                },
-                getChat: function () {
-                    fetch("http://localhost:5001/get_chat_history?guild=" + this.guild.name, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    }).then(res => {
-                        
-                        res.json().then(data => {
-                            if (data.history == undefined) {
+                // showChat: function () {
+                //     document.getElementById("meeting-list").style.display = "none";
+                //     document.getElementById("calendar-col").style.display = "none";
+                //     document.getElementById("gantt-chart").style.display = "none";
+                //     document.getElementById("chat-window").style.display = "block";
+                //     document.getElementById('chat-window').scrollTop = 9999999;
+                //     this.interval = setInterval(() => this.getChat(), 1000);
+                //     this.checkChat = true
+                // },
+                // getChat: function () {
+                //     fetch("http://localhost:5001/get_chat_history?guild=" + this.guild.name, {
+                //         method: "GET",
+                //         headers: {
+                //             "Content-Type": "application/json"
+                //         }
+                //     }).then(res => {
+                //         res.json().then(data => {
+                //             if (data.history == undefined) {
 
-                            }
-                            this.chats = data.history
-                            console.log(this.chats)
-                        })
-                    }).catch((error) => {
-                        console.log(error)
-                    });
-                },
+                //             }
+                //             this.chats = data.history
+                //             console.log(this.chats)
+                //         })
+                //     }).catch((error) => {
+                //         console.log(error)
+                //     });
+                // },
+                // updateChat: function () {
+                //     if (this.chatMsg != "") {
+                //         fetch("http://localhost:5001/update_chat", {
+                //             method: "POST",
+                //             headers: {
+                //                 "Content-Type": "application/json"
+                //             },
+                //             body: JSON.stringify({
+                //                 guild: this.guild.name,
+                //                 msg: this.chatMsg,
+                //                 by: this.user.name
+                //             })
+                //         }).then(res => {
+                //             console.log(res.json());
+                //             this.chatMsg = "";
+                //             // location.reload()
+                //         }).catch((error) => {
+                //             console.log(error)
+                //         });
+                //     }
+                // },
                 // Draws Gantt Chart
                 drawChart: function () {
                     // Creates datatable to store info in gantt charts
@@ -1349,6 +1383,7 @@
                         this.user.userLevel = data["level"];
                         this.user.userExp = data["exp"];
                         this.user.token = data["git_token"];
+                        this.user.name = data["name"];
                     })
                 })
 

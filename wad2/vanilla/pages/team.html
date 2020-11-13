@@ -390,42 +390,6 @@
                             return 0;
                         }
                         return this.members.sort(compare);
-                    }
-                    // ,
-                    // addUser: function () {
-                    //     fetch("http://localhost:5001/add_user", {
-                    //         method: "POST",
-                    //         headers: {
-                    //             "Content-Type": "application/json"
-                    //         },
-                    //         body: JSON.stringify({
-                    //             class: "knight",
-                    //             email: "nic@wad.co",
-                    //             password: "password",
-                    //             name: "Nic Wong",
-                    //             role: "Big boss",
-                    //             guild: "JH-and-WX",
-                    //             git_token: "ad0918ed9c10bd6fdaf4fb64afb3e0001a39ea62",
-                    //             git_username: "nicwongg",
-                    //         })
-                    //     }).then(res => {
-                    //         console.log(this.user.git_username);
-                    //     })
-                    // }
-                    ,
-                    updateStreak: function () {
-                        fetch("http://localhost:5001/update_guild_streak/inc", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                name: this.guild.name,
-                                toAdd: 3,
-                            })
-                        }).then(res => {
-                            console.log(this.guild.streak);
-                        })
                     },
                     logout: function () {
                         sessionStorage.clear()
@@ -478,7 +442,6 @@
                         })
 
                     })
-
 
                     const headers = {
                         "Authorization": `Token ${this.user.token}`,
