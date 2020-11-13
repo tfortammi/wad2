@@ -19,6 +19,8 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import firebase_admin
 
+import traceback
+
 # =========================== # 
 #     APP INITIALIZATION      #
 # =========================== # 
@@ -874,6 +876,62 @@ def remove_meeting():
     except Exception as e:
         print(e)
         return {"error": "Cannot remove meeting."}, 500
+
+# Get all past meetings
+@app.route("/get_all_past_meetings")
+def get_all_past_meetings():
+    """
+        List past meetings 
+        
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
+
+        meetings = []
+        meeting_timings = []
+
+        for doc in docs:
+            if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                meetings.append(doc.to_dict())
+                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+        
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+    
+        return {"meetings": sorted_meetings}, 200
+
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return {"error": "Cannot retrieve meetings."}, 500
+
+# Get all upcoming meetings 
+@app.route("/get_all_upcoming_meetings")
+def get_all_upcoming_meetings():
+    """
+        List upcoming meetings 
+        
+    """
+    try:
+        meeting_ref = db.collection(u"Meeting")
+        docs = meeting_ref.stream()
+
+        meetings = []
+        meeting_timings = []
+
+        for doc in docs:
+            if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0], "%Y-%m-%d %H:%M:%S"):
+                meetings.append(doc.to_dict())
+                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0], "%Y-%m-%d %H:%M:%S"))
+        
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+    
+        return {"meetings": sorted_meetings}, 200
+
+    except Exception as e:
+        print(e)
+        return {"error": "Cannot retrieve meetings."}, 500
+
 
 # Get past meetings that has the specified email address as its organizer or attendee 
 @app.route("/get_past_meetings")

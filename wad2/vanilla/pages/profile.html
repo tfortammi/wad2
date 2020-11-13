@@ -191,7 +191,23 @@
             left: 50px;
         }
 
+        
+
         @media (max-width: 767.98px) {
+
+            .date {
+                font-size: 10px;
+            }
+
+            .page-todo {
+                margin-left: -20%;
+            }
+
+            .tasks {
+                width: 150% ;
+                margin-left: -50%;
+            }
+
             #attack {
                 position: absolute;
                 left: 35%;
@@ -469,7 +485,12 @@
         }
 
         @media only screen and (min-width:992px) and (max-width:1199px) {
-            .page-todo task .desc {
+
+            .meeting-row button {
+                margin-top: 10px;
+            }
+
+            .page-todo .task .desc {
                 display: inline-block;
                 width: 70%;
                 padding: 10px 10px;
@@ -497,6 +518,11 @@
         }
 
         @media only screen and (min-width:768px) and (max-width:991px) {
+
+            .meeting-row button {
+                margin-top: 10px;
+            }
+
             .page-todo .task {
                 margin-bottom: 1px
             }
@@ -549,8 +575,22 @@
                 font-size: 12px
             }
         }
+        
 
-        @media only screen and (max-width:767px) {
+        @media  (max-width:767px) {
+
+            .meeting-row button {
+                margin-top: 10px;
+            }
+
+            .task-list h1 {
+                font-size: 25px;
+            }
+
+            .task-list blockquote {
+                font-size: 15px;
+            }
+
             .page-todo .tasks {
                 position: relative;
                 margin: 0 !important
@@ -588,7 +628,7 @@
             }
 
             .page-todo .task .time .date {
-                font-size: 14px;
+                font-size: 10px;
                 margin-bottom: 5px
             }
 
@@ -622,7 +662,7 @@
 
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">WAD</a>
+            <a class="navbar-brand" href="./home.html">WAD</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -630,24 +670,28 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item ">
-                        <a class="nav-link" href="./home.html">Home </a>
+                        <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link active" href="./tasks.html">Tasks </a>
+                        <a class="nav-link" href="./tasks.html">Tasks </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="./team.html">Team</a>
+                        <a class="nav-link" href="./team.html">Team </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="./user.html">User<span class="sr-only">(current)</span></a>
+                        <a class="nav-link active" href="./profile.html">Profile</a>
                     </li>
+                    <li class="nav-item ">
+                      <a class="nav-link" href="./rewards.html">Rewards</a>
+                  </li>
                 </ul>
-
-                <ul class='navbar-nav ml-auto'>
+                
+                <ul class='navbar-nav ml-auto' id='logoutDiv'>
                     <li class="nav-item m-1">
-                        <a class="btn btn-secondary" @click='logout()'>Logout</a>
+                        <a class="btn btn-secondary" v-on:click="logout">Logout</a>
                     </li>
                 </ul>
+                
             </div>
         </nav>
 
@@ -787,13 +831,16 @@
                                 <blockquote class="blockquote text-right">
                                     <p class="mb-0">{{ this.quote.text }}</p>
                                     <footer class="blockquote-footer">{{ this.quote.author }}</footer>
-                                  </blockquote>
+                                </blockquote>
                                 <div class="priority high"><span>high priority</span></div>
                                 <div v-if="tasks.high.length > 0">
                                     <div v-for="task in tasks.high" class="task high">
                                         <div class="desc">
                                             <div class="title">{{ task.name }}</div>
-                                            <div><button type="button" v-on:click="openTaskModal(task)" class="btn btn-secondary badge badge-secondary">Click for more details!</button> <button type="button" class="btn btn-success badge badge-success">Complete me!</button>
+                                            <div><button type="button" v-on:click="openTaskModal(task)"
+                                                    class="btn btn-secondary badge badge-secondary">Click for more
+                                                    details!</button> <button type="button"
+                                                    class="btn btn-success badge badge-success">Complete me!</button>
                                             </div>
                                         </div>
                                         <div class="time">
@@ -808,7 +855,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
 
                                 <div class="priority medium"><span>medium priority</span></div>
 
@@ -816,7 +863,10 @@
                                     <div v-for="task in tasks.medium" class="task medium">
                                         <div class="desc">
                                             <div class="title">{{ task.name }}</div>
-                                            <div><button type="button" v-on:click="openTaskModal(task)" class="btn btn-secondary badge badge-secondary">Click for more details!</button> <button type="button" class="btn btn-success badge badge-success">Complete me!</button>
+                                            <div><button type="button" v-on:click="openTaskModal(task)"
+                                                    class="btn btn-secondary badge badge-secondary">Click for more
+                                                    details!</button> <button type="button"
+                                                    class="btn btn-success badge badge-success">Complete me!</button>
                                             </div>
                                         </div>
                                         <div class="time">
@@ -840,7 +890,10 @@
                                     <div v-for="task in tasks.low" class="task low">
                                         <div class="desc">
                                             <div class="title">{{ task.name }}</div>
-                                            <div><button type="button" v-on:click="openTaskModal(task)" class="btn btn-secondary badge badge-secondary">Click for more details!</button> <button type="button" class="btn btn-success badge badge-success">Complete me!</button>
+                                            <div><button type="button" v-on:click="openTaskModal(task)"
+                                                    class="btn btn-secondary badge badge-secondary">Click for more
+                                                    details!</button> <button type="button"
+                                                    class="btn btn-success badge badge-success">Complete me!</button>
                                             </div>
                                         </div>
                                         <div class="time">
@@ -856,7 +909,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -867,11 +920,13 @@
                             <div class="task-list">
                                 <h1>Completed Tasks</h1>
 
-                                <div v-if="tasks.completed.length > 0">   
+                                <div v-if="tasks.completed.length > 0">
                                     <div v-for="task in tasks.completed" class="task">
                                         <div class="desc">
                                             <div class="title">{{ task.name }}</div>
-                                            <div><button type="button" v-on:click="openTaskModal(task)" class="btn btn-secondary badge badge-secondary">Click for more details!</button>
+                                            <div><button type="button" v-on:click="openTaskModal(task)"
+                                                    class="btn btn-secondary badge badge-secondary">Click for more
+                                                    details!</button>
                                             </div>
                                         </div>
                                         <div class="time">
@@ -895,357 +950,515 @@
 
             <hr>
 
-            <div class="row justify-content-md-center p-5">
-                <div class="col-8">
-                    <h1>Redeemed Rewards</h1>
-                    <p>Here are some rewards you've redeemed before. Pat yourself on the back!</p>
-                </div>
-                <div class="col-2">
-                    <a class="btn btn-primary" href="./rewards.html">Shop</a>
-                </div>
+            <div class="row justify-content-md-center p-4">
+                <div class="col-lg-10" id="meeting-list">
+                    <div class="container">
+                        <div class="row">
+                            <h1>Your Meetings</h1>
+                            <ul class="w-100 nav nav-fill nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-upcoming-tab" data-toggle="pill"
+                                        href="#pills-upcoming" role="tab" aria-controls="pills-upcoming"
+                                        aria-selected="true">Upcoming meetings</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-past-tab" data-toggle="pill" href="#pills-past"
+                                        role="tab" aria-controls="pills-past" aria-selected="false">Past meetings</a>
+                                </li>
+                            </ul>
 
-            </div>
+                            <div class="tab-content w-100" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-upcoming" role="tabpanel"
+                                    aria-labelledby="pills-upcoming-tab">
+                                    <div v-if="upcoming_meetings.show" class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
-                <div class="row justify-content-md-center pb-5">
-                    <div class="col">
-                        <div class="card-deck text-center" style="width: 80%; margin: auto; ">
-                            <div class="card mt-4" v-for="reward in rewards" style="min-width: 13rem;">
-                                <div class="card-body p-0">
-                                    <img v-if="reward.category == 'shopping'" class="card-img-top"
-                                        src="../assets/shopping.png" alt="Card image cap">
-                                    <img v-if="reward.category == 'foodNbvg'" class="card-img-top"
-                                        src="../assets/foodNbvg.png" alt="Card image cap">
-                                    <img v-if="reward.category == 'entertainment'" class="card-img-top"
-                                        src="../assets/entertainment.png" alt="Card image cap">
-                                    <img v-if="reward.category == 'services'" class="card-img-top"
-                                        src="../assets/services.png" alt="Card image cap">
-                                    <img v-if="reward.category == 'others'" class="card-img-top"
-                                        src="../assets/others.png" alt="Card image cap">
-                                    <h5 class="card-title">{{ reward.name }}</h5>
-                                    <p class="card-text">Attained at level {{ reward.level }}</p>
+                                                <tr v-for="(meeting, index) in upcoming_meetings.meetings">
+                                                    <th class="meeting-row" scope="row">{{index + 1}}</th>
+                                                    <td class="meeting-row">{{meeting["start"]}}</td>
+                                                    <td class="meeting-row">{{meeting["name"]}}</td>
+                                                    <td class="meeting-row">{{meeting["organizer"]}}</td>
+                                                    <td class="meeting-row">
+                                                        <a v-bind:href="meeting.room_link" target="_blank"
+                                                            class="btn btn-success">Join</a>
+                                                        <button type="button" class="btn btn-info" data-toggle="modal"
+                                                            v-bind:data-target="meeting.html_button_id">Generate
+                                                            Invite</button>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="5" class="text-center meeting-row">You do not have any
+                                                        upcoming meetings.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-past" role="tabpanel"
+                                    aria-labelledby="pills-past-tab">
+
+                                    <div v-if="past_meetings.show" class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">End datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <tr v-for="(meeting, index) in past_meetings.meetings">
+                                                    <th class="meeting-row" scope="row">{{index + 1}}</th>
+                                                    <td class="meeting-row">{{meeting["start"]}}</td>
+                                                    <td class="meeting-row">{{meeting["end"]}}</td>
+                                                    <td class="meeting-row">{{meeting["name"]}}</td>
+                                                    <td class="meeting-row">{{meeting["organizer"]}}</td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-else class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-primary">
+                                                    <th class="meeting-header-th meeting-row" scope="col">#</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Start datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">End datetime
+                                                    </th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Meeting</th>
+                                                    <th class="meeting-header-th meeting-row" scope="col">Organizer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="5" class="text-center meeting-row">You do not have any
+                                                        past meetings.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-
             </div>
+
+
         </div>
+    </div>
 
 
-        <script type="text/javascript" src="http://www.gstatic.com/charts/loader.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    <script type="text/javascript" src="http://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
         </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
         </script>
-        <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js">
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js">
         </script>
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
-        <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
-        <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
-        <script>
-            var app = new Vue({
-                el: '#tasks',
-                data: {
-                    user: {
-                        // loggedInUser: "naruto@wad2.co",
-                        loggedInUser: "",
-                        userLevel: "",
-                        userExp: "",
-                    },
-                    guild: {
-                        // name: "wad2_guild",
-                        name: "",
-                        streak: "",
-                        users: [],
-                        reponame: ""
-                    },
-                    tasks: {
-                        tasks: [],
-                        taskName: "",
-                        assignedTo: [],
-                        start: "",
-                        end: "",
-                        dependency: "",
-                        priority: "",
-                        category: "",
-                        completed: [],
-                        high: [],
-                        medium: [],
-                        low: [] 
-                    },
-                    chosenTask: {
-                        id: "",
-                        taskName: "",
-                        assignedTo: [],
-                        start: "",
-                        end: "",
-                        dependency: "",
-                        priority: "",
-                        category: ""
-                    },
-                    rewards: [],
-                    quote: {
-                        author: "",
-                        text: ""
-                    }
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js"></script>
+    <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
+    <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+    <script>
+        var app = new Vue({
+            el: '#tasks',
+            data: {
+                user: {
+                    // loggedInUser: "naruto@wad2.co",
+                    loggedInUser: "",
+                    userLevel: "",
+                    userExp: "",
                 },
-                methods: {
-
-                    completeTask: function () {
-                        $("#attackModal").modal("show")
-                        fetch("http://localhost:5001/complete_task", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                id: this.chosenTask.id,
-                                email: this.user.loggedInUser
-                            })
-                        }).then(res => {
-
-                            res.json().then(data => {
-                                this.user.userExp = parseInt(data["new_exp"])
-                                this.user.userLevel = parseInt(data["new_level"])
-                                // location.reload()
-                            })
-
-                        })
-                    },
-                    logout: function () {
-                        sessionStorage.clear()
-                        window.location.replace("./home.html");
-                    },
-                    openTaskModal: function (task) {
-                        this.chosenTask = task
-                        this.chosenTask.taskName = task.name
-                        $('#modTaskModal').modal('show');
-                    }
+                guild: {
+                    // name: "wad2_guild",
+                    name: "",
+                    streak: "",
+                    users: [],
+                    reponame: ""
                 },
-                // When Vue view is created, runs the following functions
-                async created() {
+                tasks: {
+                    tasks: [],
+                    taskName: "",
+                    assignedTo: [],
+                    start: "",
+                    end: "",
+                    dependency: "",
+                    priority: "",
+                    category: "",
+                    completed: [],
+                    high: [],
+                    medium: [],
+                    low: []
+                },
+                chosenTask: {
+                    id: "",
+                    taskName: "",
+                    assignedTo: [],
+                    start: "",
+                    end: "",
+                    dependency: "",
+                    priority: "",
+                    category: ""
+                },
+                rewards: [],
+                quote: {
+                    author: "",
+                    text: ""
+                },
+                meeting: {
+                    name: "",
+                    attendees: [],
+                    start: "",
+                    end: "",
+                },
+                meeting_flag: false,
+                upcoming_meetings: {
+                    show: true,
+                    meetings: []
+                },
+                past_meetings: {
+                    show: true,
+                    meetings: []
+                },
+            },
+            methods: {
 
-                    if (sessionStorage.getItem("user") !== null) {
-                        // Retrieve
-                        this.user.loggedInUser = sessionStorage.getItem("user");
-                        this.guild.name = sessionStorage.getItem("guildName");
-                        this.tasks.guild = this.guild.name;
-                    } else {
-                        window.location.replace("./login.html");
-                    }
-                    // Gets the information of the logged in user
-                    await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(
-                        res => {
-                            var data = res.json().then(data => {
-                                initialiseImage("../assets/" + data["class"] +
-                                    "_spritesheet.png",
-                                    "#ch-img", 65, 260, 0, -70);
-                                this.user.userLevel = data["level"];
-                                this.user.userExp = data["exp"];
-                                this.user.token = data["git_token"];
-                            })
+                completeTask: function () {
+                    $("#attackModal").modal("show")
+                    fetch("http://localhost:5001/complete_task", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: this.chosenTask.id,
+                            email: this.user.loggedInUser
                         })
+                    }).then(res => {
 
-                    // Gets all users in the guild
-                    var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
-                        var data = res.json().then(data => {
-                            var user_arr = []
-                            for (u of data["users"]) {
-                                user_arr.push([u["name"], u["email"], u["guild"]])
-                            }
-                            this.guild.users = user_arr
+                        res.json().then(data => {
+                            this.user.userExp = parseInt(data["new_exp"])
+                            this.user.userLevel = parseInt(data["new_level"])
+                            // location.reload()
                         })
 
                     })
+                },
+                logout: function () {
+                    sessionStorage.clear()
+                    window.location.replace("./home.html");
+                },
+                openTaskModal: function (task) {
+                    this.chosenTask = task
+                    this.chosenTask.taskName = task.name
+                    $('#modTaskModal').modal('show');
+                }
+            },
+            // When Vue view is created, runs the following functions
+            async created() {
 
-                    // Gets all tasks in the guild to display
-                    await fetch("http://localhost:5001/get_all_tasks?guild=" + this.guild.name).then(
-                        res => {
-                            var data = res.json().then(data => {
+                if (sessionStorage.getItem("user") !== null) {
+                    // Retrieve
+                    this.user.loggedInUser = sessionStorage.getItem("user");
+                    this.guild.name = sessionStorage.getItem("guildName");
+                    this.tasks.guild = this.guild.name;
+                } else {
+                    window.location.replace("./login.html");
+                }
+                // Gets the information of the logged in user
+                await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(
+                    res => {
+                        var data = res.json().then(data => {
+                            initialiseImage("../assets/" + data["class"] +
+                                "_spritesheet.png",
+                                "#ch-img", 65, 260, 0, -70);
+                            this.user.userLevel = data["level"];
+                            this.user.userExp = data["exp"];
+                            this.user.token = data["git_token"];
+                        })
+                    })
 
-                                var new_tasks = []
-                                for (let i of data["tasks"]) {
-                                    if (i["assignedTo"].includes(this.user.loggedInUser)) {
-                                        new_tasks.push(i)
-                                    }
+                // Gets all users in the guild
+                var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
+                    var data = res.json().then(data => {
+                        var user_arr = []
+                        for (u of data["users"]) {
+                            user_arr.push([u["name"], u["email"], u["guild"]])
+                        }
+                        this.guild.users = user_arr
+                    })
+
+                })
+
+                // Gets all tasks in the guild to display
+                await fetch("http://localhost:5001/get_all_tasks?guild=" + this.guild.name).then(
+                    res => {
+                        var data = res.json().then(data => {
+
+                            var new_tasks = []
+                            for (let i of data["tasks"]) {
+                                if (i["assignedTo"].includes(this.user.loggedInUser)) {
+                                    new_tasks.push(i)
                                 }
-                                this.tasks.tasks = new_tasks
-                            })
-                        })
-                    
-                    // Gets all tasks in the guild to display
-                    await fetch("http://localhost:5001/get_assigned_tasks?email=" + this.user.loggedInUser).then(
-                        res => {
-                            var data = res.json().then(data => {
-                                this.tasks.completed = data["completed"]
-                                this.tasks.high = data["incomplete"]["high"]
-                                this.tasks.medium = data["incomplete"]["medium"]
-                                this.tasks.low = data["incomplete"]["low"]
-                            })
-                        })
-
-                    // Get quote of the day
-                    fetch("https://type.fit/api/quotes").then(
-                        res => {
-                            var data = res.json().then(data => {
-                                random_quote = data[Math.floor(Math.random() * data.length)];
-                                this.quote.author = random_quote["author"];
-                                this.quote.text = random_quote["text"];
+                            }
+                            this.tasks.tasks = new_tasks
                         })
                     })
 
-                    // Gets guild info
-                    await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
+                // Gets all tasks in the guild to display
+                await fetch("http://localhost:5001/get_assigned_tasks?email=" + this.user.loggedInUser).then(
+                    res => {
                         var data = res.json().then(data => {
-                            this.guild.streak = data["streak"]
-                            this.guild.reponame = data["r_name"]
-
+                            this.tasks.completed = data["completed"]
+                            this.tasks.high = data["incomplete"]["high"]
+                            this.tasks.medium = data["incomplete"]["medium"]
+                            this.tasks.low = data["incomplete"]["low"]
                         })
                     })
 
-                    // Get Rewards
-                    await fetch("http://localhost:5001/get_rewards_by_guild?guild=" + this.guild.name).then(
-                        res => {
-                            var data = res.json().then(data => {
-                                this.rewards = data["rewards"]
-                            })
+                // Get quote of the day
+                fetch("https://type.fit/api/quotes").then(
+                    res => {
+                        var data = res.json().then(data => {
+                            random_quote = data[Math.floor(Math.random() * data.length)];
+                            this.quote.author = random_quote["author"];
+                            this.quote.text = random_quote["text"];
                         })
+                    })
 
-                    // Initialises image of bad guys
-                    initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
-                    initialiseImage("../assets/demon_spritesheet.png", "#demon2", 65, 170, 0, -20);
-                    initialiseAttackImage("../assets/attack_spritesheet.png", "#attack", 0.3, 550, 450, 0,
-                        0);
+                // Gets guild info
+                await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
+                    var data = res.json().then(data => {
+                        this.guild.streak = data["streak"]
+                        this.guild.reponame = data["r_name"]
 
-                }
+                    })
+                })
 
-            });
+                // Get Rewards
+                await fetch("http://localhost:5001/get_rewards_by_guild?guild=" + this.guild.name).then(
+                    res => {
+                        var data = res.json().then(data => {
+                            this.rewards = data["rewards"]
+                        })
+                    })
+
+                // Load their upcoming meetings
+                await fetch("http://localhost:5001/get_upcoming_meetings?email=" + this.user.loggedInUser)
+                    .then(res => {
+                        var data = res.json().then(data => {
+                            if (data["meetings"].length == 0) {
+                                this.upcoming_meetings.show = false;
+                            } else {
+                                this.upcoming_meetings.show = true;
+                                for (i = 0; i < data["meetings"].length; i++) {
+                                    var new_start = data["meetings"][i]["start"].split(" ")
+                                        .slice(0, -1).join(" ");
+                                    var new_end = data["meetings"][i]["end"].split(" ").slice(0,
+                                        -1).join(" ");
+
+                                    data["meetings"][i]["start"] = new_start;
+                                    data["meetings"][i]["end"] = new_end;
+                                }
+                                this.upcoming_meetings.meetings = data["meetings"];
+                            }
+                        })
+                    });
+
+                // Load their past meetings
+                await fetch("http://localhost:5001/get_past_meetings?email=" + this.user.loggedInUser)
+                    .then(res => {
+                        var data = res.json().then(data => {
+                            if (data["meetings"].length == 0) {
+                                this.past_meetings.show = false;
+                            } else {
+                                this.past_meetings.show = true;
+                                for (i = 0; i < data["meetings"].length; i++) {
+                                    var new_start = data["meetings"][i]["start"].split(" ")
+                                        .slice(0, -1).join(" ");
+                                    var new_end = data["meetings"][i]["end"].split(" ").slice(0,
+                                        -1).join(" ");
+
+                                    data["meetings"][i]["start"] = new_start;
+                                    data["meetings"][i]["end"] = new_end;
+                                }
+                                this.past_meetings.meetings = data["meetings"];
+                            }
+                        })
+                    })
 
 
-            // Datepicker add on 
-            // $(document).ready(function () {
-            //     var date_input = $('input[name="date"]'); //our date input has the name "date"
-            //     var container = $('.modal-body form').length > 0 ? $('.modal-body form').parent() : "body";
-            //     var options = {
-            //         format: 'mm/dd/yyyy',
-            //         container: container,
-            //         todayHighlight: true,
-            //         autoclose: true,
-            //     };
-            //     date_input.datepicker(options);
-            // })
 
-            // Initialise running images
-            function initialiseImage(src, query, width, height, x, y) {
-                // Create image object
-                let img = new Image();
-                img.src = src;
-                img.onload = function () {
-                    init();
-                };
+                // Initialises image of bad guys
+                initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
+                initialiseImage("../assets/demon_spritesheet.png", "#demon2", 65, 170, 0, -20);
+                initialiseAttackImage("../assets/attack_spritesheet.png", "#attack", 0.3, 550, 450, 0,
+                    0);
 
-                // Create canvas and context
-                let canvas = document.querySelector(query);
-                let ctx = canvas.getContext('2d');
-
-                // set size of image
-                const scale = 2.5;
-                const scaledWidth = scale * width;
-                const scaledHeight = scale * height;
-
-                // Function for Initial state of image
-                function init() {
-                    ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
-                }
-
-                // Function to draw new images based on inputs
-                function drawFrame(frameX, frameY, canvasX, canvasY) {
-                    ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
-                }
-
-                const cycleLoop = [0, 1, 2, 3];
-                let currentLoopIndex = 0;
-                let frameCount = 0;
-
-                // Request next frame based on cycleloop
-                window.requestAnimationFrame(step);
-
-                // Clears old frame and replaces with new frame based on new values
-                function step() {
-                    frameCount++;
-                    if (frameCount < 15) {
-                        window.requestAnimationFrame(step);
-                        return;
-                    }
-                    frameCount = 0;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
-                    currentLoopIndex++;
-                    if (currentLoopIndex >= cycleLoop.length) {
-                        currentLoopIndex = 0;
-                    }
-                    window.requestAnimationFrame(step);
-                }
             }
 
-            function initialiseAttackImage(src, query, scale, width, height, x, y) {
-                // Create image object
-                let img = new Image();
-                img.src = src;
-                img.onload = function () {
-                    init();
-                };
+        });
 
-                // Create canvas and context
-                let canvas = document.querySelector(query);
-                let ctx = canvas.getContext('2d');
 
-                // set size of image
-                const scaledWidth = scale * width;
-                const scaledHeight = scale * height;
+        // Datepicker add on 
+        // $(document).ready(function () {
+        //     var date_input = $('input[name="date"]'); //our date input has the name "date"
+        //     var container = $('.modal-body form').length > 0 ? $('.modal-body form').parent() : "body";
+        //     var options = {
+        //         format: 'mm/dd/yyyy',
+        //         container: container,
+        //         todayHighlight: true,
+        //         autoclose: true,
+        //     };
+        //     date_input.datepicker(options);
+        // })
 
-                // Function for Initial state of image
-                function init() {
-                    ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
-                }
+        // Initialise running images
+        function initialiseImage(src, query, width, height, x, y) {
+            // Create image object
+            let img = new Image();
+            img.src = src;
+            img.onload = function () {
+                init();
+            };
 
-                // Function to draw new images based on inputs
-                function drawFrame(frameX, frameY, canvasX, canvasY) {
-                    ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
-                }
+            // Create canvas and context
+            let canvas = document.querySelector(query);
+            let ctx = canvas.getContext('2d');
 
-                const cycleLoop = [0, 1, 2, 3];
-                let currentLoopIndex = 0;
-                let frameCount = 0;
+            // set size of image
+            const scale = 2.5;
+            const scaledWidth = scale * width;
+            const scaledHeight = scale * height;
 
-                // Request next frame based on cycleloop
-                window.requestAnimationFrame(step);
-
-                // Clears old frame and replaces with new frame based on new values
-                function step() {
-                    frameCount++;
-                    if (frameCount < 15) {
-                        window.requestAnimationFrame(step);
-                        return;
-                    }
-                    frameCount = 0;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
-                    currentLoopIndex++;
-                    if (currentLoopIndex >= cycleLoop.length) {
-                        currentLoopIndex = 0;
-                    }
-                    window.requestAnimationFrame(step);
-                }
+            // Function for Initial state of image
+            function init() {
+                ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
             }
-        </script>
+
+            // Function to draw new images based on inputs
+            function drawFrame(frameX, frameY, canvasX, canvasY) {
+                ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            const cycleLoop = [0, 1, 2, 3];
+            let currentLoopIndex = 0;
+            let frameCount = 0;
+
+            // Request next frame based on cycleloop
+            window.requestAnimationFrame(step);
+
+            // Clears old frame and replaces with new frame based on new values
+            function step() {
+                frameCount++;
+                if (frameCount < 15) {
+                    window.requestAnimationFrame(step);
+                    return;
+                }
+                frameCount = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+                currentLoopIndex++;
+                if (currentLoopIndex >= cycleLoop.length) {
+                    currentLoopIndex = 0;
+                }
+                window.requestAnimationFrame(step);
+            }
+        }
+
+        function initialiseAttackImage(src, query, scale, width, height, x, y) {
+            // Create image object
+            let img = new Image();
+            img.src = src;
+            img.onload = function () {
+                init();
+            };
+
+            // Create canvas and context
+            let canvas = document.querySelector(query);
+            let ctx = canvas.getContext('2d');
+
+            // set size of image
+            const scaledWidth = scale * width;
+            const scaledHeight = scale * height;
+
+            // Function for Initial state of image
+            function init() {
+                ctx.drawImage(img, 0, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            // Function to draw new images based on inputs
+            function drawFrame(frameX, frameY, canvasX, canvasY) {
+                ctx.drawImage(img, frameX * width, 0, width, height, x, y, scaledWidth, scaledHeight);
+            }
+
+            const cycleLoop = [0, 1, 2, 3];
+            let currentLoopIndex = 0;
+            let frameCount = 0;
+
+            // Request next frame based on cycleloop
+            window.requestAnimationFrame(step);
+
+            // Clears old frame and replaces with new frame based on new values
+            function step() {
+                frameCount++;
+                if (frameCount < 15) {
+                    window.requestAnimationFrame(step);
+                    return;
+                }
+                frameCount = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+                currentLoopIndex++;
+                if (currentLoopIndex >= cycleLoop.length) {
+                    currentLoopIndex = 0;
+                }
+                window.requestAnimationFrame(step);
+            }
+        }
+    </script>
 </body>
 
 </html>
