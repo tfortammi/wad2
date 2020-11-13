@@ -802,6 +802,56 @@
             </div>
         </div>
 
+        <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class='modal-header'>
+                        <h5 class="modal-title" id="exampleModalLabel">Change your password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row" style='background: none'>
+                            <label for="password" class="col-sm-2 col-form-label">Current Password:</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="currpassword" v-model='change.currpassword'
+                                    placeholder="Current password">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style='background: none'>
+                            <label for="password" class="col-sm-2 col-form-label">New Password:</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="newpassword" v-model='change.newpassword'
+                                    placeholder="New password" v-on:keyup='validatePassword'>
+                                    <div class='text-danger' v-if='change.fieldValidations.length > 0'>
+                                        <span>Please ensure that your password has:</span>
+                                        <ul>
+                                            <li v-for='validation in change.fieldValidations'>{{validation}}</li>
+                                        </ul>
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" style='background: none'>
+                            <label for="password" class="col-sm-2 col-form-label">Confirm New Password:</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="cfmpassword" v-model='change.cfmpassword'
+                                    placeholder="Repeat new password" @blur="checkSame">
+                                    <span v-if="change.notSame" class='text-danger'>Passwords do not match</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click='clearFields'>Close</button>
+                        <button type="button" class="btn btn-primary">Change password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- MAIN CONTENT -->
         <div class="container" style="height: 100%;">
             <br>
@@ -810,7 +860,7 @@
                 <!-- CHARACTER INFO CONTAINER -->
                 <div class="col-lg-2 text-center py-3" id="lvl-window">
                     <h3 class="font-weight-bold">Hi {{ this.user.username }}!</h3>
-                    <a class="btn btn-primary" href="./accountmanagement.html">Manage Account</a>
+                    <a class="btn btn-primary" @click='openPasswordModal'>Change Password</a>
                 </div>
                 <!-- CHARACTER RUNNING CONTAINER -->
                 <div class="col-lg-10 p-0">
@@ -1111,6 +1161,7 @@
                     username: "",
                     userLevel: "",
                     userExp: "",
+                    password: ""
                 },
                 guild: {
                     // name: "wad2_guild",
@@ -1163,6 +1214,13 @@
                     show: true,
                     meetings: []
                 },
+                change: {
+                    currpassword: "",
+                    newpassword: "",
+                    cfmpassword: "",
+                    fieldValidations: [],
+                    notSame: false
+                }
             },
             methods: {
                 startTour: function() {
@@ -1181,7 +1239,6 @@
                             email: this.user.loggedInUser
                         })
                     }).then(res => {
-
                         res.json().then(data => {
                             this.user.userExp = parseInt(data["new_exp"])
                             this.user.userLevel = parseInt(data["new_level"])
@@ -1198,6 +1255,56 @@
                     this.chosenTask = task
                     this.chosenTask.taskName = task.name
                     $('#modTaskModal').modal('show');
+                },
+                openPasswordModal: function () {
+                    $('#passwordModal').modal('show');
+                },
+                checkSame: function () {
+                    if (this.change.newpassword != this.change.cfmpassword) {
+                        this.change.notSame = true
+                    } else {
+                        this.change.notSame = false
+                    }
+                },
+                clearFields: function () {
+                    this.change.currpassword = ''
+                    this.change.newpassword = ''
+                    this.change.cfmpassword = ''
+                    this.change.notSame = false
+                },
+                validatePassword: function () {
+                    this.change.fieldValidations = []
+
+                    if (this.change.newpassword.length < 8) {
+                        this.change.fieldValidations.push("has more than 8 characters")
+                    }
+
+                    var lowerCaseLetters = /[a-z]/g;
+                    if (!this.change.newpassword.match(lowerCaseLetters)) {
+                        this.change.fieldValidations.push("has lower case letters")
+                    }
+
+                    var upperCaseLetters = /[A-Z]/g;
+                    if (!this.change.newpassword.match(upperCaseLetters)) {
+                        this.change.fieldValidations.push("has upper case letters")
+                    }
+
+                    var numbers = /[0-9]/g;
+                    if (!this.change.newpassword.match(numbers)) {
+                        this.change.fieldValidations.push("has numbers")
+                    }
+
+                    var symbols = /[!@#$%^&*]/g;
+                    if (!this.change.newpassword.match(symbols)) {
+                        this.change.fieldValidations.push("has symbols")
+                    }
+
+                    console.log(this.change.fieldValidations)
+                },
+                changePassword: function () {
+                    if (this.user.password == this.change.currpassword) {
+                        // change password if validated
+                    }
                 }
             },
             // When Vue view is created, runs the following functions
@@ -1222,6 +1329,7 @@
                             this.user.userLevel = data["level"];
                             this.user.userExp = data["exp"];
                             this.user.token = data["git_token"];
+                            this.user.password = data["password"];
                         })
                     })
 
