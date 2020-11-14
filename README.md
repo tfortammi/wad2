@@ -1,4 +1,4 @@
-![GIF demo](readme/characters.gif)
+![GIF demo](readme/header.gif)
 
 # ProjectQuest
 
