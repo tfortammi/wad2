@@ -17,6 +17,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css">
     <link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/gh/LikaloLLC/tourguide.js@0.2.0/tourguide.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     
     <title>Rewards Management | ProjectQuest</title>
@@ -271,6 +272,9 @@
                 
                 <ul class='navbar-nav ml-auto' id='logoutDiv'>
                     <li class="nav-item m-1">
+                        <a class="btn btn-primary" v-on:click="startTour">Tour</a>
+                    </li>
+                    <li class="nav-item m-1">
                         <a class="btn btn-secondary" v-on:click="logout">Logout</a>
                     </li>
                 </ul>
@@ -301,12 +305,12 @@
                     </li>
                     <li class="nav-item">
                         <a style="border-radius: 0px !important;" class="nav-link" id="pills-rewards-tab"
-                            data-toggle="pill" href="#pills-rewards" role="tab" aria-controls="pills-rewards"
+                            data-toggle="pill" href="#pills-rewards" role="tab" aria-controls="pills-rewards" data-tour="step: 2; title: View and delete rewards; content: Manage your guild's rewards and delete them here"
                             aria-selected="false">View your guild's rewards</a>
                     </li>
                 </ul>
 
-                <div class="container-fluid">
+                <div class="container-fluid" data-tour="step: 1; title: Create Rewards; content: Add new rewards and set the level cap for your team to redeem">
                     <div class="tab-content w-100" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-form" role="tabpanel"
                             aria-labelledby="pills-form-tab">
@@ -478,6 +482,7 @@
 
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/LikaloLLC/tourguide.js@0.2.0/tourguide.min.js"></script>
 
     <script>
         function deleteReward(id) {
@@ -512,6 +517,10 @@
                 toggleTable: true
             },
             methods: {
+                startTour: function() {
+                    var tourguide = new Tourguide();
+                    tourguide.start()
+                },
                 logout: function () {
                     sessionStorage.clear()
                     window.location.replace("./home.html");
