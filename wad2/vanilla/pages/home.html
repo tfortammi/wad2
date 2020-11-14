@@ -11,7 +11,9 @@
   <link href="assets/img/favicon.ico" rel="icon">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -24,33 +26,33 @@
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <style>
-        #scene {
-            position: absolute;
-            top: 70%;
-            right: 10vw;
-        }
+    #scene {
+      position: absolute;
+      top: 70%;
+      right: 10vw;
+    }
 
-        #app-features-img img {
-            margin-left: 10%;
-        }
+    #app-features-img img {
+      margin-left: 10%;
+    }
 
-        @media (max-width: 1025px) {
-            #app-features-img img {
-                margin-left: 5%;
-            }
-        }
+    @media (max-width: 1025px) {
+      #app-features-img img {
+        margin-left: 5%;
+      }
+    }
 
-        @media (max-width: 769px) {
-            #scene {
-                visibility: hidden;
-            }
-        }
+    @media (max-width: 769px) {
+      #scene {
+        visibility: hidden;
+      }
+    }
 
-        .btn-secondary {
-            border: 4px solid #9ea5ad;
-            background-color: #d0dde8;
-            color: #A41E29 !important;
-        }
+    .btn-secondary {
+      border: 4px solid #9ea5ad;
+      background-color: #d0dde8;
+      color: #A41E29 !important;
+    }
   </style>
 
 </head>
@@ -60,15 +62,15 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="./home.html">ProjectQuest</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <!-- <li class="nav-item ">
+      <ul class="navbar-nav">
+        <!-- <li class="nav-item ">
                 <a class="nav-link  active" href="./home.html">Home <span class="sr-only">(current)</span></a>
             </li> -->
-            <!-- <li class="nav-item ">
+        <!-- <li class="nav-item ">
                 <a class="nav-link" href="./tasks.html">Tasks </a>
             </li>
             <li class="nav-item ">
@@ -80,30 +82,32 @@
             <li class="nav-item ">
               <a class="nav-link" href="./rewards.html">Rewards</a>
           </li> -->
-        </ul>
-        
-        <ul class='navbar-nav ml-auto' id='logoutDiv'>
-            <li class="nav-item m-1">
-                <a class="btn btn-secondary" onclick="logout()">Logout</a>
-            </li>
-        </ul>
-        <ul class='navbar-nav ml-auto' id='loginDiv'>
-            <li class="nav-item m-1">
-                <a class="btn btn-secondary" href="./login.html">Login</a>
-            </li>
-            <li class=" nav-item m-1">
-                <a class="btn btn-secondary" href="./signup.html">Create Guild</a>
-            </li>
-        </ul>
+      </ul>
+
+      <ul class='navbar-nav ml-auto' id='logoutDiv'>
+        <li class="nav-item m-1">
+          <a class="btn btn-secondary" onclick="logout()">Logout</a>
+        </li>
+      </ul>
+      <ul class='navbar-nav ml-auto' id='loginDiv'>
+        <li class="nav-item m-1">
+          <a class="btn btn-secondary" href="./login.html">Login</a>
+        </li>
+        <li class=" nav-item m-1">
+          <a class="btn btn-secondary" href="./signup.html">Create Guild</a>
+        </li>
+      </ul>
     </div>
-</nav>
+  </nav>
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-6 d-lg-flex flex-lg-column justify-content-center align-items-stretch pt-5 pt-lg-0 order-2 order-lg-1" data-aos="fade-up">
+        <div
+          class="col-lg-6 d-lg-flex flex-lg-column justify-content-center align-items-stretch pt-5 pt-lg-0 order-2 order-lg-1"
+          data-aos="fade-up">
           <div>
             <h1>ProjectQuest</h1>
             <h2>Build your guild and manage software projects easily and effectively using
@@ -111,15 +115,16 @@
             <a href="signup.html" class="download-btn"><i class="bx bxl-play-store"></i>Try It Now</a>
           </div>
         </div>
-        <div class="col-lg-6 d-lg-flex flex-lg-column align-items-stretch order-1 order-lg-2 hero-img" data-aos="fade-up">
-            <div id="scene">
-                <div data-depth="0.9" id="chars">
-                    <canvas id="elf" width="60" height="100"></canvas>
-                    <canvas id="dragon" width="60" height="100"></canvas>
-                    <canvas id="knight" width="60" height="100"></canvas>
-                    <canvas id="wizard" width="60" height="100"></canvas>
-                </div>
+        <div class="col-lg-6 d-lg-flex flex-lg-column align-items-stretch order-1 order-lg-2 hero-img"
+          data-aos="fade-up">
+          <div id="scene">
+            <div data-depth="0.9" id="chars">
+              <canvas id="elf" width="60" height="100"></canvas>
+              <canvas id="dragon" width="60" height="100"></canvas>
+              <canvas id="knight" width="60" height="100"></canvas>
+              <canvas id="wizard" width="60" height="100"></canvas>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -173,13 +178,14 @@
               </div>
             </div>
           </div>
-          <div class="image col-xl-5 d-flex align-items-stretch justify-content-center order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+          <div class="image col-xl-5 d-flex align-items-stretch justify-content-center order-1 order-lg-2"
+            data-aos="fade-left" data-aos-delay="100">
             <div id="app-features-img">
-                <img width="90%" src="../assets/people.png" class='img-fluid' alt="">
+              <img width="90%" src="../assets/people.png" class='img-fluid' alt="">
 
             </div>
 
-        </div>
+          </div>
         </div>
 
       </div>
@@ -206,10 +212,10 @@
               <li><i class="icofont-check"></i> Level your character up and defeat the scary deadline monster!</li>
               <li><i class="icofont-check"></i> Motivate your team with awesome treats</li>
             </ul>
-        
+
           </div>
         </div>
-<!-- 
+        <!-- 
         <div class="row content">
           <div class="col-md-4 order-1 order-md-2" data-aos="fade-left">
             <img src="../assets/computer.png" class="img-fluid" alt="">
@@ -390,21 +396,27 @@
           </div>
 
           <div class="col-lg-6">
-            <form action="forms/contact.php" method="post" role="form" class="php-email-form" data-aos="fade-up">
+
+            <form action="https://formspree.io/f/xknpzrdq" method="POST" role="form" class="php-email-form"
+              data-aos="fade-up">
               <div class="form-group">
-                <input placeholder="Your Name" type="text" name="name" class="form-control" id="name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                <input placeholder="Your Name" type="text" name="name" class="form-control" id="name"
+                name="name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
                 <div class="validate"></div>
               </div>
               <div class="form-group">
-                <input placeholder="Your Email" type="email" class="form-control" name="email" id="email" data-rule="email" data-msg="Please enter a valid email" />
+                <input placeholder="Your Email" type="email" class="form-control" name="email" id="email" name="_replyto"
+                  data-rule="email" data-msg="Please enter a valid email" />
                 <div class="validate"></div>
               </div>
               <div class="form-group">
-                <input placeholder="Subject" type="text" class="form-control" name="subject" id="subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
+                <input placeholder="Subject" type="text" class="form-control" name="subject" id="subject" name="subject"
+                  data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
                 <div class="validate"></div>
               </div>
               <div class="form-group">
-                <textarea placeholder="Message" class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us"></textarea>
+                <textarea placeholder="Message" class="form-control" name="message" rows="5" data-rule="required" name="message"
+                  data-msg="Please write something for us"></textarea>
                 <div class="validate"></div>
               </div>
               <div class="mb-3">
@@ -432,9 +444,9 @@
           <div class="col-lg-3 col-md-6 footer-contact" data-aos="fade-up">
             <h3>ProjectQuest</h3>
             <p>
-              <p>81 Victoria St,<br>Singapore 188065</p>
-              <strong>Phone:</strong> +1 5589 55488 55<br>
-              <strong>Email:</strong> info@projectQuest.com<br>
+            <p>81 Victoria St,<br>Singapore 188065</p>
+            <strong>Phone:</strong> +1 5589 55488 55<br>
+            <strong>Email:</strong> info@projectQuest.com<br>
             </p>
           </div>
 
@@ -452,7 +464,7 @@
       </div>
     </div>
 
-  
+
   </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
@@ -470,82 +482,82 @@
 
   <script>
 
-        function toggleNavBar() {
-            if (sessionStorage.getItem("user") !== null) {
-                document.getElementById("logoutDiv").style.display = ''
-                document.getElementById("loginDiv").style.display = 'none'
-            } else {
-                document.getElementById("logoutDiv").style.display = 'none'
-                document.getElementById("loginDiv").style.display = ''
-            }
+    function toggleNavBar() {
+      if (sessionStorage.getItem("user") !== null) {
+        document.getElementById("logoutDiv").style.display = ''
+        document.getElementById("loginDiv").style.display = 'none'
+      } else {
+        document.getElementById("logoutDiv").style.display = 'none'
+        document.getElementById("loginDiv").style.display = ''
+      }
+    }
+
+    function logout() {
+      sessionStorage.clear()
+      window.location.replace("./home.html");
+    }
+
+    function initialiseImage(src, query) {
+      let img = new Image();
+      img.src = src;
+      img.onload = function () {
+        init();
+      };
+
+      let canvas = document.querySelector(query);
+      let ctx = canvas.getContext('2d');
+
+      var scale = 1.2;
+      var width = 65;
+      var height = 170;
+      var scaledWidth = scale * width;
+      var scaledHeight = scale * height;
+      var y = -20
+
+      if ($(window).width() < 514) {
+        scale = 1;
+        width = 65;
+        height = 100;
+        scaledWidth = scale * width;
+        scaledHeight = scale * height;
+        y = -20
+      }
+
+      function init() {
+        ctx.drawImage(img, 0, 0, width, height, -3, y, scaledWidth, scaledHeight);
+      }
+
+      function drawFrame(frameX, frameY, canvasX, canvasY) {
+        ctx.drawImage(img, frameX * width, 0, width, height, -3, y, scaledWidth, scaledHeight);
+      }
+
+      const cycleLoop = [0, 1, 2, 3];
+      let currentLoopIndex = 0;
+      let frameCount = 0;
+
+      window.requestAnimationFrame(step);
+      function step() {
+        frameCount++;
+        if (frameCount < 15) {
+          window.requestAnimationFrame(step);
+          return;
         }
-
-        function logout() {
-            sessionStorage.clear()
-            window.location.replace("./home.html");
+        frameCount = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
+        currentLoopIndex++;
+        if (currentLoopIndex >= cycleLoop.length) {
+          currentLoopIndex = 0;
         }
+        window.requestAnimationFrame(step);
+      }
+    }
 
-        function initialiseImage(src, query) {
-            let img = new Image();
-            img.src = src;
-            img.onload = function () {
-                init();
-            };
-
-            let canvas = document.querySelector(query);
-            let ctx = canvas.getContext('2d');
-
-            var scale = 1.2;
-            var width = 65;
-            var height = 170;
-            var scaledWidth = scale * width;
-            var scaledHeight = scale * height;
-            var y = -20
-
-            if ($(window).width() < 514) {
-                scale = 1;
-                width = 65;
-                height = 100;
-                scaledWidth = scale * width;
-                scaledHeight = scale * height;
-                y = -20
-            }
-
-            function init() {
-                ctx.drawImage(img, 0, 0, width, height, -3, y, scaledWidth, scaledHeight);
-            }
-
-            function drawFrame(frameX, frameY, canvasX, canvasY) {
-                ctx.drawImage(img, frameX * width, 0, width, height, -3, y, scaledWidth, scaledHeight);
-            }
-
-            const cycleLoop = [0, 1, 2, 3];
-            let currentLoopIndex = 0;
-            let frameCount = 0;
-
-            window.requestAnimationFrame(step);
-            function step() {
-                frameCount++;
-                if (frameCount < 15) {
-                    window.requestAnimationFrame(step);
-                    return;
-                }
-                frameCount = 0;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
-                currentLoopIndex++;
-                if (currentLoopIndex >= cycleLoop.length) {
-                    currentLoopIndex = 0;
-                }
-                window.requestAnimationFrame(step);
-            }
-        }
-
-        initialiseImage("../assets/elf_spritesheet.png", "#elf");
-        initialiseImage("../assets/knight_spritesheet.png", "#knight");
-        initialiseImage("../assets/wizard_spritesheet.png", "#wizard");
-        initialiseImage("../assets/dragon_spritesheet.png", "#dragon");
-        toggleNavBar()
+    initialiseImage("../assets/elf_spritesheet.png", "#elf");
+    initialiseImage("../assets/knight_spritesheet.png", "#knight");
+    initialiseImage("../assets/wizard_spritesheet.png", "#wizard");
+    initialiseImage("../assets/dragon_spritesheet.png", "#dragon");
+    toggleNavBar()
   </script>
 
 </body>
