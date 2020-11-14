@@ -114,5 +114,9 @@ Our team recognises the importance of crediting our work and we would like to th
 + Pixel city background art from [Ronan O'Connell] (https://www.chron.com/entertainment/article/houston-8-bit-pixel-art-skyline-reddit-scene-rice-12850623.php)
 + Pixel shop banner from [IF[ALIEN]] (https://steamcommunity.com/sharedfiles/filedetails/?id=538458906)
 
+**Finally...**
+---
+![Project Management Quote](readme/quote.jpg)
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
