@@ -8,26 +8,52 @@ Our solution: A gamified Software Project Management tool for easy remote team a
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the following libraries.
 
 ```bash
-pip install foobar
+pip install flask
+pip install flask_sqlalchemy
+pip install flask_cors
+pip install firebase_admin
 ```
+We have included a `readme/requirements.txt` file that you can use to recursively install the necessary python libraries.
 
 ## Usage
+In order to run the Web Application, first start running the `api/main.py` file 
 
-```python
-import foobar
-
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+If you are using Windows OS, you may use the following commands:
+```bash
+cd api/
+python main.py
 ```
+
+If you are using Machintosh OS, you may use the following commands:
+```bash
+cd api/
+python main.py
+```
+
+To visit the Web Application, simply locate the folder where you've downloaded the file and add `/app` to the back of the link. For e.g. `file:///Applications/MAMP/htdocs/wad2/app`
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+**The Team**
+---
+
++ [@weixiangtoh](https://github.com/weixiangtoh) :whale:
++ [@nicwongg](https://github.com/nicwongg) :penguin:
++ [@tfortammi](https://github.com/tfortammi) :rabbit2:
++ [@francinetan1998](https://github.com/francinetan1998) :cat:
+
+**Acknowledgements**
+---
+
++ [@shobrook](https://www.github.com/shobrook) for logo and UI design assistance.
++ Base logo vector made by [Freepik](https://www.freepik.com/) from [Flaticon](www.flaticon.com).
++ [drduh's macOS-Security-and-Privacy-Guide](https://github.com/drduh/macOS-Security-and-Privacy-Guide) and [Jonathan Levin's MacOS Security Guide](http://newosxbook.com/files/moxii3/AppendixA.pdf) were incredibly helpful while I was building `stronghold`.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
