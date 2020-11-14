@@ -44,32 +44,44 @@ password:
 
 ## Core Funtionalities of ProjectQuest
 1. User Login & Registration
-    + Turn on Firewall?
-        - This helps protect your Mac from being attacked over the internet.
-    + Turn on logging?
-        - If there IS an infection, logs are useful for determining the source.
-    + Turn on stealth mode?
-        - Your Mac will not respond to ICMP ping requests or connection attempts from closed TCP and UDP networks.
+    + User Login
+
+    + User Registration
 
 2. Project Management
-    + Turn on Firewall?
-        - This helps protect your Mac from being attacked over the internet.
-    + Turn on logging?
-        - If there IS an infection, logs are useful for determining the source.
-    + Turn on stealth mode?
-        - Your Mac will not respond to ICMP ping requests or connection attempts from closed TCP and UDP networks.
+    + Auto creation or linking to Github Repo Teams
+    
+    + View Github statistics (daily, weekly commits, etc)
 
 3. Task Management 
-    + Turn on Firewall?
-        - This helps protect your Mac from being attacked over the internet.
-    + Turn on logging?
-        - If there IS an infection, logs are useful for determining the source.
-    + Turn on stealth mode?
-        - Your Mac will not respond to ICMP ping requests or connection attempts from closed TCP and UDP networks.
+    + Creation of tasks/issues to be done
+        - Assignment of team members and priority levels
+        - Ability to categorize tasks/issues
+    + View tasks/issues in a calendar form and Gantt chart form
+    + Mark completed tasks/issues
 
 4. Team Management
+    + Create Meetings 
+        - Automatically create Daily.Co (https://www.daily.co/) Meeting
+        ![GIF demo](readme/header.gif)
+    + View Upcoming & Past Meetings
+    + Generate Meeting Invites 
+
+5. Personal Profile Management
+    + View tasks assigned to user
+    + View meetings
 
 5. Gamification elements
+    + Gain EXP and Level up by completing actions 
+        - Completing tasks/issues, higher priority tasks give more EXP
+        - EXP Multiplier (Takes into account group streak and user level)
+    + Classes
+        - Mage, warrior, etc. Different looks)
+    + Team-based
+        - Completing tasks as a team and maintaining the team streak (which in turns affect EXP Multiplier)
+    + Leaderboard within team linked with GIT
+    + Redeem real life rewards based on level
+        - Rewards like movie voucher created by team lead
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
