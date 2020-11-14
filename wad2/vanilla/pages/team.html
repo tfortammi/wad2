@@ -432,7 +432,7 @@
                             this.guild.streak = data["streak"];
                             this.guild.reponame = data["r_name"];
                             this.guild.teamleads = data["team_lead"];
-                            console.log(this.guild.teamleads)
+                            // console.log(this.guild.teamleads)
                         })
                     })
 
@@ -497,7 +497,7 @@
                         this.top3 = this.members.slice(0,3);
                         var i = 0;
                         for (var top of this.top3) {
-                            console.log(top.class, i)
+                            // console.log(top.class, i)
                             initialiseImage("../assets/" + top.class + "_spritesheet.png", "#top" + i, 65, 260, 0, -70);
                             i += 1
                         }

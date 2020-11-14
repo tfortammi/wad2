@@ -334,7 +334,7 @@
                     window.location.replace("./home.html");
                 },
                 redeemReward: function(reward) {
-                    console.log(reward.id)
+                    // console.log(reward.id)
                     fetch("http://localhost:5001/claim_reward", {
                         method: "POST",
                         headers: {
@@ -346,7 +346,7 @@
                         })
                     }).then(res => {
                         res.json().then(data => {
-                            console.log(data)
+                            // console.log(data)
                         })
                     })
                 },

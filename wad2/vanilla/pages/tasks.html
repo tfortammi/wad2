@@ -964,10 +964,10 @@
                             email: this.user.loggedInUser
                         })
                     }).then(res => {
-                        console.log(res)
+                        // console.log(res)
 
                         res.json().then(data => {
-                            console.log(data)
+                            // console.log(data)
                             this.user.userExp = parseInt(data["new_exp"])
                             this.user.userLevel = parseInt(data["new_level"])
                             // location.reload()
@@ -1063,7 +1063,7 @@
                                     }).then(res => {
                                         location.reload()
                                     }).catch(e => {
-                                        console.log(e);
+                                        // console.log(e);
                                     });
                                 }
                             }
@@ -1077,7 +1077,7 @@
                             );
                             request.send(JSON.stringify(params));
                         }).catch(e => {
-                            console.log(e);
+                            // console.log(e);
                         });
 
                 },

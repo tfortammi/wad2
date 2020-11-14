@@ -1388,7 +1388,7 @@
                 },
                 changePassword: function () {
                     if (this.user.password == this.change.currpassword && this.change.passwordValid) {
-                        console.log("hi")
+                        // console.log("hi")
                         fetch("http://localhost:5001/modify_user", {
                             method: "POST",
                             headers: {
@@ -1404,7 +1404,7 @@
                             $('#successPw').modal('show')
                             this.clearFields()
                         }).catch(e => {
-                            console.log(e);
+                            // console.log(e);
                             $('#passwordModal').modal('hide');
                             $('#failurePw').modal('show')
                         })
