@@ -40,6 +40,14 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+**The Team**
+---
+
++ [@weixiangtoh](https://github.com/weixiangtoh) :whale:
++ [@nicwongg](https://github.com/nicwongg) :penguin:
++ [@tfortammi](https://github.com/tfortammi) :rabbit2:
++ [@francinetan1998](https://github.com/francinetan1998) :cat:
+
 **Acknowledgements**
 ---
 
