@@ -36,11 +36,11 @@ python main.py
 To visit the Web Application, simply locate the folder where you've downloaded the file and add `/app` to the back of the link. For e.g. `file:///Applications/MAMP/htdocs/wad2/app`
 
 ## Demo
-A live demo of our application is available at the following link: 
+A live demo of our application is available at the following link: https://projectquest.netlify.app/
 
 You may log in using the following account for a quick view of the entire Web Application:
-email: 
-password:
+    + email: 
+    + password:
 
 ## Core Funtionalities of ProjectQuest
 1. User Login & Registration
@@ -71,7 +71,7 @@ password:
     + View tasks assigned to user
     + View meetings
 
-5. Gamification elements
+6. Gamification elements
     + Gain EXP and Level up by completing actions 
         - Completing tasks/issues, higher priority tasks give more EXP
         - EXP Multiplier (Takes into account group streak and user level)
@@ -82,6 +82,7 @@ password:
     + Leaderboard within team linked with GIT
     + Redeem real life rewards based on level
         - Rewards like movie voucher created by team lead
+    + Animations when completing a task 
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -98,9 +99,20 @@ Please make sure to update tests as appropriate.
 
 **Acknowledgements**
 ---
-+ [@shobrook](https://www.github.com/shobrook) for logo and UI design assistance.
-+ Base logo vector made by [Freepik](https://www.freepik.com/) from [Flaticon](www.flaticon.com).
-+ [drduh's macOS-Security-and-Privacy-Guide](https://github.com/drduh/macOS-Security-and-Privacy-Guide) and [Jonathan Levin's MacOS Security Guide](http://newosxbook.com/files/moxii3/AppendixA.pdf) were incredibly helpful while I was building `stronghold`.
+Our team recognises the importance of crediting our work and we would like to thank the following because if not for them, this project would not have been possible:
++ Google Gantt Chart & ChartJS for the Gantt Chart and Charts display from [Google Developers | Gantt Chart](https://developers.google.com/chart/interactive/docs/gallery/ganttchart) and [ChartJS] (https://www.chartjs.org/).
++ Full Calendar API to display calendars from [Calendar API] (https://fullcalendar.io/)
++ Canvas to create banners and character sprites from [Canvas] (https://www.canva.com/)
++ Tourguide.js to create useful tourguides for newcomers of our Web Application from [Tourguide.js] (https://github.com/LikaloLLC/tourguide.js/)
++ jQuery Datatables to add additional features to HTML tables from [jQuery Datatables] (https://datatables.net/)
++ Bootstrap 4 to incorporate responsiveness into our Web Application from [Bootstrap 4] (https://getbootstrap.com/)
++ [HZPagination.js] (https://www.jqueryscript.net/other/List-Pagination-Plugin-jQuery-HZpagination.html) to paginate lists for the rewards shop from [@ahmedhijazi94] (https://github.com/ahmedhijazi94) 
++ Pixel attack effect from [NYKNCK] (https://kvsr.itch.io/effectnpt?download)
++ Pixel icons for different reward categories from [Shikashi] (https://cheekyinkling.itch.io/shikashis-fantasy-icons-pack?download)
++ Pixel icons for different character classes from [0x72] (https://0x72.itch.io/dungeontileset-ii)
++ Pixel background art from [Sydney Seekford, Thy Vo, and Ryan Imm] (https://www.behance.net/gallery/65290819/Pixel-Art-Backgrounds-Tutorial-Skip)
++ Pixel city background art from [Ronan O'Connell] (https://www.chron.com/entertainment/article/houston-8-bit-pixel-art-skyline-reddit-scene-rice-12850623.php)
++ Pixel shop banner from [IF[ALIEN]] (https://steamcommunity.com/sharedfiles/filedetails/?id=538458906)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

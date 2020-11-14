@@ -511,7 +511,7 @@
                             return true;
                         }).catch((error) => {
                             $("#failModal").modal();
-                            console.log(error)
+                            // console.log(error)
                             return false;
                         });
                     },
@@ -535,11 +535,11 @@
                             })
                         }).then(res => {
                             // console.log(this.user.git_username);
-                            console.log('guild successfully added, shud return true')
+                            // console.log('guild successfully added, shud return true')
                             this.addUser()
                         }).catch((error) => {
                             $("#failModal").modal();
-                            console.log(error)
+                            // console.log(error)
                             return false;
                         });
                     },
@@ -552,8 +552,8 @@
                         }).then(res => {
                             return true;
                         }).catch((error) => {
-                            console.log(error)
-                            console.log("shud return")
+                            // console.log(error)
+                            // console.log("shud return")
                             return false;
                         });
                     },
@@ -613,11 +613,11 @@
                         }).then(res => {
                             if (res.status == "200") {
                                 this.exist = true;
-                                console.log("this should be true")
+                                // console.log("this should be true")
                             }
                             else {
                                 this.exist = false;
-                                console.log("it does not work")
+                                // console.log("it does not work")
                                 document.getElementById("repoTokenError").innerText = "Please enter a valid key!";
                             }
                         })
