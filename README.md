@@ -33,10 +33,19 @@ cd api/
 python main.py
 ```
 
+To visit the Web Application, simply locate the folder where you've downloaded the file and add `/app` to the back of the link. For e.g. `file:///Applications/MAMP/htdocs/wad2/app`
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+**Acknowledgements**
+---
+
++ [@shobrook](https://www.github.com/shobrook) for logo and UI design assistance.
++ Base logo vector made by [Freepik](https://www.freepik.com/) from [Flaticon](www.flaticon.com).
++ [drduh's macOS-Security-and-Privacy-Guide](https://github.com/drduh/macOS-Security-and-Privacy-Guide) and [Jonathan Levin's MacOS Security Guide](http://newosxbook.com/files/moxii3/AppendixA.pdf) were incredibly helpful while I was building `stronghold`.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
