@@ -1030,6 +1030,7 @@
                             end: this.meeting.end,
                             name: this.meeting.name,
                             organizer: this.user.loggedInUser,
+                            guild: this.tasks.guild
                         })
                     })
                         .then(response => response.json())
@@ -1362,7 +1363,7 @@
                 this.loadGantt()
 
                 // Load their upcoming meetings
-                await fetch("http://localhost:5001/get_all_upcoming_meetings")
+                await fetch("http://localhost:5001/get_all_upcoming_meetings/" + this.guild.name)
                     .then(res => {
                         var data = res.json().then(data => {
                             if (data["meetings"].length == 0) {
@@ -1384,7 +1385,7 @@
                     });
 
                 // Load their past meetings
-                await fetch("http://localhost:5001/get_all_past_meetings")
+                await fetch("http://localhost:5001/get_all_past_meetings/" + this.guild.name)
                     .then(res => {
                         var data = res.json().then(data => {
                             if (data["meetings"].length == 0) {

@@ -898,14 +898,14 @@ def remove_meeting():
         return {"error": "Cannot remove meeting."}, 500
 
 # Get all past meetings
-@app.route("/get_all_past_meetings")
-def get_all_past_meetings():
+@app.route("/get_all_past_meetings/<string:guild>")
+def get_all_past_meetings(guild):
     """
         List past meetings 
         
     """
     try:
-        meeting_ref = db.collection(u"Meeting")
+        meeting_ref = db.collection(u"Meeting").where("guild", "==", guild)
         docs = meeting_ref.stream()
 
         meetings = []
@@ -917,6 +917,7 @@ def get_all_past_meetings():
                 meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
         sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+        print(sorted_meetings)
     
         return {"meetings": sorted_meetings}, 200
 
@@ -926,14 +927,14 @@ def get_all_past_meetings():
         return {"error": "Cannot retrieve meetings."}, 500
 
 # Get all upcoming meetings 
-@app.route("/get_all_upcoming_meetings")
-def get_all_upcoming_meetings():
+@app.route("/get_all_upcoming_meetings/<string:guild>")
+def get_all_upcoming_meetings(guild):
     """
         List upcoming meetings 
         
     """
     try:
-        meeting_ref = db.collection(u"Meeting")
+        meeting_ref = db.collection(u"Meeting").where("guild", "==", guild)
         docs = meeting_ref.stream()
 
         meetings = []
