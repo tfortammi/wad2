@@ -159,11 +159,11 @@
                     <a class="nav-link" href="./profile.html">Profile</a>
                 </li>
                 <li class="nav-item ">
-                  <a class="nav-link" href="./rewards.html">Rewards</a>
-              </li>
+                    <a class="nav-link" href="./rewards.html">Rewards</a>
+                </li>
             </ul>
-            
-           
+
+
             <ul class='navbar-nav ml-auto' id='loginDiv'>
                 <li class="nav-item m-1">
                     <a class="btn btn-secondary" href="./login.html">Login</a>
@@ -375,13 +375,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
 
     <script>
+        var valid_email = false;
+        var valid_password = false;
+        var valid_name = false;
+        var valid_role = false;
+        var valid_guildName = false;
+        var valid_repoToken = false;
+        var valid_username = false;
 
         var app = new Vue(
             {
                 el: "#signUpJoinTeam",
                 data: {
                     emails: [],
-                    picked: 'new'
+                    picked: 'new',
+                    // valid_email: false,
+                    // valid_password: false,
+                    // valid_name: false,
+                    // valid_role: false,
+                    // valid_guildName: false,
+                    // valid_repoToken: false,
+                    // valid_username: false
                 },
                 methods: {
                     addEmail: function () {
@@ -395,7 +409,7 @@
                         this.emails.splice(index, 1);
                     },
                     createRepo: function (token, guildName) {
-                        var repoName = document.getElementById("repoName").value;
+                        var repoName = document.getElementById("repoName").value.trim();
                         var repoDesc = document.getElementById("repoDesc").value;
 
                         var url = `https://api.github.com/orgs/${guildName}/repos`;
@@ -426,8 +440,8 @@
                         request.send(JSON.stringify(body));
                     },
                     createGuild: function () {
-                        var token = document.getElementById("repoToken").value;
-                        var guildName = document.getElementById("guildName").value;
+                        var token = document.getElementById("repoToken").value.trim();
+                        var guildName = document.getElementById("guildName").value.trim();
                         var status = true;
 
                         if (this.emptyInput()) {
@@ -478,13 +492,13 @@
                             },
                             body: JSON.stringify({
                                 class: class_role,
-                                email: document.getElementById("email").value,
-                                password: document.getElementById("password").value,
-                                name: document.getElementById("name").value,
-                                role: document.getElementById("role").value,
-                                guild: document.getElementById("guildName").value,
-                                git_token: document.getElementById("repoToken").value,
-                                git_username: document.getElementById("username").value,
+                                email: document.getElementById("email").value.trim(),
+                                password: document.getElementById("password").value.trim(),
+                                name: document.getElementById("name").value.trim(),
+                                role: document.getElementById("role").value.trim(),
+                                guild: document.getElementById("guildName").value.trim(),
+                                git_token: document.getElementById("repoToken").value.trim(),
+                                git_username: document.getElementById("username").value.trim(),
                             })
                         }).then(res => {
                             $("#successModal").modal();
@@ -537,20 +551,20 @@
                             return false;
                         });
                     },
-                    addChat: function (guildName) {
-                        fetch("http://localhost:5001/add_chat", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            guild: guildName
-                        })
-                    }).then(res => {
-                        console.log(res.json())
-                        // location.reload()
-                    })
-                    },
+                    // addChat: function (guildName) {
+                    //     fetch("http://localhost:5001/add_chat", {
+                    //         method: "POST",
+                    //         headers: {
+                    //             "Content-Type": "application/json"
+                    //         },
+                    //         body: JSON.stringify({
+                    //             guild: guildName
+                    //         })
+                    //     }).then(res => {
+                    //         console.log(res.json())
+                            // location.reload()
+                        // })
+                    // },
                     logout: function () {
                         sessionStorage.clear()
                         window.location.replace("./home.html");
@@ -568,7 +582,30 @@
                             $("#emptyInput").modal();
                             return true;
                         }
+                        if (!valid_email || !valid_guildName || !valid_name || !valid_password || !valid_repoToken || !valid_role || !valid_username){
+                            $("#emptyInput").modal();
+                            return true;
+                        }
+
                         return false;
+                    },
+                    getUser: function () {
+                        var exist = false;
+                        var git_token = document.getElementById("repoToken").value.trim();
+                        const headers = {
+                            "Authorization": `Token ${git_token}`,
+                            "Accept": "application/vnd.github.v3+json"
+                        }
+
+                        fetch("https://api.github.com/user", {
+                            'method': "GET",
+                            'headers': headers
+                        }).then(res => {
+                            if (res.status == "200") {
+                                exist = true;
+                            }
+                        })
+                        return exist;
                     }
                 },
                 async created() {
@@ -585,6 +622,7 @@
         $(document).ready(function () {
             $("input[type='text']").blur(function () {
                 var errorId = this.id + "Error";
+                var validId = "valid_" + this.id;
                 var error = "";
 
                 if (this.value == "") {
@@ -602,9 +640,22 @@
 
                     error = "Please enter your " + inputName;
                 }
+                else{
+                    validId = true;
+                    // console.log(validId);
+                }
+                if (this.id == "repoToken"){
+                    if (!app.getUser()){
+                        error = "Please enter a valid token!";
+                        validId = false;
+                    }
+                    else{
+                        validId = true;
+                    }
+                }
                 document.getElementById(errorId).innerText = error;
             });
-            $("input[type='password']").blur(function () {
+            $("input[type='password']").keyup(function () {
                 var errorId = this.id + "Error";
                 var error = "";
                 var password = this.value;
@@ -640,6 +691,10 @@
 
                 if (error.length > 0) {
                     error = "Please ensure that your password: <ul>" + error + "</ul>";
+                }
+                else{
+                    valid_password = true;
+                    // console.log(valid_password);
                 }
                 document.getElementById(errorId).innerHTML = error;
             });
