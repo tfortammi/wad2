@@ -138,6 +138,12 @@
             font-size: 17px;
         }
 
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
 
         input:disabled,
         select:disabled {
@@ -661,7 +667,7 @@
 
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="./home.html">ProjectQuest</a>
+            <a class="navbar-brand" href="./tasks.html">ProjectQuest</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -696,6 +702,37 @@
                 
             </div>
         </nav>
+
+        <!-- Generate meeting invite modals -->
+        <div v-for="(meeting, index) in upcoming_meetings.meetings">
+            <div class="modal fade" v-bind:id="meeting.html_modal_id" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Copy Meeting Invite</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Meeting Invite <br>
+                            <textarea readonly v-bind:id="meeting.html_textarea_id"
+                                style="width: 100%; padding: 10px;"
+                                rows="8">{{meeting["organizer"]}} would like to invite you to a scheduled video meeting. &#13;&#10;&#13;&#10;Topic: {{meeting["name"]}}&#13;&#10;Start Time: {{meeting["start"]}}&#13;&#10;End Time: Time: {{meeting["end"]}}&#13;&#10;&#13;&#10;Join Daily.co meeting:&#13;&#10;{{meeting["room_link"]}}</textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" v-on:click="copyInvite(meeting.html_textarea_id)"
+                                class="btn btn-primary">Copy Message Invite</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Snackbar -->
+        <div id="snackbar">Copied to clipboard!</div>
 
         <div class="modal fade" id="modTaskModal" tabindex="-1" role="dialog" aria-labelledby="modTaskModal"
             aria-hidden="true">
@@ -1335,6 +1372,15 @@
                         this.change.passwordValid = false
                     }
                 },
+                copyInvite: function (inviteId) {
+                    var copyText = document.getElementById(inviteId);
+                    copyText.select();
+                    document.execCommand("copy");
+                    //alert("Copied the text: " + copyText.value);
+                    var x = document.getElementById("snackbar");
+                    x.className = "show";
+                    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                },
                 changePassword: function () {
                     if (this.user.password == this.change.currpassword && this.change.passwordValid) {
                         console.log("hi")
@@ -1510,19 +1556,6 @@
 
         });
 
-
-        // Datepicker add on 
-        // $(document).ready(function () {
-        //     var date_input = $('input[name="date"]'); //our date input has the name "date"
-        //     var container = $('.modal-body form').length > 0 ? $('.modal-body form').parent() : "body";
-        //     var options = {
-        //         format: 'mm/dd/yyyy',
-        //         container: container,
-        //         todayHighlight: true,
-        //         autoclose: true,
-        //     };
-        //     date_input.datepicker(options);
-        // })
 
         // Initialise running images
         function initialiseImage(src, query, width, height, x, y) {
