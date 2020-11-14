@@ -314,7 +314,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-success" v-on:click="openCompleteTaskModal"
+                        <button type="button" class="btn btn-success"  v-on:click="completeTask"
                             data-dismiss="modal">Confirm</button>
                     </div>
                 </div>
@@ -334,8 +334,7 @@
                         <canvas id="demon2" width="150" height="150"></canvas>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" v-on:click="completeTask"
-                            data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick='location.reload()'>Close</button>
                     </div>
                 </div>
             </div>
@@ -971,6 +970,7 @@
                             this.user.userExp = parseInt(data["new_exp"])
                             this.user.userLevel = parseInt(data["new_level"])
                             // location.reload()
+                            this.openCompleteTaskModal()
                         })
 
                     })
