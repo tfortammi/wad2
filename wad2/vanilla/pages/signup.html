@@ -293,10 +293,12 @@
 
                     <div class="form-group row">
                         <label for="guildName" class="col-sm-2 col-form-label">
-                            <span data-toggle="tooltip" data-placement="bottom" title="Enter your existing GitHub organisation name">Guild Name:</span></label>
+                            <span data-toggle="tooltip" data-placement="bottom"
+                                title="Enter your existing GitHub organisation name">Guild Name:</span></label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="guildName"
-                                placeholder="Input the guild name (existing org name)">
+                            <span data-toggle="tooltip" data-placement="top"
+                                title="Make sure that you have already created an organisation in GitHub! "><input type="text" class="form-control" id="guildName"
+                                placeholder="Input the guild name (existing org name)"></span>
                             <p class="text-danger" id="guildNameError"></p>
                         </div>
                     </div>
@@ -322,7 +324,8 @@
 
                     <div v-if="picked == 'new' || picked == 'existing'" class="form-group row">
                         <label for="repoName" class="col-sm-2 col-form-label">
-                            <span data-toggle="tooltip" data-placement="bottom" title="Enter your new repository name">New Repo Name:</span></label>
+                            <span data-toggle="tooltip" data-placement="bottom"
+                                title="Enter your new repository name">New Repo Name:</span></label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="repoName" placeholder="Input the new repo name">
                             <p class="text-danger" id="repoNameError"></p>
@@ -330,9 +333,13 @@
                     </div>
 
                     <div class="form-group row">
-                        <a href="https://github.com/settings/tokens/new" target="_blank" for="repoToken" class="col-sm-2 col-form-label"><span data-toggle="tooltip" data-placement="bottom" title="Set up a token from GitHub through the link and simply insert it here!">GitHub Token Key:</span></a>
+                        <a href="https://github.com/settings/tokens/new" target="_blank" for="repoToken"
+                            class="col-sm-2 col-form-label"><span data-toggle="tooltip" data-placement="bottom"
+                                title="Set up a token from GitHub through the link and simply insert it here!">GitHub
+                                Token Key:</span></a>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="repoToken" placeholder="Input repo token key">
+                            <span data-toggle="tooltip" data-placement="top"
+                                title="Remember to select scopes for: all of repo, admin:org, admin:public key, user "><input type="text" class="form-control" id="repoToken" placeholder="Input repo token key"></span>
                             <p class="text-danger" id="repoTokenError"></p>
                         </div>
                     </div>
@@ -582,17 +589,43 @@
                         var guild = document.getElementById("guildName").value.trim();
                         var git_token = document.getElementById("repoToken").value.trim();
                         var git_username = document.getElementById("username").value.trim();
+                        var valid_form = true;
 
                         this.getUser();
 
-                        if (email == "" || password == "" || name == "" || role == "" || guild == "" || git_token == "" || git_username == "") {
+                        // if (email == "" || password == "" || name == "" || role == "" || guild == "" || git_token == "" || git_username == "") {
+                        //     $("#emptyInput").modal();
+                        //     return true;
+                        // }
+                        if (!valid_email) {
+                            document.getElementById("emailError").innerText = "Please enter your email!";
+                            valid_form = false;
+                        }
+                        else if (this.id == "name") {
+                            document.getElementById("nameError").innerText = "Please enter your name!";
+                            valid_form = false;
+                        }
+                        else if (this.id == "role") {
+                            document.getElementById("roleError").innerText = "Please enter your role!";
+                            valid_form = false;
+                        }
+                        else if (this.id == "guildName") {
+                            document.getElementById("guildNameError").innerText = "Please enter a valid Guild Name (organisation name in GitHub)!";
+                            valid_form = false;
+                        }
+                        else if (this.id == "repoToken") {
+                            document.getElementById("repoTokenError").innerText = "Please enter a valid token!";
+                            valid_form = false;
+                        }
+                        else if (this.id == "username") {
+                            document.getElementById("usernameError").innerText = "Please enter a valid GitHub username!";
+                            valid_form = false;
+                        }
+                        if (!valid_form){
                             $("#emptyInput").modal();
                             return true;
                         }
-                        if (!valid_email || !valid_guildName || !valid_name || !valid_password || !valid_repoToken || !valid_role || !valid_username) {
-                            $("#emptyInput").modal();
-                            return true;
-                        }
+
                         if (!this.exist) {
                             return true;
                         }
@@ -636,7 +669,6 @@
         $(document).ready(function () {
             $("input[type='text']").blur(function () {
                 var errorId = this.id + "Error";
-                var validId = "valid_" + this.id;
                 var error = "";
 
                 if (this.value == "") {
@@ -655,8 +687,24 @@
                     error = "Please enter your " + inputName;
                 }
                 else {
-                    validId = true;
-                    // console.log(validId);
+                    if (this.id == "email") {
+                        valid_email = true;
+                    }
+                    else if (this.id == "name") {
+                        valid_name = true;
+                    }
+                    else if (this.id == "role") {
+                        valid_role = true;
+                    }
+                    else if (this.id == "guildName") {
+                        valid_guildName = true;
+                    }
+                    else if (this.id == "repoToken") {
+                        valid_repoToken = true;
+                    }
+                    else if (this.id == "username") {
+                        valid_username = true;
+                    }
                 }
 
                 document.getElementById(errorId).innerText = error;
