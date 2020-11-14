@@ -309,10 +309,9 @@ def modify_task():
         processed_json["start"] = datetime.strptime(processed_json["start"], "%m/%d/%Y")
         processed_json["end"] = datetime.strptime(processed_json["end"], "%m/%d/%Y")
 
-        if (processed_json["dependency"] == "none"):
-            processed_json["dependency"] = ""
-
         if ("dependency" not in processed_json):
+            processed_json["dependency"] = ""
+        elif (processed_json["dependency"] == "none"):
             processed_json["dependency"] = ""
 
         if bool(processed_json):
@@ -1505,7 +1504,7 @@ def complete_task():
             
             # Add onto the guild's streak 
             # requests.post("http://0.0.0.0:5001/update_guild_streak/inc", json = {"name" : guild, "toAdd": exp // 5})
-            guild_ref.document(guild_obj.id).update({u"streak": guild_obj.to_dict()["streak"] + (exp // 5)})
+            guild_ref.document(guild_obj.id).update({u"streak": int(guild_obj.to_dict()["streak"]) + (exp // 5)})
         
         # Update the multiplier for every assigned user 
         for user in users:
@@ -1522,7 +1521,7 @@ def complete_task():
             if guild_obj.to_dict()["streak"] == 0:
                 multiplier = 1
             else:
-                multiplier = math.ceil(guild_obj.to_dict()["streak"] / 10 * res_user["level"])
+                multiplier = math.ceil(int(guild_obj.to_dict()["streak"]) / 10 * res_user["level"])
             
             # Update multiplier 
             # requests.post("http://0.0.0.0:5001/modify_user", json = {"email" : request.json["email"], "multiplier" : multiplier})
@@ -1540,6 +1539,7 @@ def complete_task():
         return user_stats, 200
 
     except Exception as e:
+        traceback.print_exc()
         print(e)
         return {"error": "Cannot mark task as complete."}, 500
     

@@ -937,7 +937,6 @@
                         themeSystem: "bootstrap",
                         windowResize: function (arg) {
                             if ($(window).width() < 514) {
-                                console.log(arg.view.type)
                                 calendar.changeView('listWeek');
                             } else {
                                 calendar.changeView('dayGridMonth');
@@ -960,13 +959,13 @@
                             email: this.user.loggedInUser
                         })
                     }).then(res => {
+                        console.log(res)
 
                         res.json().then(data => {
-                            console.log(data["new_exp"])
-                            console.log(typeof data["new_exp"])
+                            console.log(data)
                             this.user.userExp = parseInt(data["new_exp"])
                             this.user.userLevel = parseInt(data["new_level"])
-                            location.reload()
+                            // location.reload()
                         })
 
                     })
@@ -1010,7 +1009,6 @@
                             guild: this.tasks.guild
                         })
                     }).then(res => {
-                        console.log(res.json())
                         location.reload()
                     })
                 },
@@ -1213,8 +1211,6 @@
 
                             fetch("http://localhost:5001/get_task?id=" + task_id).then(res => {
                                 var data = res.json().then(data => {
-                                    console.log(data)
-                                    console.log(task_id)
 
                                     this.chosenTask.taskName = data["name"]
                                     this.chosenTask.category = data["category"]
@@ -1323,15 +1319,13 @@
                 })
 
                 // Gets all users in the guild
-                var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
+                var resp = await fetch("http://localhost:5001/get_users_in_guild?name=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
                         var user_arr = []
                         for (u of data["users"]) {
                             user_arr.push([u["name"], u["email"], u["guild"]])
                         }
                         this.guild.users = user_arr
-                        // console.log(this.guild.users)
-                        console.log(user_arr)
                     })
 
                 })
@@ -1339,7 +1333,6 @@
                 // Gets all tasks in the guild to display in gantt chart
                 await fetch("http://localhost:5001/get_all_tasks?guild=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
-                        console.log(data)
                         this.tasks.tasks = data["tasks"]
                     })
                 })
