@@ -299,7 +299,7 @@ a:hover {
   overflow: hidden;
   padding: 140px 0 100px 0;
   margin-bottom: -75px;
-  background-image: url("../../../assets/bg.jpg");
+  background-image: url("../.././assets/img/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -540,7 +540,7 @@ section {
 --------------------------------------------------------------*/
 
 .pricing {
-  background-image: url("../../../assets/city.jpg");
+  background-image: url("../.././assets/img/city.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }

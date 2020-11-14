@@ -9,14 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css">
     <link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
     <style>
         body {
-            background-image: url("../assets/bg.jpg");
+            background-image: url("./assets/img/bg.jpg");
             background-size: cover;
             background-repeat: no-repeat;
         }
@@ -47,7 +47,7 @@
             width: 100%;
             height: 100%;
             border: 5px solid #a8c582;
-            background: url("../assets/ch-bg.png") repeat-x right center;
+            background: url("./assets/img/ch-bg.png") repeat-x right center;
             background-size: 150px;
             -webkit-animation: displace 10s linear infinite;
             animation: displace 10s linear infinite;
@@ -114,7 +114,7 @@
                 width: 100%;
                 height: 100%;
                 border: 5px solid #a8c582;
-                background: url("../assets/ch-bg.png") repeat-x right center;
+                background: url("./assets/img/ch-bg.png") repeat-x right center;
                 background-size: 150px;
                 -webkit-animation: displace 10s linear infinite;
                 animation: displace 3s linear infinite;
@@ -167,7 +167,7 @@
         }
 
         #attackModal .modal-body {
-            background-image: url("../assets/wall.png");
+            background-image: url("./assets/img/wall.png");
             height: 200px;
         }
 
@@ -217,7 +217,7 @@
 
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="./home.html">WAD</a>
+            <a class="navbar-brand" href="./index.html">WAD</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -225,7 +225,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item ">
-                        <a class="nav-link" href="./home.html">Home </a>
+                        <a class="nav-link" href="./index.html">Home </a>
                     </li>
                     <li class="nav-item ">
                         <a class="nav-link" href="./tasks.html">Tasks </a>
@@ -413,11 +413,11 @@
                     <div class="card-deck text-center" style="width: 80%; margin: auto; " >
                         <div class="card mt-4" v-for="reward in rewards" style="min-width: 13rem;">
                           <div class="card-body p-0">
-                            <img v-if="reward.category == 'shopping'" class="card-img-top" src="../assets/shopping.png" alt="Card image cap">
-                            <img v-if="reward.category == 'foodNbvg'" class="card-img-top" src="../assets/foodNbvg.png" alt="Card image cap">
-                            <img v-if="reward.category == 'entertainment'" class="card-img-top" src="../assets/entertainment.png" alt="Card image cap">
-                            <img v-if="reward.category == 'services'" class="card-img-top" src="../assets/services.png" alt="Card image cap">
-                            <img v-if="reward.category == 'others'" class="card-img-top" src="../assets/others.png" alt="Card image cap">
+                            <img v-if="reward.category == 'shopping'" class="card-img-top" src="./assets/img/shopping.png" alt="Card image cap">
+                            <img v-if="reward.category == 'foodNbvg'" class="card-img-top" src="./assets/img/foodNbvg.png" alt="Card image cap">
+                            <img v-if="reward.category == 'entertainment'" class="card-img-top" src="./assets/img/entertainment.png" alt="Card image cap">
+                            <img v-if="reward.category == 'services'" class="card-img-top" src="./assets/img/services.png" alt="Card image cap">
+                            <img v-if="reward.category == 'others'" class="card-img-top" src="./assets/img/others.png" alt="Card image cap">
                             <h5 class="card-title">{{ reward.name }}</h5>
                             <p class="card-text">Attained at level {{ reward.level }}</p>
                           </div>
@@ -431,7 +431,7 @@
     </div>
 
 
-    <script type="text/javascript" src="http://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
@@ -488,7 +488,7 @@
                 
                 completeTask: function () {
                     $("#attackModal").modal("show")
-                    fetch("http://localhost:5001/complete_task", {
+                    fetch("https://wad-project-backup.df.r.appspot.com/complete_task", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -509,7 +509,7 @@
                 },
                 logout: function () {
                     sessionStorage.clear()
-                    window.location.replace("./home.html");
+                    window.location.replace("./index.html");
                 },
                 openTaskModal: function(task) {
                     this.chosenTask = task
@@ -529,9 +529,9 @@
                     window.location.replace("./login.html");
                 }
                 // Gets the information of the logged in user
-                await fetch("http://localhost:5001/get_user?email=" + this.user.loggedInUser).then(res => {
+                await fetch("https://wad-project-backup.df.r.appspot.com/get_user?email=" + this.user.loggedInUser).then(res => {
                     var data = res.json().then(data => {
-                        initialiseImage("../assets/" + data["class"] + "_spritesheet.png",
+                        initialiseImage("./assets/img/" + data["class"] + "_spritesheet.png",
                             "#ch-img", 65, 260, 0, -70);
                         this.user.userLevel = data["level"];
                         this.user.userExp = data["exp"];
@@ -540,7 +540,7 @@
                 })
 
                 // Gets all users in the guild
-                var resp = await fetch("http://localhost:5001/get_all_users").then(res => {
+                var resp = await fetch("https://wad-project-backup.df.r.appspot.com/get_all_users").then(res => {
                     var data = res.json().then(data => {
                         var user_arr = []
                         for (u of data["users"]) {
@@ -552,7 +552,7 @@
                 })
 
                 // Gets all tasks in the guild to display
-                await fetch("http://localhost:5001/get_all_tasks?guild=" + this.guild.name).then(res => {
+                await fetch("https://wad-project-backup.df.r.appspot.com/get_all_tasks?guild=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
 
                         var new_tasks = []
@@ -567,7 +567,7 @@
 
 
                 // Gets guild info
-                await fetch("http://localhost:5001/get_guild?name=" + this.guild.name).then(res => {
+                await fetch("https://wad-project-backup.df.r.appspot.com/get_guild?name=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
                         this.guild.streak = data["streak"]
                         this.guild.reponame = data["r_name"]
@@ -576,7 +576,7 @@
                 })
 
                 // Get Rewards
-                await fetch("http://localhost:5001/get_rewards_by_guild?guild=" + this.guild.name).then(res => {
+                await fetch("https://wad-project-backup.df.r.appspot.com/get_rewards_by_guild?guild=" + this.guild.name).then(res => {
                     var data = res.json().then(data => {
                         this.rewards = data["rewards"]
                     })
@@ -585,9 +585,9 @@
 
 
                 // Initialises image of bad guys
-                initialiseImage("../assets/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
-                initialiseImage("../assets/demon_spritesheet.png", "#demon2", 65, 170, 0, -20);
-                initialiseAttackImage("../assets/attack_spritesheet.png", "#attack", 0.3, 550, 450, 0, 0);
+                initialiseImage("./assets/img/demon_spritesheet.png", "#demon", 65, 170, 0, -20);
+                initialiseImage("./assets/img/demon_spritesheet.png", "#demon2", 65, 170, 0, -20);
+                initialiseAttackImage("./assets/img/attack_spritesheet.png", "#attack", 0.3, 550, 450, 0, 0);
 
                 
 
