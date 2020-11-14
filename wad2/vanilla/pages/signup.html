@@ -602,24 +602,28 @@
                             document.getElementById("emailError").innerText = "Please enter your email!";
                             valid_form = false;
                         }
-                        else if (this.id == "name") {
+                        if (!valid_name) {
                             document.getElementById("nameError").innerText = "Please enter your name!";
                             valid_form = false;
                         }
-                        else if (this.id == "role") {
+                        if (!valid_role) {
                             document.getElementById("roleError").innerText = "Please enter your role!";
                             valid_form = false;
                         }
-                        else if (this.id == "guildName") {
+                        if (!valid_guildName) {
                             document.getElementById("guildNameError").innerText = "Please enter a valid Guild Name (organisation name in GitHub)!";
                             valid_form = false;
                         }
-                        else if (this.id == "repoToken") {
+                        if (!valid_repoToken) {
                             document.getElementById("repoTokenError").innerText = "Please enter a valid token!";
                             valid_form = false;
                         }
-                        else if (this.id == "username") {
+                        if (!valid_username) {
                             document.getElementById("usernameError").innerText = "Please enter a valid GitHub username!";
+                            valid_form = false;
+                        }
+                        if (!valid_password) {
+                            document.getElementById("passwordError").innerText = "Please enter a valid password!";
                             valid_form = false;
                         }
                         if (!valid_form){
