@@ -1,3 +1,5 @@
+![GIF demo](readme/header.gif)
+
 # ProjectQuest
 
 Problem identified: During the pandemic, many companies have been forced to adopt flexible and remote working arrangements. To improve motivation among the employees, our project aims to bring RPG elements into a work productivity application specifically for Software Developers. 
