@@ -35,6 +35,30 @@ python main.py
 
 To visit the Web Application, simply locate the folder where you've downloaded the file and add `/app` to the back of the link. For e.g. `file:///Applications/MAMP/htdocs/wad2/app`
 
+## Demo
+A live demo of our application is available at the following link: 
+
+You may log in using the following account for a quick view of the entire Web Application:
+email: 
+password:
+
+## Core Funtionalities of ProjectQuest
+1. Firewall
+    + Turn on Firewall?
+        - This helps protect your Mac from being attacked over the internet.
+    + Turn on logging?
+        - If there IS an infection, logs are useful for determining the source.
+    + Turn on stealth mode?
+        - Your Mac will not respond to ICMP ping requests or connection attempts from closed TCP and UDP networks.
+
+2. Firewall
+    + Turn on Firewall?
+        - This helps protect your Mac from being attacked over the internet.
+    + Turn on logging?
+        - If there IS an infection, logs are useful for determining the source.
+    + Turn on stealth mode?
+        - Your Mac will not respond to ICMP ping requests or connection attempts from closed TCP and UDP networks.
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
