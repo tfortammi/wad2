@@ -39,19 +39,21 @@ To visit the Web Application, simply locate the folder where you've downloaded t
 A live demo of our application is available at the following link: https://projectquest.netlify.app/
 
 You may log in using the following account for a quick view of the entire Web Application:
-    + email: 
-    + password:
++ email: 
++ password:
 
 ## Core Funtionalities of ProjectQuest
 1. User Login & Registration
     + User Login
-
     + User Registration
+    
+    ![GIF demo](readme/header.gif)
 
 2. Project Management
     + Auto creation or linking to Github Repo Teams
-    
     + View Github statistics (daily, weekly commits, etc)
+    
+    ![GIF demo](readme/header.gif)
 
 3. Task Management 
     + Creation of tasks/issues to be done
@@ -59,32 +61,47 @@ You may log in using the following account for a quick view of the entire Web Ap
         - Ability to categorize tasks/issues
     + View tasks/issues in a calendar form and Gantt chart form
     + Mark completed tasks/issues
+    
+    ![GIF demo](readme/header.gif)
 
 4. Team Management
     + Create Meetings 
         - Automatically create Daily.Co (https://www.daily.co/) Meeting
-        ![GIF demo](readme/header.gif)
     + View Upcoming & Past Meetings
     + Generate Meeting Invites 
+    
+    ![GIF demo](readme/header.gif)
 
 5. Personal Profile Management
     + View tasks assigned to user
     + View meetings
+    
+    ![GIF demo](readme/header.gif)
 
 6. Gamification elements
     + Gain EXP and Level up by completing actions 
         - Completing tasks/issues, higher priority tasks give more EXP
         - EXP Multiplier (Takes into account group streak and user level)
         - Animations when completing a task 
+        
         ![Animations when completing a task](readme/gamification_complete_task.gif)
+        
     + Classes
         - Mage, warrior, etc. Different looks)
+        
         ![Classes](readme/characters.gif)
+        
     + Team-based
         - Completing tasks as a team and maintaining the team streak (which in turns affect EXP Multiplier)
     + Leaderboard within team linked with GIT
+    
+    ![GIF demo](readme/header.gif)
+    
     + Redeem real life rewards based on level
         - Rewards like movie voucher created by team lead
+        
+    ![GIF demo](readme/header.gif)
+      
     
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
