@@ -75,15 +75,17 @@ You may log in using the following account for a quick view of the entire Web Ap
     + Gain EXP and Level up by completing actions 
         - Completing tasks/issues, higher priority tasks give more EXP
         - EXP Multiplier (Takes into account group streak and user level)
+        - Animations when completing a task 
+        ![Animations when completing a task](readme/gamification_complete_task.gif)
     + Classes
         - Mage, warrior, etc. Different looks)
+        ![Classes](readme/characters.gif)
     + Team-based
         - Completing tasks as a team and maintaining the team streak (which in turns affect EXP Multiplier)
     + Leaderboard within team linked with GIT
     + Redeem real life rewards based on level
         - Rewards like movie voucher created by team lead
-    + Animations when completing a task 
-
+    
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
