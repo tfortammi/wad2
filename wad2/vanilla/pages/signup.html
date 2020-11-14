@@ -325,7 +325,7 @@
                     </div>
 
                     <div class="form-group row">
-                        <label for="repoToken" class="col-sm-2 col-form-label">GitHub Token Key:</label>
+                        <a href="https://github.com/settings/tokens/new" target="_blank" for="repoToken" class="col-sm-2 col-form-label"><span data-toggle="tooltip" data-placement="bottom" title="Set up a token from GitHub through the link and simply insert it here!">GitHub Token Key:</span></a>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="repoToken" placeholder="Input repo token key">
                             <p class="text-danger" id="repoTokenError"></p>
@@ -375,6 +375,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
 
     <script>
+        // activate tooltip
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        // checking if inputs are validated
         var valid_email = false;
         var valid_password = false;
         var valid_name = false;
@@ -389,13 +395,7 @@
                 data: {
                     emails: [],
                     picked: 'new',
-                    // valid_email: false,
-                    // valid_password: false,
-                    // valid_name: false,
-                    // valid_role: false,
-                    // valid_guildName: false,
-                    // valid_repoToken: false,
-                    // valid_username: false
+                    exist: false
                 },
                 methods: {
                     addEmail: function () {
@@ -562,8 +562,8 @@
                     //         })
                     //     }).then(res => {
                     //         console.log(res.json())
-                            // location.reload()
-                        // })
+                    // location.reload()
+                    // })
                     // },
                     logout: function () {
                         sessionStorage.clear()
@@ -578,19 +578,23 @@
                         var git_token = document.getElementById("repoToken").value.trim();
                         var git_username = document.getElementById("username").value.trim();
 
+                        this.getUser();
+
                         if (email == "" || password == "" || name == "" || role == "" || guild == "" || git_token == "" || git_username == "") {
                             $("#emptyInput").modal();
                             return true;
                         }
-                        if (!valid_email || !valid_guildName || !valid_name || !valid_password || !valid_repoToken || !valid_role || !valid_username){
+                        if (!valid_email || !valid_guildName || !valid_name || !valid_password || !valid_repoToken || !valid_role || !valid_username) {
                             $("#emptyInput").modal();
+                            return true;
+                        }
+                        if (!this.exist) {
                             return true;
                         }
 
                         return false;
                     },
                     getUser: function () {
-                        var exist = false;
                         var git_token = document.getElementById("repoToken").value.trim();
                         const headers = {
                             "Authorization": `Token ${git_token}`,
@@ -602,10 +606,15 @@
                             'headers': headers
                         }).then(res => {
                             if (res.status == "200") {
-                                exist = true;
+                                this.exist = true;
+                                console.log("this should be true")
+                            }
+                            else {
+                                this.exist = false;
+                                console.log("it does not work")
+                                document.getElementById("repoTokenError").innerText = "Please enter a valid key!";
                             }
                         })
-                        return exist;
                     }
                 },
                 async created() {
@@ -640,19 +649,11 @@
 
                     error = "Please enter your " + inputName;
                 }
-                else{
+                else {
                     validId = true;
                     // console.log(validId);
                 }
-                if (this.id == "repoToken"){
-                    if (!app.getUser()){
-                        error = "Please enter a valid token!";
-                        validId = false;
-                    }
-                    else{
-                        validId = true;
-                    }
-                }
+
                 document.getElementById(errorId).innerText = error;
             });
             $("input[type='password']").keyup(function () {
@@ -692,7 +693,7 @@
                 if (error.length > 0) {
                     error = "Please ensure that your password: <ul>" + error + "</ul>";
                 }
-                else{
+                else {
                     valid_password = true;
                     // console.log(valid_password);
                 }
