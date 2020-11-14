@@ -183,14 +183,15 @@
         <div class="row justify-content-md-center" data-tour="step: 1; title: Your Team; content: Get an overview of your team">
             <div class="col-lg-2 text-center py-3" id="lvl-window">
                 <h2 class="font-weight-bold"> {{ guild.name }}</h2>
-                <a class="btn btn-primary" href="./inviteorgmembers.html">Invite Members</a>
+                <a v-if="guild.teamleads == user.loggedInUser" class="btn btn-primary" href="./inviteorgmembers.html">Invite Members</a>
+                <a v-else>User: {{user.git_username}}</a>
             </div>
             <!-- CHARACTER RUNNING CONTAINER -->
             <div class="col-lg-10 p-0">
                 <div class="col" id="ch-window">
                     <!-- <canvas id="ch-img" width="150" height="150"></canvas>
                     <canvas id="demon" width="150" height="150"></canvas> -->
-                    <canvas v-show='top3.length > 0' id="top0" class='allClasses' width="150" height="150">hello</canvas>
+                    <canvas v-show='top3.length > 0' id="top0" class='allClasses' width="150" height="150"></canvas>
                     <canvas v-show='top3.length > 1' id="top1" class='allClasses' width="150" height="150"></canvas>
                     <canvas v-show='top3.length > 2' id="top2" class='allClasses' width="150" height="150"></canvas>
                     <!-- <img id="ch-img" src="../assets/knight.png"> -->
@@ -275,7 +276,8 @@
                         name: "",
                         streak: "",
                         users: [],
-                        reponame: ""
+                        reponame: "",
+                        teamlead: ""
                     },
                     // teamname: 'JH-and-WX',
                     // reponame: "private_test",
@@ -425,6 +427,8 @@
                         var data = res.json().then(data => {
                             this.guild.streak = data["streak"];
                             this.guild.reponame = data["r_name"];
+                            this.guild.teamleads = data["team_lead"];
+                            console.log(this.guild.teamleads)
                         })
                     })
 
