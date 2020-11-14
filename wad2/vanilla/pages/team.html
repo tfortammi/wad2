@@ -204,7 +204,7 @@
         <br>
         <div>
         </div>
-        <div class='row' v-if='members.length > 0' data-tour="step: 2; title: Leaderboard; content: Track your team members' progress on this leaderboard">
+        <div class='row p-4' v-if='members.length > 0' data-tour="step: 2; title: Leaderboard; content: Track your team members' progress on this leaderboard">
             <h1 class='col-12 text-center'>Leaderboard</h1>
             <div class='col p-0'>
                 <bootstrap-table :columns="columns" :data="members" :options="tableOptions" data-pagination="true">
@@ -221,7 +221,7 @@
         </div>
         <br v-if='members.length > 0'>
 
-        <div class="row mb-3" data-tour="step: 3; title: Team Statistics; content: Get an overview of your team's progress and statistics">
+        <div class="row mb-3 p-4" data-tour="step: 3; title: Team Statistics; content: Get an overview of your team's progress and statistics">
             <div class="col-sm-4 text-center">
                 <table class='table table-borderless' style='height:100%;' >
                     <thead>
