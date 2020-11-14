@@ -366,8 +366,8 @@
                                         member["commits"] = data.length;
                                         // member.push(data.length);
                                     }
-                                    app.sortedMembersAsc()
                                 }
+                                app.sortedMembersAsc()
                             }
                         }
 
@@ -403,9 +403,9 @@
                     },
                     sortedMembersAsc: function () {
                         function compare(a, b) {
-                            if (a["commits"] > b["commits"])
+                            if (a["level"] > b["level"])
                                 return -1;
-                            if (a["commits"] < b["commits"])
+                            if (a["level"] < b["level"])
                                 return 1;
                             return 0;
                         }
@@ -498,7 +498,9 @@
                         var i = 0;
                         for (var top of this.top3) {
                             // console.log(top.class, i)
-                            initialiseImage("../assets/" + top.class + "_spritesheet.png", "#top" + i, 65, 260, 0, -70);
+                            if (top.class != undefined) {
+                                initialiseImage("../assets/" + top.class + "_spritesheet.png", "#top" + i, 65, 260, 0, -70);
+                            }
                             i += 1
                         }
                     }
