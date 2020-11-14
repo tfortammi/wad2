@@ -114,8 +114,7 @@
         }
 
         #gantt-chart,
-        #calendar-col,
-        #chat-window {
+        #calendar-col {
             border: 5px solid #a8c582;
             height: 420px;
         }
@@ -631,8 +630,8 @@
                         {{taskView}}</button>
                     <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="toggleView('meetings')" data-tour="step: 4; title: View Meetings; content: Checkout the team's past and upcoming meetings, and generate invites here">View
                         {{nextView}}</button>
-                    <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="showChat" data-tour="step: 5; title: Real Time Chat; content: Chat real time with your team here">Chat with Team
-                        </button>                    
+                    <!-- <button class="btn btn-warning sidebar-btn shadow-sm" v-on:click="showChat" data-tour="step: 5; title: Real Time Chat; content: Chat real time with your team here">Chat with Team
+                        </button>                     -->
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#taskModal"
                         data-toggle="modal" data-tour="step: 6; title: Add Task; content: Click this to create new tasks and assign them to team members">Add Task</button>
                     <button class="btn btn-primary sidebar-btn shadow-sm" data-target="#meetingModal" data-tour="step: 6; title: Add Meetings; content: Set a date for a video meeting and invite your team by clicking here"
@@ -655,7 +654,7 @@
                 </div>
 
                 <!-- CHAT WINDOW -->
-                <div class="col-lg-10" id="chat-window" style="overflow: scroll; display: none;">
+                <!-- <div class="col-lg-10" id="chat-window" style="overflow: scroll; display: none;">
                     <div class="container">
                         <div class="row">
                             <div class="col text-center mt-2">
@@ -664,7 +663,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="row">
+                        <div class="row">
                             <div class="input-group mb-3">
                                 <input v-model="chatMsg" type="text" class="form-control"
                                     placeholder="Talk to your team here!" aria-label="Talk to your team here!"
@@ -674,9 +673,9 @@
                                         @click="updateChat()">Send</button>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
-                </div>
+                </div> -->
                 
                 <!-- CALENDAR DIV -->
                 <div class="col-lg-10" id="calendar-col" style="overflow: scroll; display: none;">
@@ -975,26 +974,26 @@
 
                 },
                 completeTask: function () {
-                    // fetch("http://localhost:5001/complete_task", {
-                    //     method: "POST",
-                    //     headers: {
-                    //         "Content-Type": "application/json"
-                    //     },
-                    //     body: JSON.stringify({
-                    //         id: this.chosenTask.id,
-                    //         email: this.user.loggedInUser
-                    //     })
-                    // }).then(res => {
+                    fetch("http://localhost:5001/complete_task", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: this.chosenTask.id,
+                            email: this.user.loggedInUser
+                        })
+                    }).then(res => {
 
-                    //     res.json().then(data => {
-                    //         console.log(data["new_exp"])
-                    //         console.log(typeof data["new_exp"])
-                    //         this.user.userExp = parseInt(data["new_exp"])
-                    //         this.user.userLevel = parseInt(data["new_level"])
-                    //         location.reload()
-                    //     })
+                        res.json().then(data => {
+                            console.log(data["new_exp"])
+                            console.log(typeof data["new_exp"])
+                            this.user.userExp = parseInt(data["new_exp"])
+                            this.user.userLevel = parseInt(data["new_level"])
+                            location.reload()
+                        })
 
-                    // })
+                    })
                 },
                 modifyTask: function () {
                     fetch("http://localhost:5001/modify_task", {
@@ -1104,7 +1103,6 @@
 
                 },
                 toggleView: function (view) {
-                    clearInterval(this.interval)
 
                     if (view == "meetings") {
                         var meeting_flag = !this.meeting_flag;
@@ -1128,7 +1126,6 @@
                     }
                 },
                 toggleTaskView: function () {
-                    clearInterval(this.interval)
 
                     if (this.taskView == "Gantt") {
                         document.getElementById("meeting-list").style.display = "none";
@@ -1148,15 +1145,15 @@
                         this.taskView = "Gantt"
                     }
                 },
-                showChat: function () {
-                    document.getElementById("meeting-list").style.display = "none";
-                    document.getElementById("calendar-col").style.display = "none";
-                    document.getElementById("gantt-chart").style.display = "none";
-                    document.getElementById("chat-window").style.display = "block";
-                    // document.getElementById('chat-window').scrollTop = 9999999;
-                    // this.interval = setInterval(() => this.getChat(), 1000);
-                    // this.checkChat = true
-                },
+                // showChat: function () {
+                //     document.getElementById("meeting-list").style.display = "none";
+                //     document.getElementById("calendar-col").style.display = "none";
+                //     document.getElementById("gantt-chart").style.display = "none";
+                //     document.getElementById("chat-window").style.display = "block";
+                //     document.getElementById('chat-window').scrollTop = 9999999;
+                //     this.interval = setInterval(() => this.getChat(), 1000);
+                //     this.checkChat = true
+                // },
                 // getChat: function () {
                 //     fetch("http://localhost:5001/get_chat_history?guild=" + this.guild.name, {
                 //         method: "GET",
@@ -1608,46 +1605,6 @@
                 window.requestAnimationFrame(step);
             }
         }
-
-        (function(t,a,l,k,j,s){
-        s=a.createElement('script');s.async=1;s.src="https://cdn.talkjs.com/talk.js";a.head.appendChild(s)
-        ;k=t.Promise;t.Talk={v:3,ready:{then:function(f){if(k)return new k(function(r,e){l.push([f,r,e])});l
-        .push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
-
-        Talk.ready.then(function() {
-            var me = new Talk.User({
-                id: "123456",
-                name: "Alice",
-                email: "alice@example.com"
-            });
-            window.talkSession = new Talk.Session({
-                appId: "tZ0ZG556",
-                me: me
-            });
-            var other1 = new Talk.User({
-                id: "654321",
-                name: "Sebastian",
-                email: "sebastian@example.com"
-            });
-
-            var other2 = new Talk.User({
-                id: "456789",
-                name: "Steve",
-                email: "steve@example.com"
-            });
-
-            var conversation = window.talkSession.getOrCreateConversation("CONVERSATION_ID");
-            conversation.setParticipant(me);
-            conversation.setParticipant(other1);
-            conversation.setParticipant(other2);
-            conversation.setAttributes({
-                photoUrl: "https://demo.talkjs.com/img/11.jpg",
-                subject: "WAD2 Project!"
-            });
-
-            var chatbox = talkSession.createChatbox(conversation);
-            chatbox.mount(document.getElementById("talkjs-container"));
-        });
 
     </script>
 
