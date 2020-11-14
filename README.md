@@ -62,7 +62,7 @@ You may log in using the following account for a quick view of the entire Web Ap
     + View tasks/issues in a calendar form and Gantt chart form
     + Mark completed tasks/issues
     
-    ![GIF demo](readme/header.gif)
+    ![Task](readme/task.gif)
 
 4. Team Management
     + Create Meetings 
@@ -70,13 +70,13 @@ You may log in using the following account for a quick view of the entire Web Ap
     + View Upcoming & Past Meetings
     + Generate Meeting Invites 
     
-    ![GIF demo](readme/header.gif)
+    ![GIF demo](readme/team.gif)
 
 5. Personal Profile Management
     + View tasks assigned to user
     + View meetings
     
-    ![GIF demo](readme/header.gif)
+    ![Personal](readme/personal.gif)
 
 6. Gamification elements
     + Gain EXP and Level up by completing actions 
@@ -94,13 +94,14 @@ You may log in using the following account for a quick view of the entire Web Ap
     + Team-based
         - Completing tasks as a team and maintaining the team streak (which in turns affect EXP Multiplier)
     + Leaderboard within team linked with GIT
-    
-    ![GIF demo](readme/header.gif)
-    
     + Redeem real life rewards based on level
         - Rewards like movie voucher created by team lead
         
     ![GIF demo](readme/header.gif)
+7. User Experience 
+    + Tours are included to explain the Web Application for the user 
+    
+    ![Tour](readme/tour.gif)
       
     
 ## Contributing
