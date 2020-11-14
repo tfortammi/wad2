@@ -652,30 +652,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- CHAT WINDOW -->
-                <!-- <div class="col-lg-10" id="chat-window" style="overflow: scroll; display: none;">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col text-center mt-2">
-                                <div id="talkjs-container" style="width: 90%; margin: 30px; height: 500px">
-                                    <i>Loading chat...</i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-group mb-3">
-                                <input v-model="chatMsg" type="text" class="form-control"
-                                    placeholder="Talk to your team here!" aria-label="Talk to your team here!"
-                                    aria-describedby="basic-addon2">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button"
-                                        @click="updateChat()">Send</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
                 
                 <!-- CALENDAR DIV -->
                 <div class="col-lg-10" id="calendar-col" style="overflow: scroll; display: none;">
@@ -1145,55 +1121,6 @@
                         this.taskView = "Gantt"
                     }
                 },
-                // showChat: function () {
-                //     document.getElementById("meeting-list").style.display = "none";
-                //     document.getElementById("calendar-col").style.display = "none";
-                //     document.getElementById("gantt-chart").style.display = "none";
-                //     document.getElementById("chat-window").style.display = "block";
-                //     document.getElementById('chat-window').scrollTop = 9999999;
-                //     this.interval = setInterval(() => this.getChat(), 1000);
-                //     this.checkChat = true
-                // },
-                // getChat: function () {
-                //     fetch("http://localhost:5001/get_chat_history?guild=" + this.guild.name, {
-                //         method: "GET",
-                //         headers: {
-                //             "Content-Type": "application/json"
-                //         }
-                //     }).then(res => {
-                //         res.json().then(data => {
-                //             if (data.history == undefined) {
-
-                //             }
-                //             this.chats = data.history
-                //             console.log(this.chats)
-                //         })
-                //     }).catch((error) => {
-                //         console.log(error)
-                //     });
-                // },
-                // updateChat: function () {
-                //     if (this.chatMsg != "") {
-                //         fetch("http://localhost:5001/update_chat", {
-                //             method: "POST",
-                //             headers: {
-                //                 "Content-Type": "application/json"
-                //             },
-                //             body: JSON.stringify({
-                //                 guild: this.guild.name,
-                //                 msg: this.chatMsg,
-                //                 by: this.user.name
-                //             })
-                //         }).then(res => {
-                //             console.log(res.json());
-                //             this.chatMsg = "";
-                //             // location.reload()
-                //         }).catch((error) => {
-                //             console.log(error)
-                //         });
-                //     }
-                // },
-                // Draws Gantt Chart
                 drawChart: function () {
                     // Creates datatable to store info in gantt charts
                     var dataTable = new google.visualization.DataTable();
@@ -1489,20 +1416,6 @@
         });
 
         
-
-        // Datepicker add on 
-        // $(document).ready(function () {
-        //     var date_input = $('input[name="date"]'); //our date input has the name "date"
-        //     var container = $('.modal-body form').length > 0 ? $('.modal-body form').parent() : "body";
-        //     var options = {
-        //         format: 'mm/dd/yyyy',
-        //         container: container,
-        //         todayHighlight: true,
-        //         autoclose: true,
-        //     };
-        //     date_input.datepicker(options);
-        // })
-
         // Initialise running images
         function initialiseImage(src, query, width, height, x, y) {
             // Create image object
