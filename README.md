@@ -8,20 +8,29 @@ Our solution: A gamified Software Project Management tool for easy remote team a
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the following libraries.
 
 ```bash
-pip install foobar
+pip install flask
+pip install flask_sqlalchemy
+pip install flask_cors
+pip install firebase_admin
 ```
+We have included a `readme/requirements.txt` file that you can use to recursively install the necessary python libraries.
 
 ## Usage
+In order to run the Web Application, first start running the `api/main.py` file 
 
-```python
-import foobar
+If you are using Windows OS, you may use the following commands:
+```bash
+cd api/
+python main.py
+```
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+If you are using Machintosh OS, you may use the following commands:
+```bash
+cd api/
+python main.py
 ```
 
 ## Contributing
