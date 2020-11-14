@@ -1,0 +1,9 @@
+runtime: python37
+env_variables:
+  GCLOUD_PROJECT: 'wad-project-backup'
+
+handlers:
+    - url: /main
+      static_dir: static/main
+      http_headers:
+        Access-Control-Allow-Origin: "*"

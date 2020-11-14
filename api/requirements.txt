@@ -1,0 +1,13 @@
+Flask==1.1.1
+Flask-Cors==3.0.8
+Flask-RESTful==0.3.8
+Flask-SQLAlchemy==2.4.1
+firebase-admin==4.3.0
+itsdangerous==1.1.0
+Jinja2==2.11.0
+pika==1.1.0
+python-dateutil==2.8.1
+pytz==2019.3
+requests==2.22.0
+google-api-python-client==1.9.3
+gunicorn
