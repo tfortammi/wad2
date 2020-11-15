@@ -46,8 +46,6 @@ You may log in using the following account for a quick view of the entire Web Ap
 1. User Login & Registration
     + User Login
     + User Registration
-    
-    ![GIF demo](readme/register.gif)
 
 2. Project Management
     + Auto creation or linking to Github Repo Teams
@@ -69,8 +67,6 @@ You may log in using the following account for a quick view of the entire Web Ap
         - Automatically create Daily.Co (https://www.daily.co/) Meeting
     + View Upcoming & Past Meetings
     + Generate Meeting Invites 
-    
-    ![GIF demo](readme/meeting.gif)
 
 5. Personal Profile Management
     + View tasks assigned to user
