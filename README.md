@@ -40,8 +40,8 @@ A live demo of our application is available at the following link: https://proje
 Sign-up instructions: https://docs.google.com/document/d/1faH1JPwbBsKPBJRq3W_jMAgU2RMbJeBzpJia28_7ACQ/edit?usp=sharing
 
 You may log in using the following account for a quick view of the entire Web Application:
-+ email: 
-+ password:
++ email: weixiangtoh982@gmail.com
++ password: Passw0rd!
 
 ## Core Functionalities of ProjectQuest
 1. User Login & Registration
