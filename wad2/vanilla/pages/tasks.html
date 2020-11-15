@@ -553,7 +553,9 @@
                                     <option v-for="u in guild.users" v-bind:value="u[1]">{{u[0]}}</option>
                                 </select>
                             </div>
-
+                            <div id="alertContainer">
+                                
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -1018,67 +1020,81 @@
                 },
                 addMeeting: function () {
 
-                    fetch("http://localhost:5001/add_meeting", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            attendees: this.meeting.attendees,
-                            start: this.meeting.start,
-                            end: this.meeting.end,
-                            name: this.meeting.name,
-                            organizer: this.user.loggedInUser,
-                            guild: this.tasks.guild
+                    document.getElementById("alertContainer").innerHTML = "";
+
+                    start_date = new Date(this.meeting.start);
+                    end_date = new Date(this.meeting.end);
+
+                    if (start_date.toString() == "Invalid Date" || end_date.toString() == "Invalid Date") {
+                        document.getElementById("alertContainer").innerHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                Make sure that your date was in the format of MM/DD/YYYY HH:SS
+                            </div>
+                        `;
+                    } else {
+
+                        fetch("http://localhost:5001/add_meeting", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                attendees: this.meeting.attendees,
+                                start: this.meeting.start,
+                                end: this.meeting.end,
+                                name: this.meeting.name,
+                                organizer: this.user.loggedInUser,
+                                guild: this.tasks.guild
+                            })
                         })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            var request = new XMLHttpRequest();
+                            .then(response => response.json())
+                            .then(data => {
+                                var request = new XMLHttpRequest();
 
-                            var meeting_id = data.id.split("-")[-1]
+                                var meeting_id = data.id.split("-")[-1]
 
-                            var params = {
-                                "properties": {
-                                    "enable_screenshare": true,
-                                    "enable_chat": true,
-                                    "start_video_off": true,
-                                    "start_audio_off": true
-                                },
-                                "name": meeting_id
-                            };
+                                var params = {
+                                    "properties": {
+                                        "enable_screenshare": true,
+                                        "enable_chat": true,
+                                        "start_video_off": true,
+                                        "start_audio_off": true
+                                    },
+                                    "name": meeting_id
+                                };
 
-                            request.onreadystatechange = function () {
-                                if (this.readyState == 4 && this.status == 200) {
-                                    var responseText = JSON.parse(this.responseText);
-                                    fetch("http://localhost:5001/modify_meeting", {
-                                        method: "POST",
-                                        headers: {
-                                            "Content-Type": "application/json"
-                                        },
-                                        body: JSON.stringify({
-                                            id: data.id,
-                                            room_link: responseText.url
-                                        })
-                                    }).then(res => {
-                                        location.reload()
-                                    }).catch(e => {
-                                        // console.log(e);
-                                    });
+                                request.onreadystatechange = function () {
+                                    if (this.readyState == 4 && this.status == 200) {
+                                        var responseText = JSON.parse(this.responseText);
+                                        fetch("http://localhost:5001/modify_meeting", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json"
+                                            },
+                                            body: JSON.stringify({
+                                                id: data.id,
+                                                room_link: responseText.url
+                                            })
+                                        }).then(res => {
+                                            location.reload()
+                                        }).catch(e => {
+                                            // console.log(e);
+                                        });
+                                    }
                                 }
-                            }
 
-                            var url = "https://api.daily.co/v1/rooms";
-                            request.open("POST", url, true);
-                            request.setRequestHeader("Content-type",
-                                "application/x-www-form-urlencoded");
-                            request.setRequestHeader('Authorization',
-                                'Bearer 014432e07e678d453d4faeb244e96c4f10932d71f82f8cf0376c0ddddbc5fab4'
-                            );
-                            request.send(JSON.stringify(params));
-                        }).catch(e => {
-                            // console.log(e);
-                        });
+                                var url = "https://api.daily.co/v1/rooms";
+                                request.open("POST", url, true);
+                                request.setRequestHeader("Content-type",
+                                    "application/x-www-form-urlencoded");
+                                request.setRequestHeader('Authorization',
+                                    'Bearer 014432e07e678d453d4faeb244e96c4f10932d71f82f8cf0376c0ddddbc5fab4'
+                                );
+                                request.send(JSON.stringify(params));
+                            }).catch(e => {
+                                // console.log(e);
+                            });
+                    }
 
                 },
                 toggleView: function (view) {
