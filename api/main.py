@@ -380,15 +380,6 @@ def add_guild():
 
     request.json["streak"] = 0
 
-    # Add guild chat history 
-    #TODO: delete if not needed 
-    chat_ref = db.collection(u"Chat")
-    docs = chat_ref.stream()
-
-    request.json["history"] = "{}"
-
-    chat_ref.document().set(request.json)
-
     try:
         guild_ref.document().set(request.json)
         return jsonify({"success": request.json["name"]}), 200
@@ -1266,86 +1257,6 @@ def get_claimed_reward():
     except Exception as e:
         print(e)
         return {"error": "Cannot get claimed rewards."}, 500
-
-# =============== # 
-#      CHAT       #
-# =============== # 
-@app.route("/add_chat", methods=["POST"])
-def add_chat():
-    """
-        Add a new chat record into database.
-        
-        Expected JSON object:
-        {
-            "guild" : <string: guild that chat belong to>,
-        }
-    """
-
-    try:
-        chat_ref = db.collection(u"Chat")
-        docs = chat_ref.stream()
-
-        request.json["history"] = "{}"
-
-        chat_ref.document().set(request.json)
-
-        return jsonify({"success": True}), 200
-    except Exception as e:
-        print(e)
-        return {"error": "Cannot add chat."}, 500
-
-@app.route("/update_chat", methods=["POST"])
-def update_chat():
-    """
-        Add a new chat record into database.
-        
-        Expected JSON object:
-        {
-            "guild" : <string: guild that chat belong to>,
-            "msg" : <string: new msg content>
-            "by": <string: user that the new msg belongs to>
-        }
-    """
-
-    try:
-        chat_ref = db.collection(u"Chat")
-        docs = chat_ref.stream()
-
-        for doc in docs:
-            if request.json["guild"] == doc.to_dict()["guild"]:
-                history = json.loads(doc.to_dict()["history"])
-                dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                history[dt_string] = {request.json["by"] : request.json["msg"]}
-                chat_ref.document(doc.id).update({u"history": json.dumps(history)})
-
-        return jsonify({"success": True}), 200
-
-    except Exception as e:
-        print(e)
-        return {"error": "Cannot update chat."}, 500
-
-@app.route("/get_chat_history")
-def get_chat_history():
-    """
-        Retrieve chat history of a specific guild.
-        
-        Expected GET params:
-            - "guild" = <string: guild's name>
-    """
-
-    try:
-        chat_ref = db.collection(u"Chat")
-        docs = chat_ref.stream()
-
-        for doc in docs:
-            if request.args.get("guild") == doc.to_dict()["guild"]:
-                return {"history": json.loads(doc.to_dict()["history"])}, 200
-
-        return {"error": "Cannot find chat history."}, 401
-
-    except Exception as e:
-        print(e)
-        return {"error": "Cannot update chat."}, 500
 
 # =========================== # 
 #      HYBRID FUNCTIONS       #
