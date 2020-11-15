@@ -37,12 +37,13 @@ To visit the Web Application, simply locate the folder where you've downloaded t
 
 ## Demo
 A live demo of our application is available at the following link: https://projectquest.netlify.app/
+Sign-up instructions: https://docs.google.com/document/d/1faH1JPwbBsKPBJRq3W_jMAgU2RMbJeBzpJia28_7ACQ/edit?usp=sharing
 
 You may log in using the following account for a quick view of the entire Web Application:
 + email: 
 + password:
 
-## Core Funtionalities of ProjectQuest
+## Core Functionalities of ProjectQuest
 1. User Login & Registration
     + User Login
     + User Registration

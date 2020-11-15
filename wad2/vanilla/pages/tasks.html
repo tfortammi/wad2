@@ -549,9 +549,12 @@
                                     <label class="input-group-text" for="inputGroupSelect01">Attendees</label>
                                 </div>
                                 <select class="custom-select" v-model="meeting.attendees" multiple id="inputGroupSelect01">
-                                    <option selected>None</option>
                                     <option v-for="u in guild.users" v-bind:value="u[1]">{{u[0]}}</option>
                                 </select>
+                                
+                            </div>
+                            <div >
+                                <label class="text-muted">*ctrl/shift + click to select multiple attendees</label>
                             </div>
 
                         </form>

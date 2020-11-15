@@ -517,6 +517,7 @@
                                     `;
                                 }
 
+
                                 document.getElementById("card-section").innerHTML = cardsBlock;
                                 document.getElementById("pagination").innerHTML = "";
                                 document.getElementById("pagination").innerHTML = `
@@ -528,6 +529,9 @@
                                 `;
                                 pagination();
                             } else {
+                                document.getElementById("card-section").innerHTML = "";
+                                document.getElementById("pagination").innerHTML = "";
+
                                 document.getElementById("pagination").innerHTML = `
                                     <div id="empty-alert" style="width: 100%; margin: 0 15px 15px 15px;"
                                         class="alert alert-warning alert-dismissible fade show" role="alert">

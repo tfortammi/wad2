@@ -975,6 +975,7 @@ def get_past_meetings():
                 if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
                     meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
+        print(meeting_timings, meetings)
         
         sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings), reverse = True)]
     
@@ -1005,12 +1006,13 @@ def get_upcoming_meetings():
                 if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
                     meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
-        
+        print(meeting_timings, meetings) 
         sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
     
         return {"meetings": sorted_meetings}, 200
 
     except Exception as e:
+        traceback.print_exc()
         print(e)
         return {"error": "Cannot retrieve meetings."}, 500
 
