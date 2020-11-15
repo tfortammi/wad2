@@ -27,10 +27,10 @@ cd api/
 python main.py
 ```
 
-If you are using Machintosh OS, you may use the following commands:
+If you are using Macintosh OS, you may use the following commands:
 ```bash
 cd api/
-python main.py
+python3 main.py
 ```
 
 To visit the Web Application, simply locate the folder where you've downloaded the file and add `/app` to the back of the link. For e.g. `file:///Applications/MAMP/htdocs/wad2/app`
@@ -46,14 +46,12 @@ You may log in using the following account for a quick view of the entire Web Ap
 1. User Login & Registration
     + User Login
     + User Registration
-    
-    ![GIF demo](readme/header.gif)
 
 2. Project Management
     + Auto creation or linking to Github Repo Teams
     + View Github statistics (daily, weekly commits, etc)
     
-    ![GIF demo](readme/header.gif)
+    ![GIF demo](readme/team.gif)
 
 3. Task Management 
     + Creation of tasks/issues to be done
@@ -69,8 +67,6 @@ You may log in using the following account for a quick view of the entire Web Ap
         - Automatically create Daily.Co (https://www.daily.co/) Meeting
     + View Upcoming & Past Meetings
     + Generate Meeting Invites 
-    
-    ![GIF demo](readme/team.gif)
 
 5. Personal Profile Management
     + View tasks assigned to user
@@ -97,7 +93,7 @@ You may log in using the following account for a quick view of the entire Web Ap
     + Redeem real life rewards based on level
         - Rewards like movie voucher created by team lead
         
-    ![GIF demo](readme/header.gif)
+    ![GIF demo](readme/rewards.gif)
 7. User Experience 
     + Tours are included to explain the Web Application for the user 
     
@@ -106,8 +102,6 @@ You may log in using the following account for a quick view of the entire Web Ap
     
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
 
 **The Team**
 ---
