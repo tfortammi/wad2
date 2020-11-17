@@ -929,12 +929,14 @@ def get_all_upcoming_meetings(guild):
         docs = meeting_ref.stream()
 
         meetings = []
+        meeting_timings = []
 
         for doc in docs:
             if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                 meetings.append(doc.to_dict())
+                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
-        sorted_meetings = sorted(meetings, key = lambda x: x['start'])
+        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
     
         return {"meetings": sorted_meetings}, 200
 
