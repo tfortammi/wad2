@@ -960,7 +960,7 @@ def get_past_meetings():
                 if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
         
-        sorted_meetings = sorted_meetings = sorted(meetings, key = lambda x: x['start'], reverse = True)
+        sorted_meetings = sorted_meetings = sorted(meetings, key = lambda x: x['start'])
     
         return {"meetings": sorted_meetings}, 200
 
@@ -988,7 +988,7 @@ def get_upcoming_meetings():
                 if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
 
-        sorted_meetings = sorted(meetings, key = lambda x: x['start'], reverse = True)
+        sorted_meetings = sorted(meetings, key = lambda x: x['start'])
     
         return {"meetings": sorted_meetings}, 200
 
