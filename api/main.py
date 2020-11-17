@@ -900,15 +900,12 @@ def get_all_past_meetings(guild):
         docs = meeting_ref.stream()
 
         meetings = []
-        meeting_timings = []
 
         for doc in docs:
             if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                 meetings.append(doc.to_dict())
-                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
-        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
-        print(sorted_meetings)
+        sorted_meetings = sorted(meetings, key = lambda x: x['start'])
     
         return {"meetings": sorted_meetings}, 200
 
@@ -929,14 +926,12 @@ def get_all_upcoming_meetings(guild):
         docs = meeting_ref.stream()
 
         meetings = []
-        meeting_timings = []
 
         for doc in docs:
             if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                 meetings.append(doc.to_dict())
-                meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
         
-        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+        sorted_meetings = sorted(meetings, key = lambda x: x['start'])
     
         return {"meetings": sorted_meetings}, 200
 
@@ -959,16 +954,13 @@ def get_past_meetings():
         docs = meeting_ref.stream()
 
         meetings = []
-        meeting_timings = []
 
         for doc in docs:
             if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
                 if datetime.now() > datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
-                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
-        print(meeting_timings, meetings)
         
-        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings), reverse = True)]
+        sorted_meetings = sorted_meetings = sorted(meetings, key = lambda x: x['start'], reverse = True)
     
         return {"meetings": sorted_meetings}, 200
 
@@ -990,15 +982,13 @@ def get_upcoming_meetings():
         docs = meeting_ref.stream()
 
         meetings = []
-        meeting_timings = []
 
         for doc in docs:
             if request.args.get("email") in doc.to_dict()["attendees"] or request.args.get("email") == doc.to_dict()["organizer"]:
                 if datetime.now() < datetime.strptime(str(doc.to_dict()["end"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"):
                     meetings.append(doc.to_dict())
-                    meeting_timings.append(datetime.strptime(str(doc.to_dict()["start"]).split("+")[0].split(".")[0], "%Y-%m-%d %H:%M:%S"))
-        print(meeting_timings, meetings) 
-        sorted_meetings = [meeting for meeting_timings, meeting in sorted(zip(meeting_timings, meetings))]
+
+        sorted_meetings = sorted(meetings, key = lambda x: x['start'], reverse = True)
     
         return {"meetings": sorted_meetings}, 200
 
